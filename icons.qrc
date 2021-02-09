@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/new/icons">
+        <file>images/AWAH_logo_sm.png</file>
+        <file>images/AWAH_logo.png</file>
+        <file>images/callstart.svg</file>
+        <file>images/callstop.svg</file>
+        <file>images/call [#188].svg</file>
+        <file>images/call [#189].svg</file>
+        <file>images/call [#190].svg</file>
+        <file>images/call [#192].svg</file>
+        <file>images/folder_plus [#1782].svg</file>
+        <file>images/important_message [#1448].svg</file>
+        <file>images/inbox_done_round [#1543].svg</file>
+        <file>images/inbox_plus [#1554].svg</file>
+        <file>images/list [#1422].svg</file>
+        <file>images/list [#1496].svg</file>
+        <file>images/love [#1489].svg</file>
+        <file>images/megaphone [#775].svg</file>
+        <file>images/microphone [#934].svg</file>
+        <file>images/network_3 [#1116].svg</file>
+        <file>images/number_sign [#110].svg</file>
+        <file>images/option_bar_settings [#1399].svg</file>
+        <file>images/profile_round [#1342].svg</file>
+        <file>images/settings [#1365].svg</file>
+    </qresource>
+</RCC>
