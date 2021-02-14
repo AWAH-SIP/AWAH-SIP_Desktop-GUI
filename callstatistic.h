@@ -25,28 +25,8 @@
 #include "cmdfacade.h"
 #include <QStringListModel>
 
-class StringListModel : public QAbstractListModel
-{
-    Q_OBJECT
 
-public:
-    StringListModel(const QStringList &strings, QObject *parent = nullptr)
-        : QAbstractListModel(parent), stringList(strings) {}
-
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role) const override;
-
-public slots:
-    void onDataChanged(QStringList statistic);
-
-private:
-    QStringList  stringList;
-};
-
-
-
-
-class MapModel : public QAbstractTableModel
+class StatisticModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
@@ -56,17 +36,14 @@ public:
         ValueRole
     };
 
-    explicit MapModel(QObject *parent = 0);
+    explicit StatisticModel(QJsonObject *callinfo, QObject *parent = 0);
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
     int columnCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-    inline void setMap(QMap<QString, int >* map) { m_map = map; }
 
 private:
-    QMap<QString, int >* m_map;
+    QJsonObject* m_callinfo;
 };
-
-
 
 
 
@@ -97,8 +74,8 @@ private:
     int m_AccID;
     int m_CallID;
     QTimer *refreshTimer;
-    MapModel *mapmodel;
-    QMap<QString, int> map;
+    StatisticModel *m_statModel;
+    QJsonObject callinfo;
 };
 
 

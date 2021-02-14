@@ -217,7 +217,7 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
             makeCall.setModal(true);
             makeCall.exec();
             }
-        else if (m_AccountList->at(index.row()).CallList.size()>=1){
+        else if (m_AccountList->at(index.row()).CallList.count()>=1){
             QString message;
             if(m_AccountList->at(index.row()).CallList.count()>1){
                 message = "multiple calls connected!! \n\n Do you really want to dissconect all calls?";
@@ -233,13 +233,13 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
                 }
             }
         }
-        else if (m_AccountList->at(index.row()).CallList.size()>1){
+        else if (m_AccountList->at(index.row()).CallList.count()>1){
                                                                             // todo implement menu for more than one call
 
         }
      }
    if (index.isValid() && index.column()== 5) {
-       if (m_AccountList->at(index.row()).CallList.size()){
+       if (m_AccountList->at(index.row()).CallList. count()){
             CallStatistic callstat(nullptr,m_cmdFacade, m_AccountList->at(index.row()).AccID, m_AccountList->at(index.row()).CallList.first());
             callstat.setModal(false);
             callstat.exec();

@@ -3,67 +3,64 @@
 
 #include <QObject>
 #include "lib/types.h"
+#include "websocketclient.h"
 
 class CmdFacade : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit CmdFacade(QObject *parent = nullptr);
+    explicit CmdFacade(QObject *parent = nullptr, WebsocketClient *wsClient = nullptr);
 
     // Public API - Accounts
-    int createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
-        { return 0; };
-    int modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
-        { return 0; };
-    void removeAccount(int index) const { return; };
-    QList <s_account>* getAccounts() {  return &m_getAccounts; };
-    void makeCall(QString number, int AccID) const { return; };
-    bool hangupCall(int callId, int AccID) const { return true; };
-    void acceptCall(int callId, int AccID) const { return; };
-    bool holdCall(int callId, int AccID) const { return true; };
-    bool transferCall(int callId, int AccID, QString destination) const { return true; };
-    QStringList dumpCall(int callId, int AccID) const { QStringList ret; return ret; };
-    QMap<QString, int> getStreamInfo(int callID, int AccID) const { QMap<QString, int> ret; return ret; };
-    const QList<s_callHistory>* getCallHistory(int AccID) const { return &m_getCallHistory; };
+    int createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
+    int modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
+    void removeAccount(int index) const;
+    QList <s_account>* getAccounts();
+    void makeCall(QString number, int AccID) const;
+    bool hangupCall(int callId, int AccID) const;
+    void acceptCall(int callId, int AccID) const;
+    bool holdCall(int callId, int AccID) const;
+    bool transferCall(int callId, int AccID, QString destination) const;
+    QJsonObject getCallInfo(int callID, int AccID) const;
+    const QList<s_callHistory>* getCallHistory(int AccID);
     const s_account* getAccountByID(int ID);
 
     // Public API - AudioRouter
-    QList <s_audioRoutes> getAudioRoutes() const {return m_getAudioRoutes; };
-    QStringList listSoundDev() const { return m_listSoundDev; };
-    int addAudioDevice(int recordDevId, int playbackDevId) const { return 0; };
-    int removeAudioDevice(int DevIndex) const { return 0; };
-    int addFilePlayer(QString Name, QString File) const { return 0; };
-    int addFileRecorder(QString File) const { return 0; };
-    const s_audioPortList& getConfPortsList() const { return m_getConfPortsList; };
-    int connectConfPort(int src_slot, int sink_slot, float level, bool persistant = true) const
-        { return 0; };
-    int disconnectConfPort(int src_slot, int sink_slot) const { return 0; };
-    int changeConfPortLevel(int src_slot, int sink_slot, float level) const { return 0; };
-    int addToneGen(int freq) const { return 0; };
-    QList<s_audioDevices>* getAudioDevices() {  return &m_getAudioDevices; };
+    QList <s_audioRoutes> getAudioRoutes();
+    QStringList listSoundDev();
+    int addAudioDevice(int recordDevId, int playbackDevId) const;
+    int removeAudioDevice(int DevIndex) const;
+    int addFilePlayer(QString Name, QString File) const;
+    int addFileRecorder(QString File) const;
+    const s_audioPortList& getConfPortsList();
+    int connectConfPort(int src_slot, int sink_slot, float level, bool persistant = true) const;
+    int disconnectConfPort(int src_slot, int sink_slot) const;
+    int changeConfPortLevel(int src_slot, int sink_slot, float level) const;
+    int addToneGen(int freq) const;
+    QList<s_audioDevices>* getAudioDevices();
 
     // Public API - Buddies
-    bool registerBuddy(int AccID, QString buddyUrl) const { return true; };
-    bool deleteBuddy(int AccID, QString buddyUrl) const { return true; };
+    bool registerBuddy(int AccID, QString buddyUrl) const;
+    bool deleteBuddy(int AccID, QString buddyUrl) const;
 
     // Public API - Codecs
-    QStringList listCodec() const { return m_listCodec; };
-    void selectCodec(QString selectedcodec) const { return; };
-    const QMap<QString, s_setting> getCodecParam(QString codecId) const { return m_getCodecParam; };
-    int setCodecParam(QString codecId, QMap<QString, s_setting> map) const { return 0; };
+    QStringList listCodec();
+    void selectCodec(QString selectedcodec) const;
+    const QJsonObject getCodecParam(QString codecId) const;
+    int setCodecParam(QString codecId, QJsonObject codecParam) const;
 
     // Public API - Log
-    QStringList readNewestLog() const { return m_readNewestLog;};
+    QStringList readNewestLog();
 
     // Public API - MessageManager
-    void sendDtmf(int callId, int AccID, QString num) const { return; };
+    void sendDtmf(int callId, int AccID, QString num) const;
 
     // Public API - Settings
-    const QMap<QString, s_setting> getSettings() const { return m_getSettings; };
-    void setSettings(QMap<QString, s_setting> map) { return; } ;
-    const QMap<QString, s_setting> getCodecPriorities() const {  return m_getCodecPriorities; };
-    void setSCodecPriorities(QMap<QString, s_setting> map) { return; } ;
+    const QJsonObject* getSettings();
+    void setSettings(QJsonObject editedSetting);
+    const QJsonObject getCodecPriorities();
+    void setSCodecPriorities(QJsonObject Codecpriority);
 
 signals:
     void regStateChanged(int accId, bool status);
@@ -76,20 +73,21 @@ signals:
     void audioRoutesTableChanged(const s_audioPortList& portList);
 
 private:
-
+    WebsocketClient *m_wsClient;
     // Vars for API-Calling
     QList<s_account> m_getAccounts;
     QList<s_callHistory> m_getCallHistory;
+    s_account m_getAccountByID;             //TODO: Der muss weg der wird nur probleme machen...
     QList <s_audioRoutes> m_getAudioRoutes;
     QStringList m_listSoundDev;
     s_audioPortList m_getConfPortsList;
     QList<s_audioDevices> m_getAudioDevices;
     QStringList m_listCodec;
-    QMap<QString, s_setting> m_getCodecParam;
     QStringList m_readNewestLog;
-    QMap<QString, s_setting> m_getSettings;
-    QMap<QString, s_setting> m_getCodecPriorities;
+    QJsonObject m_getSettings;
+    QJsonObject m_getCodecPriorities;
 
+    friend class WebsocketClient;
 };
 
 #endif // CMDFACADE_H

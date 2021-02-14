@@ -27,26 +27,24 @@ CodecSettings::CodecSettings(QWidget *parent, CmdFacade *lib, QString codecID) :
     m_cmdFacade(lib), m_codecID(codecID)
 {
     ui->setupUi(this);
-    m_map = lib->getCodecParam(m_codecID);
+    m_codecsetting = lib->getCodecParam(m_codecID);
     QModelIndex index;
 
-    settingsmodel = new QStandardItemModel(m_map.count(), 2, this);
+    settingsmodel = new QStandardItemModel(m_codecsetting.count(), 2, this);
     ui->tableView->setModel(settingsmodel);
 
-    SettingsDelegate *delegate = new SettingsDelegate(ui->tableView);
-    delegate->setMap(&m_map);
-    ui->tableView->setItemDelegate(delegate);
+    SettingsDelegate *delegate = new SettingsDelegate(&m_codecsetting, &m_editedsetting, ui->tableView);
 
-    for (int row = 0; row < m_map.count(); row++)
-    {
-        index = settingsmodel->index(row, 0, QModelIndex());
-        settingsmodel->setData(index,m_map.keys().at(row));
-    }
-    for (int row = 0; row < m_map.count(); row++)
-    {
-        index = settingsmodel->index(row, 1, QModelIndex());
-        settingsmodel->setData(index,m_map.values().at(row).value);
-        ui->tableView->openPersistentEditor(index);
+    ui->tableView->setItemDelegate(delegate);
+    QJsonObject::iterator j;
+    int row = 0;
+    for (j = m_codecsetting.begin(); j != m_codecsetting.end(); ++j) {
+            index = settingsmodel->index(row, 0, QModelIndex());
+            settingsmodel->setData(index,j.key());
+            index = settingsmodel->index(row, 1, QModelIndex());
+            settingsmodel->setData(index,j.value().toObject());
+            ui->tableView->openPersistentEditor(index);
+            row++;
     }
 
     ui->tableView->resizeColumnsToContents();
@@ -66,7 +64,7 @@ CodecSettings::~CodecSettings()
 
 void CodecSettings::on_pushButton_ok_clicked()
 {
-    m_cmdFacade->setCodecParam(m_codecID,m_map);
+    m_cmdFacade->setCodecParam(m_codecID, m_editedsetting);
     CodecSettings::close();
 }
 

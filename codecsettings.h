@@ -51,7 +51,7 @@ private:
     Ui::CodecSettings *ui;
     CmdFacade *m_cmdFacade ;
     QString m_codecID;
-    QMap<QString, s_setting > m_map;
+    QJsonObject m_codecsetting, m_editedsetting;
     QStandardItemModel *settingsmodel;
 };
 

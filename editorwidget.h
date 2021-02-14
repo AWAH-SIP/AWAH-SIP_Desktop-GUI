@@ -30,13 +30,14 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QHBoxLayout>
+#include <qjsonobject.h>
 
 
-// **************************************************************************************
+// **************************** Editor widget ********************************************
 class EditorWidget: public QWidget{
     Q_OBJECT
 public:
-    explicit EditorWidget(s_setting setting, QWidget *parent=nullptr );
+    explicit EditorWidget(const QJsonObject *setting, QWidget *parent=nullptr );
 
 
     int currentIndex();
@@ -61,17 +62,17 @@ private:
     QLineEdit *lineBox;
     QComboBox *comboBox;
     QSpinBox *spinbox;
-    s_setting m_setting;
+    const QJsonObject m_setting;
 };
 
 
-// **************************************************************************************
+// ***************************Settings Delegate ***********************************************
 class SettingsDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
-    explicit SettingsDelegate(QObject *parent = 0);
+    explicit SettingsDelegate(const QJsonObject *items, QJsonObject *editedItem, QObject *parent = 0);
     ~SettingsDelegate();
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -80,13 +81,15 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const Q_DECL_OVERRIDE;
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
-    inline void setMap(QMap<QString, s_setting >* map) {m_map = map; };
 
 private slots:
     void commitEditor();
 
 private:
-    QMap<QString, s_setting >* m_map;
+    const QJsonObject *m_items;
+    QJsonObject *m_editeditem;
+    QStringList keys;
+    void updateData();
 };
 
 

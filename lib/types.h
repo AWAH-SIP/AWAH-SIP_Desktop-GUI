@@ -110,6 +110,17 @@ struct s_callHistory{
     QString codec;
     bool outgoing;
     int count;
+    QJsonObject toJSON() const {
+        return {{"callUri", callUri}, {"duration", duration}, {"codec", codec}, {"outgoing", outgoing}, {"count", count},};
+    }
+    s_callHistory* fromJSON(const QJsonObject &callHistoryJSON) {
+        callUri = callHistoryJSON["callUri"].toString();
+        duration = callHistoryJSON["duration"].toInt();
+        codec = callHistoryJSON["codec"].toInt();
+        outgoing = callHistoryJSON["outgoing"].toBool();
+        count = callHistoryJSON["count"].toInt();
+        return this;
+    }
 };
 Q_DECLARE_METATYPE(s_callHistory);
 Q_DECLARE_METATYPE(QList<s_callHistory>);
@@ -121,13 +132,65 @@ struct s_account{
     QString serverURI;
     QString uid;
     QString FileRecordPath;
-    QString FilePlayPath;           // not saved to file, only for runtime handling
+    QString FilePlayPath;
     int player_id = -1;
     int rec_id = -1;
     int AccID;
     int splitterSlot;
-    QList <int> CallList;       // In JSON only QList <int> CallIDList
+    QList <int> CallList;       // In JSON only QList <int> as an List of Call IDs
     QList <s_callHistory> CallHistory;
+    QJsonObject toJSON() const {
+        QJsonArray callListJSON, callHistoryJSON;
+        for (auto & pPJCall: CallList) {
+            callListJSON.append(pPJCall);
+        }
+        for (auto & callhistory: CallHistory) {
+            callHistoryJSON.append(callhistory.toJSON());
+        }
+        return {
+            {"name", name},
+            {"user", user},
+            {"password", password},
+            {"serverURI", serverURI},
+            {"uid", uid},
+            {"FileRecordPath", FileRecordPath},
+            {"FilePlayPath", FilePlayPath},
+            {"player_id", player_id},
+            {"rec_id", rec_id},
+            {"AccID", AccID},
+            {"splitterSlot", splitterSlot},
+            {"CallList", callListJSON},
+            {"CallHistory", callHistoryJSON},
+        };
+    }
+    s_account* fromJSON(QJsonObject &accountJSON){
+        QJsonArray callListArr, callHistoryArr;
+        CallList.clear();
+        CallHistory.clear();
+        if(accountJSON["CallList"].isArray() && accountJSON["CallHistory"].isArray()) {
+            s_callHistory entry;
+            callListArr = accountJSON["CallList"].toArray();
+            callHistoryArr = accountJSON["CallHistory"].toArray();
+            for (auto && callIdEntry : qAsConst(callListArr)) {
+                CallList.append(callIdEntry.toInt());
+            }
+            for (auto && callHistEntry : callHistoryArr) {
+                CallHistory.append(*entry.fromJSON(callHistEntry.toObject()));
+            }
+        }
+        name = accountJSON["name"].toString();
+        user = accountJSON["user"].toString();
+        password = accountJSON["password"].toString();
+        serverURI = accountJSON["serverURI"].toString();
+        uid = accountJSON["uid"].toString();
+        FileRecordPath = accountJSON["FileRecordPath"].toString();
+        FilePlayPath = accountJSON["FilePlayPath"].toString();
+        player_id = accountJSON["player_id"].toInt();
+        rec_id = accountJSON["rec_id"].toInt();
+        AccID = accountJSON["AccID"].toInt();
+        splitterSlot = accountJSON["splitterSlot"].toInt();
+        return this;
+    }
 };
 Q_DECLARE_METATYPE(s_account);
 Q_DECLARE_METATYPE( QList<s_account>);
@@ -137,7 +200,7 @@ struct s_audioPort{
     QString pjName;
     int slot;
     QJsonObject toJSON() const {
-        return {{"name", name}, {"pjName", pjName}, {"slot", slot},};
+        return {{"name", name}, {"pjName", pjName}, {"slot", slot}};
     }
     s_audioPort* fromJSON(const QJsonObject &audioPortJSON) {
         name = audioPortJSON["name"].toString();
@@ -159,7 +222,7 @@ struct s_audioPortList{
         for (auto & destPort: destPorts) {
             destPortsArr.append(destPort.toJSON());
         }
-        return {{"srcPorts", srcPortsArr}, {"destPorts", destPortsArr},};
+        return {{"srcPorts", srcPortsArr}, {"destPorts", destPortsArr}};
     }
     s_audioPortList* fromJSON(QJsonObject &audioPortListJSON) {
         QJsonArray srcPortArr, destPortArr;
@@ -189,8 +252,18 @@ struct s_audioRoutes{
     float level;
     bool persistant;
     QJsonObject toJSON() const {
-        return {{"srcSlot", srcSlot}, {"destSlot", destSlot}, {"srcDevName", srcDevName}, {"destDevName", destDevName},
-                {"level", level}, {"persistant", persistant},};
+        return {{"srcSlot", srcSlot}, {"destSlot", destSlot}, {"srcDevName", srcDevName}, {"destDevName", destDevName}, {"level", level}, {"persistant", persistant} };
+    }
+    s_audioRoutes fromJSON(QJsonObject &audioRoutesJSON) {
+        s_audioRoutes audioroutes;
+        srcSlot = audioRoutesJSON["srcSlot"].toInt();
+        destSlot = audioRoutesJSON["destSlot"].toInt();
+        srcDevName = audioRoutesJSON["srcDevName"].toString();
+        destDevName = audioRoutesJSON["destDevName"].toString();
+        level = audioRoutesJSON["level"].toVariant().toFloat();
+        persistant = audioRoutesJSON["persistant"].toBool();
+        return audioroutes;
+
     }
     s_audioRoutes* fromJSON(const QJsonObject &audioRouteJSON) {
         srcSlot = audioRouteJSON["srcSlot"].toInt();
@@ -205,12 +278,13 @@ struct s_audioRoutes{
 Q_DECLARE_METATYPE(s_audioRoutes);
 Q_DECLARE_METATYPE(QList<s_audioRoutes>);
 
-struct s_setting{
-    QVariant value;
-    int min;
-    int max;                    // -1 for unknown ??????                   // todo to be discussed....
-    QMap<QString, QVariant> enumlist;
+enum settingType{
+    INTEGER,
+    STRING,
+    BOOL,
+    ENUM
 };
-Q_DECLARE_METATYPE(s_setting);
+Q_ENUMS(settingType)
+
 
 #endif // TYPES_H

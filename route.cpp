@@ -35,7 +35,7 @@ Route::Route(CmdFacade *lib, QWidget *parent) :
     ui->tableView_audioRoutes->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableView_audioRoutes->setModel(m_AudioRoutesModel);
 
-    QSettings settings("awah", "AWAHsipConfig");
+    QSettings settings("awah", "AWAHSipDesktopGUI");
     restoreGeometry(settings.value("RoutingWindow/Geometry").toByteArray());
 
     connect(ui->tableView_audioRoutes, SIGNAL(pressed(const QModelIndex &)),
@@ -60,7 +60,7 @@ Route::~Route()
 
 void Route::closeEvent(QCloseEvent* event)
 {
-    QSettings settings("awah", "AWAHsipConfig");
+    QSettings settings("awah", "AWAHSipDesktopGUI");
     settings.setValue("RoutingWindow/Geometry", saveGeometry());
     QDialog::closeEvent(event);
 }

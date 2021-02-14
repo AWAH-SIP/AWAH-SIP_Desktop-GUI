@@ -55,10 +55,15 @@ static bool objectFromString(const QString& in, QJsonObject &obj)
     return true;
 }
 
-WebsocketClient::WebsocketClient(QObject *parent, CmdFacade *lib) : QObject(parent), m_cmdFacade(lib)
+WebsocketClient::WebsocketClient(QObject *parent) : QObject(parent)
 {
     connect(&m_webSocket, &QWebSocket::connected, this, &WebsocketClient::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &WebsocketClient::onDisconnected);
+}
+
+void WebsocketClient::setCmdFacade(CmdFacade *lib)
+{
+    m_cmdFacade = lib;
 }
 
 void WebsocketClient::openConnection(QUrl &url)
@@ -105,6 +110,7 @@ void WebsocketClient::onDisconnected()
 void WebsocketClient::processMessage(const QString &message)
 {
     QJsonObject jObj, ret;
+    qDebug() << "Websocket:  RX: " << message;
     if(objectFromString(message, jObj)) {
         QString command, signal;
         QJsonObject data, error;
@@ -118,7 +124,10 @@ void WebsocketClient::processMessage(const QString &message)
                 if(m_cmdRequestQueue.contains(cmdID.toUInt())) {
                     m_cmdRequestQueue.find(cmdID.toUInt()).value()->returned(data, error);
                     m_cmdRequestQueue.remove(cmdID.toUInt());
-                } else qDebug() << "WebsocketError: " << "Unknown Return, Command eventually already expired." << Qt::endl << jObj;
+                } else {
+                    if (!data.isEmpty())
+                        qDebug() << "WebsocketError: " << "Unknown Return, Command eventually already expired." << Qt::endl << jObj;
+                }
             } else qDebug() << "WebsocketError: " << "Unknown Command, not a Return Value." << Qt::endl << jObj;
         } else {
             qDebug() << "WebsocketError: " << "JSON does not have a 'signal' or 'command' and a 'data' Object" << Qt::endl << jObj;
@@ -199,16 +208,16 @@ void WebsocketClient::logMessage(QJsonObject &data)
 
 void WebsocketClient::audioRoutesChanged(QJsonObject &data)
 {
-    QList<s_audioRoutes> audioRoutes;
     QJsonArray audioRoutesArr;
     if(jCheckArray(audioRoutesArr, data["audioRoutes"])) {
+        m_cmdFacade->m_getAudioRoutes.clear();
         for (auto && audioRoute: qAsConst(audioRoutesArr)) {
             if(audioRoute.isObject()) {
                 s_audioRoutes entry;
-                audioRoutes.append(*entry.fromJSON(audioRoute.toObject()));
+                m_cmdFacade->m_getAudioRoutes.append(*entry.fromJSON(audioRoute.toObject()));
             }
         }
-        emit m_cmdFacade->audioRoutesChanged(audioRoutes);
+        emit m_cmdFacade->audioRoutesChanged(m_cmdFacade->m_getAudioRoutes);
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
@@ -216,11 +225,10 @@ void WebsocketClient::audioRoutesChanged(QJsonObject &data)
 
 void WebsocketClient::audioRoutesTableChanged(QJsonObject &data)
 {
-    s_audioPortList portList;
     QJsonObject portListObj;
     if(jCheckObject(portListObj, data["portList"])) {
-        portList.fromJSON(portListObj);
-        emit m_cmdFacade->audioRoutesTableChanged(portList);
+        m_cmdFacade->m_getConfPortsList.fromJSON(portListObj);
+        emit m_cmdFacade->audioRoutesTableChanged(m_cmdFacade->m_getConfPortsList);
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
@@ -228,6 +236,7 @@ void WebsocketClient::audioRoutesTableChanged(QJsonObject &data)
 
 void WebsocketClient::sendCommand(QJsonObject &completeRequestObj)
 {
+    qDebug() << "Websocket:  TX: " << completeRequestObj;
     m_webSocket.sendTextMessage(QJsonDocument(completeRequestObj).toJson(QJsonDocument::Compact));
 }
 
@@ -241,32 +250,38 @@ quint32 WebsocketClient::addPendingCommand(Command *cmd)
 }
 
 
-
-Command::Command(QJsonObject &reqObj, QObject *parent, WebsocketClient *wsc) : QObject(parent), m_websocketClient(wsc), m_reqObj(reqObj)
+// ************************** Implementation of Command Class **************************
+Command::Command(QJsonObject &reqObj, QObject *parent, WebsocketClient *wsc, bool noAnswer) :
+            QObject(parent), m_websocketClient(wsc), m_reqObj(reqObj), m_noAnswer(noAnswer)
 {
-    m_commandNr = m_websocketClient->addPendingCommand(this);
+    if (!m_noAnswer)    m_commandNr = m_websocketClient->addPendingCommand(this);
     m_reqObj["cmdID"] = QString::number(m_commandNr);
 }
 
 bool Command::execute()
 {
-    QEventLoop loop;
-    QTimer timer;
-
-    timer.setSingleShot(true);
-    connect(&timer, &QTimer::timeout, &loop, &QEventLoop::quit);
-    connect(this, &Command::requestReturned, &loop, &QEventLoop::quit);
-
-    timer.start(REPLY_TIMEOUT);
-    m_websocketClient->sendCommand(m_reqObj);
-    loop.exec();
-
-    if (timer.isActive()) {
-        timer.stop();
+    if (m_noAnswer) {
+        m_websocketClient->sendCommand(m_reqObj);
         return true;
     } else {
-        m_error = true;
-        return false;
+        QEventLoop loop;
+        QTimer timer;
+
+        timer.setSingleShot(true);
+        connect(&timer, &QTimer::timeout, &loop, &QEventLoop::quit);
+        connect(this, &Command::requestReturned, &loop, &QEventLoop::quit);
+
+        timer.start(REPLY_TIMEOUT);
+        m_websocketClient->sendCommand(m_reqObj);
+        loop.exec();
+
+        if (timer.isActive()) {
+            timer.stop();
+            return true;
+        } else {
+            m_error = true;
+            return false;
+        }
     }
 }
 

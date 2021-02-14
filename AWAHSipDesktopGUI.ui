@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>AWAHsip Desktopclient</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/new/icons/images/AWAH_logo_sm.png</normaloff>:/new/icons/images/AWAH_logo_sm.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">

@@ -7,13 +7,14 @@
 QT_FORWARD_DECLARE_CLASS(CmdFacade)
 QT_FORWARD_DECLARE_CLASS(Command)
 
-#define REPLY_TIMEOUT 60000
+#define REPLY_TIMEOUT 5000
 
 class WebsocketClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit WebsocketClient(QObject *parent = nullptr, CmdFacade *lib = nullptr);
+    explicit WebsocketClient(QObject *parent = nullptr);
+    void setCmdFacade(CmdFacade *lib);
     void openConnection(QUrl &url);
     void closeConnection();
     void testEcho();
@@ -53,7 +54,7 @@ class Command : public QObject
 {
     Q_OBJECT
 public:
-    explicit Command(QJsonObject &reqObj, QObject *parent = nullptr, WebsocketClient *wsc = nullptr);
+    explicit Command(QJsonObject &reqObj, QObject *parent = nullptr, WebsocketClient *wsc = nullptr, bool noAnswer = false);
     bool execute();
     QJsonObject& getReturnData() { return m_returnData; };
     QJsonObject& getReturnError() { return m_returnError; };
@@ -67,10 +68,11 @@ private slots:
 
 private:
     WebsocketClient *m_websocketClient;
-    quint32 m_commandNr;
+    quint32 m_commandNr = 0;
     QJsonObject m_reqObj;
     QJsonObject m_returnData;
     QJsonObject m_returnError;
+    bool m_noAnswer;
     bool m_error = false;
 
     friend class WebsocketClient;

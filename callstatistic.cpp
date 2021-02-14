@@ -26,21 +26,15 @@ CallStatistic::CallStatistic(QWidget *parent, CmdFacade *lib, int AccID, int Cal
 {
     ui->setupUi(this);
 
-    statistics = m_cmdFacade->dumpCall(CallID,AccID);
-    statmodel= new StringListModel(statistics);
-    ui->listView->setAlternatingRowColors(true);
-    ui->listView->setModel(statmodel);
+    callinfo = m_cmdFacade->getCallInfo(m_CallID,m_AccID);
+    m_statModel = new StatisticModel(&callinfo,this);
 
     refreshTimer = new QTimer(this);
     refreshTimer->setInterval(1000);
     connect(refreshTimer, SIGNAL(timeout()), this, SLOT(timeoutSlot()));
-    connect(this, SIGNAL(SignalDataChanged(QStringList)),statmodel, SLOT(onDataChanged(QStringList)));
+    connect(this, SIGNAL(SignalDataChanged()), m_statModel, SLOT(onDataChanged()));
     refreshTimer->start();
-
-    mapmodel = new MapModel();
-    map= m_cmdFacade->getStreamInfo(m_CallID,m_AccID) ;
-    mapmodel->setMap(&map);
-    ui->tableView->setModel(mapmodel);
+    ui->tableView->setModel(m_statModel);
     ui->tableView->setAlternatingRowColors(true);
     ui->tableView->resizeColumnsToContents();
     ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
@@ -62,76 +56,45 @@ void CallStatistic::on_pushButton_close_clicked()
 
 void CallStatistic::timeoutSlot()
 {
-    statistics = m_cmdFacade->dumpCall(m_CallID,m_AccID);
-    emit SignalDataChanged(statistics);
-
+    callinfo = m_cmdFacade->getCallInfo(m_CallID,m_AccID);
+    m_statModel->layoutChanged();
 }
 
 
+// ************************************** Model Call info **************************
 
-// ************************************** Stringlist Model Statistics **************************
+StatisticModel::StatisticModel(QJsonObject *callinfo, QObject *parent) :
+QAbstractTableModel(parent), m_callinfo(callinfo)
+{
+    
+}
 
-int StringListModel::rowCount(const QModelIndex &parent) const
+int StatisticModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    return stringList.count();
-}
-
-QVariant StringListModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (index.row() >= stringList.size())
-        return QVariant();
-
-    if (role == Qt::DisplayRole)
-        return stringList.at(index.row());
-    else
-        return QVariant();
-}
-
-void StringListModel::onDataChanged(QStringList statistic){
-    stringList = statistic;
-    emit dataChanged(index(0, 0),
-                     index(stringList.count(), stringList.count()));
-}
-
-
-// ************************************** Map Model Call info **************************
-
-MapModel::MapModel(QObject *parent) :
-    QAbstractTableModel(parent)
-{
-    m_map = NULL;
-}
-
-int MapModel::rowCount(const QModelIndex& parent) const
-{
-    Q_UNUSED(parent);
-    if (m_map)
-        return m_map->count();
+    if (m_callinfo)
+        return m_callinfo->count();
     return 0;
 }
 
-int MapModel::columnCount(const QModelIndex & parent) const
+int StatisticModel::columnCount(const QModelIndex & parent) const
 {
-     Q_UNUSED(parent);
+    Q_UNUSED(parent);
     return 2;
 }
 
-QVariant MapModel::data(const QModelIndex& index, int role) const
+QVariant StatisticModel::data(const QModelIndex& index, int role) const
 {
-    if (!m_map)
+    if (!m_callinfo)
         return QVariant();
     if (index.row() < 0 ||
-        index.row() >= m_map->count() ||
+        index.row() >= m_callinfo->count() ||
         role != Qt::DisplayRole) {
         return QVariant();
     }
     if (index.column() == 0)
-        return m_map->keys().at(index.row());
+        return m_callinfo->keys().at(index.row());
     if (index.column() == 1)
-        return m_map->values().at(index.row());
+        return m_callinfo->value(m_callinfo->keys().at(index.row()));
     return QVariant();
 }

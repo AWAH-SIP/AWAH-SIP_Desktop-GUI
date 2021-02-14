@@ -30,6 +30,7 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QHBoxLayout>
+#include <QJsonObject>
 
 namespace Ui {
 class GeneralSettings;
@@ -51,8 +52,10 @@ private slots:
 private:
     Ui::GeneralSettings *ui;
     CmdFacade *m_cmdFacade;
-    QMap<QString, s_setting > m_map, m_codecs;
-    QStandardItemModel *settingsmodel ,*codecpriomodel;
+    const QJsonObject *m_settings;
+    QJsonObject m_editedSettings, m_editedCodecPrio;
+    QJsonObject m_codecPrio, m_GlobalSettings, m_AudioSettings, m_SIPSettings;
+    QStandardItemModel *settingsmodel , *sipmodel, *audiomodel, *codecpriomodel;
 };
 
 #endif // GENERALSETTINGS_H

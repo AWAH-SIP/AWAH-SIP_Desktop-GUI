@@ -30,26 +30,27 @@ GeneralSettings::GeneralSettings(QWidget *parent, CmdFacade *lib) :
 {
     ui->setupUi(this);
     QModelIndex index;
-    m_map = m_cmdFacade->getSettings();
+    m_settings = m_cmdFacade->getSettings();
+    m_GlobalSettings = m_settings->value("GlobalSettings").toObject();
+    m_AudioSettings =  m_settings->value("AudioSettings").toObject();
+    m_SIPSettings = m_settings->value("SIPSettings").toObject();
 
-    // *************** General Tab ***************
-    settingsmodel = new QStandardItemModel(m_map.count(), 2, this);
+    // *************** Global Tab ***************
+    settingsmodel = new QStandardItemModel(m_GlobalSettings.size(), 2, this);
     ui->tableView->setModel(settingsmodel);
 
-    SettingsDelegate *delegate = new SettingsDelegate(ui->tableView);
-    delegate->setMap(&m_map);
+    SettingsDelegate *delegate = new SettingsDelegate(&m_GlobalSettings, &m_editedSettings, ui->tableView);
     ui->tableView->setItemDelegate(delegate);
 
-    for (int row = 0; row < m_map.count(); row++)
-    {
-        index = settingsmodel->index(row, 0, QModelIndex());
-        settingsmodel->setData(index,m_map.keys().at(row));
-    }
-    for (int row = 0; row < m_map.count(); row++)
-    {
-        index = settingsmodel->index(row, 1, QModelIndex());
-        settingsmodel->setData(index,m_map.values().at(row).value);
-        ui->tableView->openPersistentEditor(index);
+    QJsonObject::iterator j;
+    int row = 0;
+    for (j = m_GlobalSettings.begin(); j != m_GlobalSettings.end(); ++j) {
+            index = settingsmodel->index(row, 0, QModelIndex());
+            settingsmodel->setData(index,j.key());
+            index = settingsmodel->index(row, 1, QModelIndex());
+            settingsmodel->setData(index,j.value().toObject());
+            ui->tableView->openPersistentEditor(index);
+            row++;
     }
 
     ui->tableView->resizeColumnsToContents();
@@ -59,25 +60,72 @@ GeneralSettings::GeneralSettings(QWidget *parent, CmdFacade *lib) :
     ui->tableView->resizeRowsToContents();
     ui->tableView->show();
 
+    // *************** SIP Tab ***************
+    sipmodel = new QStandardItemModel(m_SIPSettings.size(), 2, this);
+    ui->tableView_sip->setModel(sipmodel);
+
+    SettingsDelegate *SIPdelegate = new SettingsDelegate(&m_SIPSettings, &m_editedSettings, ui->tableView_sip);
+    ui->tableView_sip->setItemDelegate(SIPdelegate);
+
+    row = 0;
+    for (j = m_SIPSettings.begin(); j != m_SIPSettings.end(); ++j) {
+            index = sipmodel->index(row, 0, QModelIndex());
+            sipmodel->setData(index,j.key());
+            index = sipmodel->index(row, 1, QModelIndex());
+            sipmodel->setData(index,j.value().toObject());
+            ui->tableView_sip->openPersistentEditor(index);
+            row++;
+    }
+
+    ui->tableView_sip->resizeColumnsToContents();
+    ui->tableView_sip->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView_sip->horizontalHeader()->hide();
+    ui->tableView_sip->verticalHeader()->hide();
+    ui->tableView_sip->resizeRowsToContents();
+    ui->tableView_sip->show();
+
+    // *************** Audio Tab ***************
+    audiomodel = new QStandardItemModel(m_AudioSettings.size(), 2, this);
+    ui->tableView_audio->setModel(audiomodel);
+
+    SettingsDelegate *Audiodelegate = new SettingsDelegate(&m_AudioSettings, &m_editedSettings, ui->tableView_audio);
+    ui->tableView_audio->setItemDelegate(Audiodelegate);
+
+    row = 0;
+    for (j = m_AudioSettings.begin(); j != m_AudioSettings.end(); ++j) {
+            index = audiomodel->index(row, 0, QModelIndex());
+            audiomodel->setData(index,j.key());
+            index = audiomodel->index(row, 1, QModelIndex());
+            audiomodel->setData(index,j.value().toObject());
+            ui->tableView_audio->openPersistentEditor(index);
+            row++;
+    }
+
+    ui->tableView_audio->resizeColumnsToContents();
+    ui->tableView_audio->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView_audio->horizontalHeader()->hide();
+    ui->tableView_audio->verticalHeader()->hide();
+    ui->tableView_audio->resizeRowsToContents();
+    ui->tableView_audio->show();
+
+
     // ****************** Codec Priorities *************
-     m_codecs = m_cmdFacade->getCodecPriorities();
-     codecpriomodel = new QStandardItemModel(m_codecs.count(), 2, this);
+     m_codecPrio = m_cmdFacade->getCodecPriorities();
+     codecpriomodel = new QStandardItemModel(m_codecPrio.count(), 2, this);
      ui->tableView_codecprio->setModel(codecpriomodel);
 
-     SettingsDelegate *codecdelegate = new SettingsDelegate(ui->tableView_codecprio);
-     codecdelegate->setMap(&m_codecs);
+     SettingsDelegate *codecdelegate = new SettingsDelegate(&m_codecPrio, &m_editedCodecPrio, ui->tableView_codecprio);
      ui->tableView_codecprio->setItemDelegate(codecdelegate);
 
-     for (int row = 0; row < m_codecs.count(); row++)
-     {
-         index = codecpriomodel->index(row, 0, QModelIndex());
-         codecpriomodel->setData(index,m_codecs.keys().at(row));
-     }
-     for (int row = 0; row < m_codecs.count(); row++)
-     {
-         index = codecpriomodel->index(row, 1, QModelIndex());
-         codecpriomodel->setData(index,m_codecs.values().at(row).value);
-         ui->tableView_codecprio->openPersistentEditor(index);
+     row = 0;
+     QJsonObject::iterator codec;
+     for (codec = m_codecPrio.begin(); codec != m_codecPrio.end(); ++codec) {
+             index = codecpriomodel->index(row, 0, QModelIndex());
+             codecpriomodel->setData(index,codec.key());
+             index = codecpriomodel->index(row, 1, QModelIndex());
+             codecpriomodel->setData(index,codec.value().toObject());
+             ui->tableView_codecprio->openPersistentEditor(index);
+             row++;
      }
 
      ui->tableView_codecprio->resizeColumnsToContents();
@@ -95,9 +143,11 @@ GeneralSettings::~GeneralSettings()
 
 void GeneralSettings::on_pushButton_ok_clicked()
 {
-    m_cmdFacade->setSettings(m_map);
-    m_cmdFacade->setSCodecPriorities(m_codecs);
-     QMessageBox::information(this,"Warning","Some settings need a restart in order to get active");
+    m_cmdFacade->setSettings(m_editedSettings);
+    m_cmdFacade->setSCodecPriorities(m_editedCodecPrio);
+    if(!m_editedSettings.empty()){
+        QMessageBox::information(this,"Warning","Some settings need a restart in order to get active");
+    }
     GeneralSettings::close();
 }
 

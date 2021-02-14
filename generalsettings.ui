@@ -52,11 +52,31 @@
      </property>
      <widget class="QWidget" name="General">
       <attribute name="title">
-       <string>Gerneral Settings</string>
+       <string>Global Settings</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <widget class="QTableView" name="tableView"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="sipsettings">
+      <attribute name="title">
+       <string>SIP Settings</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QTableView" name="tableView_sip"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="audiosettings">
+      <attribute name="title">
+       <string>Audio Settings</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QTableView" name="tableView_audio"/>
        </item>
       </layout>
      </widget>

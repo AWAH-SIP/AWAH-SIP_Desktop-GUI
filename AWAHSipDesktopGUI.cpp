@@ -39,10 +39,16 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent) :
     qDebug() << "Settings stored under:" << settings.fileName();
     settings.setPath(QSettings::Format::NativeFormat,QSettings::UserScope,"settings/");
 
-    ui->setupUi(this);
+    m_websocketClient = new WebsocketClient(this);
+    m_cmdFacade = new CmdFacade(this, m_websocketClient);
+    m_websocketClient->setCmdFacade(m_cmdFacade);
 
-    m_cmdFacade = new CmdFacade(this);
-    m_websocketClient = new WebsocketClient(this, m_cmdFacade);
+    QUrl wsUrl = settings.value("websocketUrl", QUrl("ws://127.0.0.1:2924")).toUrl();
+    settings.setValue("websocketUrl", wsUrl);
+    m_websocketClient->openConnection(wsUrl);
+    m_websocketClient->testEcho();              //trick to wait on connected...
+
+    ui->setupUi(this);
 
     SIPstate = new SipStateModel(this, m_cmdFacade);
     m_Accounts = m_cmdFacade->getAccounts();
@@ -83,9 +89,6 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent) :
     connect(m_cmdFacade, SIGNAL(logMessage(QString)),
            m_uiLogWindow, SLOT(OnNewLogEntry(QString)));
 
-    QUrl wsUrl = settings.value("websocketUrl", QUrl("ws://127.0.0.1:2924")).toUrl();
-    settings.setValue("websocketUrl", wsUrl);
-    m_websocketClient->openConnection(wsUrl);
 }
 
 
@@ -101,7 +104,7 @@ AWAHSipDesktopGUI::~AWAHSipDesktopGUI()
 
 void AWAHSipDesktopGUI::closeEvent(QCloseEvent *event)
 {
-    QSettings settings("awah", "AWAHsipConfig");
+    QSettings settings("awah", "AWAHSipDesktopGUI");
     settings.setValue("MainWindow/Geometry", saveGeometry());
     QMainWindow::closeEvent(event);
 }
