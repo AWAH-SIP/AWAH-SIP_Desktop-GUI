@@ -17,7 +17,7 @@ const s_account* CmdFacade::getAccountByID(int ID){
 */
 
 // Public API - Accounts
-int CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
+void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
 {
     QJsonObject obj, data;
     obj["command"] = "createAccount";
@@ -28,16 +28,11 @@ int CmdFacade::createAccount(QString accountName, QString server, QString user, 
     data["filePlayPath"] = filePlayPath;
     data["fileRecPath"] = fileRecPath;
     obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
+    Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
 }
 
-int CmdFacade::modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
+void CmdFacade::modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
 {
     QJsonObject obj, data;
     obj["command"] = "modifyAccount";
@@ -49,13 +44,8 @@ int CmdFacade::modifyAccount(int index, QString accountName, QString server, QSt
     data["filePlayPath"] = filePlayPath;
     data["fileRecPath"] = fileRecPath;
     obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
+    Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
 }
 
 void CmdFacade::removeAccount(int index) const
@@ -101,20 +91,15 @@ void CmdFacade::makeCall(QString number, int AccID) const
     cmd.execute();
 }
 
-bool CmdFacade::hangupCall(int callId, int AccID) const
+void CmdFacade::hangupCall(int callId, int AccID) const
 {
     QJsonObject obj, data;
     obj["command"] = "hangupCall";
     data["callId"] = callId;
     data["AccID"] = AccID;
     obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
+    Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
-    if(cmd.hasError()) {
-        return false;
-    } else {
-        return cmd.getReturnData()["returnValue"].toBool();
-    }
 }
 
 void CmdFacade::acceptCall(int callId, int AccID) const
@@ -128,23 +113,18 @@ void CmdFacade::acceptCall(int callId, int AccID) const
     cmd.execute();
 }
 
-bool CmdFacade::holdCall(int callId, int AccID) const
+void CmdFacade::holdCall(int callId, int AccID) const
 {
     QJsonObject obj, data;
     obj["command"] = "holdCall";
     data["callId"] = callId;
     data["AccID"] = AccID;
     obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
+    Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
-    if(cmd.hasError()) {
-        return false;
-    } else {
-        return cmd.getReturnData()["returnValue"].toBool();
-    }
 }
 
-bool CmdFacade::transferCall(int callId, int AccID, QString destination) const
+void CmdFacade::transferCall(int callId, int AccID, QString destination) const
 {
     QJsonObject obj, data;
     obj["command"] = "transferCall";
@@ -152,13 +132,8 @@ bool CmdFacade::transferCall(int callId, int AccID, QString destination) const
     data["AccID"] = AccID;
     data["destination"] = destination;
     obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
+    Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
-    if(cmd.hasError()) {
-        return false;
-    } else {
-        return cmd.getReturnData()["returnValue"].toBool();
-    }
 }
 
 QJsonObject CmdFacade::getCallInfo(int callID, int AccID) const

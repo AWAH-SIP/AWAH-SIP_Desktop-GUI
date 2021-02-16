@@ -13,15 +13,15 @@ public:
     explicit CmdFacade(QObject *parent = nullptr, WebsocketClient *wsClient = nullptr);
 
     // Public API - Accounts
-    int createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
-    int modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
+    void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
+    void modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
     void removeAccount(int index) const;
     QList <s_account>* getAccounts();
     void makeCall(QString number, int AccID) const;
-    bool hangupCall(int callId, int AccID) const;
+    void hangupCall(int callId, int AccID) const;
     void acceptCall(int callId, int AccID) const;
-    bool holdCall(int callId, int AccID) const;
-    bool transferCall(int callId, int AccID, QString destination) const;
+    void holdCall(int callId, int AccID) const;
+    void transferCall(int callId, int AccID, QString destination) const;
     QJsonObject getCallInfo(int callID, int AccID) const;
     const QList<s_callHistory>* getCallHistory(int AccID);
     const s_account* getAccountByID(int ID);
