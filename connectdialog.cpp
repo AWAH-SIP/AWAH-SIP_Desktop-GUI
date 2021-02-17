@@ -9,7 +9,14 @@ ConnectDialog::ConnectDialog(QWidget *parent) :
     ui->setupUi(this);
     m_websocketClient = new WebsocketClient(this);
     QSettings settings("awah", "AWAHSipDesktopGUI");
-    wsUrl = settings.value("websocketUrl", QUrl("ws://127.0.0.1:2924")).toUrl();
+    history = settings.value("history").value<QList<QUrl>>();
+    if(!history.isEmpty()){
+        wsUrl = history.first();
+    }
+    QList<QUrl>::iterator i;
+    for (i = history.begin(); i != history.end(); ++i){
+        ui->listWidget->addItem(i->toDisplayString());
+    }
     ui->lineEdit->setText(wsUrl.host());
     ui->spinBox->setValue(wsUrl.port());
     connect(m_websocketClient, SIGNAL (open()), this, SLOT( on_Connected()));
@@ -24,6 +31,7 @@ ConnectDialog::~ConnectDialog()
 {
     QSettings settings("awah", "AWAHSipDesktopGUI");
     settings.setValue("websocketUrl", wsUrl);
+    settings.setValue("history", QVariant::fromValue(history));
     delete ui;
 }
 
@@ -47,7 +55,6 @@ void ConnectDialog::on_pushButton_connect_clicked()
 
 void ConnectDialog::on_pushButton_close_clicked()
 {
-    delete DesktopGui;
     ConnectDialog::close();
 }
 
@@ -56,13 +63,21 @@ void ConnectDialog::on_Connected(){
     DesktopGui = new AWAHSipDesktopGUI(this, m_websocketClient);
     ui->label_connstate->setText("connected");
     DesktopGui->show();
+
+    if (history.lastIndexOf(wsUrl) == -1){              // only add url to history if it does not exist
+        history.prepend(wsUrl);
+        ui->listWidget->insertItem(0, wsUrl.toDisplayString());
+        if (history.count() > 10){                      // restrict history to 10 entrys
+            history.removeLast();
+        }
+    }
     m_timeoutTimer->stop();
 }
 
 void ConnectDialog::on_Disconnected(){
      ui->label_connstate->setText("connection closed");
      ui->pushButton_connect->setText("connect");
-     if(DesktopGui != nullptr){
+     if(DesktopGui->isVisible()){
         DesktopGui->close();
      }
 }
@@ -81,6 +96,7 @@ void ConnectDialog::on_Error(QAbstractSocket::SocketError error){
     default:
       tmp = "Error opening connection";
     }
+    m_timeoutTimer->stop();
     ui->label_connstate->setText(tmp);
     m_websocketClient->closeConnection();
 }
@@ -100,4 +116,11 @@ void ConnectDialog::timeoutSlot()
     ui->label_connstate->setText("Connection timed out");
     ui->pushButton_connect->setText("connect");
     m_websocketClient->closeConnection();
+}
+
+void ConnectDialog::on_listWidget_currentRowChanged(int currentRow)
+{
+    wsUrl = history.at(currentRow);
+    ui->lineEdit->setText(wsUrl.host());
+    ui->spinBox->setValue(wsUrl.port());
 }

@@ -22,6 +22,7 @@
 
 int main(int argc, char *argv[])
 {
+    qRegisterMetaTypeStreamOperators<QList<QUrl>>("history");
     QApplication a(argc, argv);
     ConnectDialog connect;
     connect.show();
