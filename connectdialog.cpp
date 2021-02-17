@@ -14,6 +14,10 @@ ConnectDialog::ConnectDialog(QWidget *parent) :
     ui->spinBox->setValue(wsUrl.port());
     connect(m_websocketClient, SIGNAL (open()), this, SLOT( on_Connected()));
     connect(m_websocketClient, SIGNAL (closed()), this, SLOT( on_Disconnected()));
+    connect(m_websocketClient, SIGNAL (errorOccurred(QAbstractSocket::SocketError)), this, SLOT( on_Error(QAbstractSocket::SocketError)));
+    m_timeoutTimer = new QTimer(this);
+    m_timeoutTimer->setInterval(5000);
+    connect(m_timeoutTimer, SIGNAL(timeout()), this, SLOT(timeoutSlot()));
 }
 
 ConnectDialog::~ConnectDialog()
@@ -30,14 +34,14 @@ void ConnectDialog::on_pushButton_connect_clicked()
     }
     else{
         if(wsUrl.isValid()){
-            ui->label_connstate->setText("trying to connect");
+            ui->label_connstate->setText("trying to connect...");
             ui->pushButton_connect->setText("disconnect");
             m_websocketClient->openConnection(wsUrl);
+            m_timeoutTimer->start();
         }
         else{
             ui->label_connstate->setText("invalid Adress!!");
         }
-        m_websocketClient->testEcho();
     }
 }
 
@@ -52,12 +56,33 @@ void ConnectDialog::on_Connected(){
     DesktopGui = new AWAHSipDesktopGUI(this, m_websocketClient);
     ui->label_connstate->setText("connected");
     DesktopGui->show();
+    m_timeoutTimer->stop();
 }
 
 void ConnectDialog::on_Disconnected(){
      ui->label_connstate->setText("connection closed");
      ui->pushButton_connect->setText("connect");
-     DesktopGui->deleteLater();
+     if(DesktopGui != nullptr){
+        DesktopGui->close();
+     }
+}
+
+void ConnectDialog::on_Error(QAbstractSocket::SocketError error){
+    QString tmp;
+    switch (error) {
+    case QAbstractSocket::RemoteHostClosedError:
+      break;
+    case QAbstractSocket::HostNotFoundError:
+       tmp = "The host was not found.";
+      break;
+    case QAbstractSocket::ConnectionRefusedError:
+      tmp = "The connection was refused by the peer. ";
+      break;
+    default:
+      tmp = "Error opening connection";
+    }
+    ui->label_connstate->setText(tmp);
+    m_websocketClient->closeConnection();
 }
 
 void ConnectDialog::on_lineEdit_textChanged(const QString &arg1)
@@ -68,4 +93,11 @@ void ConnectDialog::on_lineEdit_textChanged(const QString &arg1)
 void ConnectDialog::on_spinBox_valueChanged(int arg1)
 {
     wsUrl.setPort(arg1);
+}
+
+void ConnectDialog::timeoutSlot()
+{
+    ui->label_connstate->setText("Connection timed out");
+    ui->pushButton_connect->setText("connect");
+    m_websocketClient->closeConnection();
 }

@@ -23,11 +23,13 @@ public:
 signals:
     void closed();
     void open();
+    void errorOccurred(QAbstractSocket::SocketError error);
 
 private slots:
 
     void onConnected();
     void onDisconnected();
+    void onError(QAbstractSocket::SocketError error);
     void processMessage(const QString &message);
     // API Signals
     void regStateChanged(QJsonObject &data);

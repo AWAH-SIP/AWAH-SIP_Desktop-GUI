@@ -59,6 +59,7 @@ WebsocketClient::WebsocketClient(QObject *parent) : QObject(parent)
 {
     connect(&m_webSocket, &QWebSocket::connected, this, &WebsocketClient::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &WebsocketClient::onDisconnected);
+    connect(&m_webSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT (onError(QAbstractSocket::SocketError)));
 }
 
 void WebsocketClient::setCmdFacade(CmdFacade *lib)
@@ -106,6 +107,12 @@ void WebsocketClient::onDisconnected()
     disconnect(&m_webSocket, &QWebSocket::textMessageReceived, this, &WebsocketClient::processMessage);
     m_connected = false;
     emit closed();
+}
+
+void WebsocketClient::onError(QAbstractSocket::SocketError error)
+{
+    qDebug() << "Websocket error" << error;
+    emit errorOccurred(error);
 }
 
 void WebsocketClient::processMessage(const QString &message)
