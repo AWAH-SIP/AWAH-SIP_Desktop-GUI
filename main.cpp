@@ -16,15 +16,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "AWAHSipDesktopGUI.h"
+#include "connectdialog.h"
 #include <QApplication>
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    AWAHSipDesktopGUI w;
-    w.show();
+    ConnectDialog connect;
+    connect.show();
 
     return a.exec();
 }

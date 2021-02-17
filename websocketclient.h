@@ -18,11 +18,14 @@ public:
     void openConnection(QUrl &url);
     void closeConnection();
     void testEcho();
+    bool isConnected();
 
 signals:
     void closed();
+    void open();
 
 private slots:
+
     void onConnected();
     void onDisconnected();
     void processMessage(const QString &message);

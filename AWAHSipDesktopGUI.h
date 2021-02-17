@@ -46,7 +46,7 @@ class AWAHSipDesktopGUI : public QMainWindow
 
 
 public:
-    explicit AWAHSipDesktopGUI(QWidget *parent = 0);
+    explicit AWAHSipDesktopGUI(QWidget *parent = 0, WebsocketClient *WebSocket = nullptr);
     ~AWAHSipDesktopGUI();
     void Restart(bool Abort);
 

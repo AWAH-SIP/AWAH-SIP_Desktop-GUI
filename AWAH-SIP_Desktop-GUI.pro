@@ -27,6 +27,7 @@ SOURCES += \
     AWAHSipDesktopGUI.cpp \
     accountdialog.cpp \
     cmdfacade.cpp \
+    connectdialog.cpp \
     generalsettings.cpp \
     iOsettings.cpp \
     sipStateModel.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     AWAHSipDesktopGUI.h \
     accountdialog.h \
     cmdfacade.h \
+    connectdialog.h \
     generalsettings.h \
     iOsettings.h \
     sipStateModel.h \
@@ -66,6 +68,7 @@ HEADERS += \
 FORMS += \
     AWAHSipDesktopGUI.ui \
     accountdialog.ui \
+    connectdialog.ui \
     iOsettings.ui \
     generalsettings.ui \
     accountsettings.ui \

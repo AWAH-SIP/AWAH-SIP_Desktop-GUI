@@ -97,6 +97,7 @@ void WebsocketClient::onConnected()
     qDebug() << "WebSocket connected";
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &WebsocketClient::processMessage);
     m_connected = true;
+    emit open();
 }
 
 void WebsocketClient::onDisconnected()
@@ -250,6 +251,10 @@ quint32 WebsocketClient::addPendingCommand(Command *cmd)
 }
 
 
+bool WebsocketClient::isConnected(){
+    return m_connected;
+}
+
 // ************************** Implementation of Command Class **************************
 Command::Command(QJsonObject &reqObj, QObject *parent, WebsocketClient *wsc, bool noAnswer) :
             QObject(parent), m_websocketClient(wsc), m_reqObj(reqObj), m_noAnswer(noAnswer)
@@ -297,3 +302,4 @@ void Command::returned(QJsonObject &data, QJsonObject &error)
     }
     emit requestReturned();
 }
+

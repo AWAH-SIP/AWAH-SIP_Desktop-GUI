@@ -25,9 +25,10 @@
 
 
 
-AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent) :
+AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket) :
     QMainWindow(parent),
-    ui(new Ui::AWAHSipDesktopGUI)
+    ui(new Ui::AWAHSipDesktopGUI),
+    m_websocketClient(WebSocket)
 {
     //CmdFacade::prepareLib();
 
@@ -39,14 +40,9 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent) :
     qDebug() << "Settings stored under:" << settings.fileName();
     settings.setPath(QSettings::Format::NativeFormat,QSettings::UserScope,"settings/");
 
-    m_websocketClient = new WebsocketClient(this);
+
     m_cmdFacade = new CmdFacade(this, m_websocketClient);
     m_websocketClient->setCmdFacade(m_cmdFacade);
-
-    QUrl wsUrl = settings.value("websocketUrl", QUrl("ws://127.0.0.1:2924")).toUrl();
-    settings.setValue("websocketUrl", wsUrl);
-    m_websocketClient->openConnection(wsUrl);
-    m_websocketClient->testEcho();              //trick to wait on connected...
 
     ui->setupUi(this);
 
@@ -106,6 +102,7 @@ void AWAHSipDesktopGUI::closeEvent(QCloseEvent *event)
 {
     QSettings settings("awah", "AWAHSipDesktopGUI");
     settings.setValue("MainWindow/Geometry", saveGeometry());
+    m_websocketClient->closeConnection();
     QMainWindow::closeEvent(event);
 }
 
@@ -119,8 +116,7 @@ void AWAHSipDesktopGUI::Onsip_status(int accountid, int sipstatus ,QString statu
 
 void AWAHSipDesktopGUI::OnNewMessage(QString type, QByteArray message)
 {
-
-       qDebug() << "message recieved" << type << message;
+   qDebug() << "message recieved" << type << message;
 }
 
 void AWAHSipDesktopGUI::on_actionAWAH_triggered()
