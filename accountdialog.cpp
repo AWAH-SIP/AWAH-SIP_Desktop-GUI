@@ -32,7 +32,14 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account) :
     ui->lineEdit_Name->setText(m_s_account->name);
     ui->lineEdit_server->setText(m_s_account->serverURI);
     ui->lineEdit_user->setText(m_s_account->user);
-    ui->lineEdit_password->setText(m_s_account->password);
+    ui->lineEdit_password->setText("******");
+    ui->spinBox_JB_FixedDel->setSuffix("ms");
+    ui->spinBox_JB_FixedDel->setMinimum(0);
+    ui->spinBox_JB_FixedDel->setMaximum(100000);
+    ui->spinBox_JB_FixedDel->setValue(m_s_account->fixedJitterBufferValue);
+    ui->comboBox_JBType->addItem("adaptive");
+    ui->comboBox_JBType->addItem("fixed");
+    ui->comboBox_JBType->setCurrentIndex(m_s_account->fixedJitterBuffer);
     if(!m_s_account->FileRecordPath.isEmpty()){
         QString path = m_s_account->FileRecordPath;
         int pos = path.lastIndexOf(QChar('/'));
@@ -91,7 +98,7 @@ void AccountDialog::on_buttonBox_accepted()
 
 void AccountDialog::on_buttonBox_rejected()
 {
-    AccountDialog::close();
+   AccountDialog::close();
 }
 
 void AccountDialog::on_lineEdit_Name_textChanged(const QString &arg1)
@@ -110,7 +117,7 @@ void AccountDialog::on_lineEdit_user_textChanged(const QString &arg1)
     editedaccount.user = arg1;
 }
 
-void AccountDialog::on_lineEdit_password_textChanged(const QString &arg1)
+void AccountDialog::on_lineEdit_password_textEdited(const QString &arg1)
 {
     editedaccount.password = arg1;
 }
@@ -170,4 +177,21 @@ void AccountDialog::on_lineEdit_recdir_textChanged(const QString &arg1)
 void AccountDialog::on_lineEdit_playpath_textChanged(const QString &arg1)
 {
     editedaccount.FilePlayPath = arg1;
+}
+
+void AccountDialog::on_comboBox_JBType_currentIndexChanged(int index)
+{
+    if(index){
+        ui->spinBox_JB_FixedDel->show();
+        editedaccount.fixedJitterBuffer = true;
+    }
+    else{
+        ui->spinBox_JB_FixedDel->hide();
+        editedaccount.fixedJitterBuffer = false;
+    }
+}
+
+void AccountDialog::on_spinBox_JB_FixedDel_valueChanged(int arg1)
+{
+    editedaccount.fixedJitterBufferValue = arg1;
 }

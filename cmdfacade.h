@@ -13,8 +13,8 @@ public:
     explicit CmdFacade(QObject *parent = nullptr, WebsocketClient *wsClient = nullptr);
 
     // Public API - Accounts
-    void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
-    void modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const;
+    void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
+    void modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
     void removeAccount(int index) const;
     QList <s_account>* getAccounts();
     void makeCall(QString number, int AccID) const;
@@ -71,11 +71,12 @@ signals:
     void logMessage(QString msg);
     void audioRoutesChanged(QList<s_audioRoutes> audioRoutes);
     void audioRoutesTableChanged(const s_audioPortList& portList);
+    void AccountsChanged(QList <s_account> *Accounts);
 
 private:
     WebsocketClient *m_wsClient;
     // Vars for API-Calling
-    QList<s_account> m_getAccounts;
+    QList<s_account> m_Accounts;
     QList<s_callHistory> m_getCallHistory;
     s_account m_getAccountByID;             //TODO: Der muss weg der wird nur probleme machen...
     QList <s_audioRoutes> m_getAudioRoutes;

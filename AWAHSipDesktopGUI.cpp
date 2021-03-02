@@ -61,6 +61,8 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     restoreGeometry(settings.value("MainWindow/Geometry").toByteArray());
 
+    connect(m_cmdFacade, &CmdFacade::AccountsChanged, this, &AWAHSipDesktopGUI::AccountsChanged);
+
     connect(ui->tableView, SIGNAL(pressed(const QModelIndex &)),
             SIPstate, SLOT(onTableClicked(const QModelIndex &)));
 
@@ -172,4 +174,10 @@ void AWAHSipDesktopGUI::on_actionLog_triggered()
 void AWAHSipDesktopGUI::on_actionBuddies_triggered()
 {
     QMessageBox::information(this,"Sorry","Sorry you have to wait for a future release");
+}
+
+void AWAHSipDesktopGUI::AccountsChanged(QList<s_account> *Accounts)
+{
+    m_Accounts = Accounts;
+    SIPstate->refresh();
 }

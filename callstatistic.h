@@ -64,7 +64,7 @@ signals:
 
 private slots:
     void on_pushButton_close_clicked();
-    void timeoutSlot();
+    void on_callInfo(int accId, int callId, QJsonObject callInfo);
 
 private:
     Ui::CallStatistic *ui;
@@ -73,9 +73,8 @@ private:
     QAbstractItemModel *statmodel;
     int m_AccID;
     int m_CallID;
-    QTimer *refreshTimer;
     StatisticModel *m_statModel;
-    QJsonObject callinfo;
+    QJsonObject m_callinfo = {{"waiting for Callinfo", " "}};
 };
 
 

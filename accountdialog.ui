@@ -41,11 +41,11 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QGroupBox" name="groupBox">
+  <widget class="QGroupBox" name="SIPAccount">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
+     <y>0</y>
      <width>351</width>
      <height>151</height>
     </rect>
@@ -59,7 +59,7 @@
       <x>0</x>
       <y>20</y>
       <width>321</width>
-      <height>131</height>
+      <height>121</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -106,7 +106,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_2">
+  <widget class="QGroupBox" name="RecoderBox">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -220,13 +220,13 @@
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_3">
+  <widget class="QGroupBox" name="PlayerBox">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>170</y>
+     <y>200</y>
      <width>351</width>
-     <height>141</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="title">
@@ -236,9 +236,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
+      <y>40</y>
       <width>311</width>
-      <height>86</height>
+      <height>71</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -292,6 +292,39 @@
     </property>
     <property name="text">
      <string>(only 16bit wav files supported)</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="JitterBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>150</y>
+     <width>351</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Jitter Buffer:</string>
+   </property>
+   <widget class="QComboBox" name="comboBox_JBType">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>131</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinBox_JB_FixedDel">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>20</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
     </property>
    </widget>
   </widget>

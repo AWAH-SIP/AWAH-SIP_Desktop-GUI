@@ -34,14 +34,11 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
     void refresh();
     QList <int> modifiedAcc;
 private:
     QList <s_account> *m_AccountList;
     CmdFacade *m_cmdFacade;
-
 
 };
 
@@ -68,6 +65,10 @@ private slots:
     void on_pushButton_close_clicked();
 
     void on_pushButton_edit_clicked();
+
+    void on_AccountsChanged(QList <s_account>* Accounts);
+
+    void on_tableView_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::accountsettings *ui;

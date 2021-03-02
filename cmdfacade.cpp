@@ -17,7 +17,7 @@ const s_account* CmdFacade::getAccountByID(int ID){
 */
 
 // Public API - Accounts
-void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
+void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const
 {
     QJsonObject obj, data;
     obj["command"] = "createAccount";
@@ -27,12 +27,14 @@ void CmdFacade::createAccount(QString accountName, QString server, QString user,
     data["password"] = password;
     data["filePlayPath"] = filePlayPath;
     data["fileRecPath"] = fileRecPath;
+    data["fixedJitterBuffer"] = fixedJitterBuffer;
+    data["fixedJitterBufferValue"] = (int)fixedJitterBufferValue;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
 }
 
-void CmdFacade::modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath) const
+void CmdFacade::modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath,  bool fixedJitterBuffer, uint fixedJitterBufferValue) const
 {
     QJsonObject obj, data;
     obj["command"] = "modifyAccount";
@@ -43,6 +45,8 @@ void CmdFacade::modifyAccount(int index, QString accountName, QString server, QS
     data["password"] = password;
     data["filePlayPath"] = filePlayPath;
     data["fileRecPath"] = fileRecPath;
+    data["fixedJitterBuffer"] = fixedJitterBuffer;
+    data["fixedJitterBufferValue"] = (int)fixedJitterBufferValue;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
@@ -66,17 +70,17 @@ QList <s_account>* CmdFacade::getAccounts()
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
     if(cmd.hasError()) {
-        return &m_getAccounts;
+        return &m_Accounts;
     } else {
-        m_getAccounts.clear();
+        m_Accounts.clear();
         QJsonArray accountsArr = cmd.getReturnData()["accountsArray"].toArray();
         for (auto && account : qAsConst(accountsArr)) {
             QJsonObject entryObj = account.toObject();
             s_account entry;
             entry.fromJSON(entryObj);
-            m_getAccounts.append(entry);
+            m_Accounts.append(entry);
         }
-        return &m_getAccounts;
+        return &m_Accounts;
     }
 }
 

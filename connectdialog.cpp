@@ -63,6 +63,7 @@ void ConnectDialog::on_Connected(){
     DesktopGui = new AWAHSipDesktopGUI(this, m_websocketClient);
     ui->label_connstate->setText("connected");
     DesktopGui->show();
+    this->hide();
 
     if (history.lastIndexOf(wsUrl) == -1){              // only add url to history if it does not exist
         history.prepend(wsUrl);
@@ -80,6 +81,7 @@ void ConnectDialog::on_Disconnected(){
      if(DesktopGui->isVisible()){
         DesktopGui->close();
      }
+     this->show();
 }
 
 void ConnectDialog::on_Error(QAbstractSocket::SocketError error){

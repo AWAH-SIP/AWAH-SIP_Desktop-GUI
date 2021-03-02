@@ -25,15 +25,8 @@ CallStatistic::CallStatistic(QWidget *parent, CmdFacade *lib, int AccID, int Cal
     m_cmdFacade(lib), m_AccID(AccID), m_CallID(CallID)
 {
     ui->setupUi(this);
-
-    callinfo = m_cmdFacade->getCallInfo(m_CallID,m_AccID);
-    m_statModel = new StatisticModel(&callinfo,this);
-
-    refreshTimer = new QTimer(this);
-    refreshTimer->setInterval(1000);
-    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(timeoutSlot()));
-    connect(this, SIGNAL(SignalDataChanged()), m_statModel, SLOT(onDataChanged()));
-    refreshTimer->start();
+    m_statModel = new StatisticModel(&m_callinfo,this);
+    //connect(m_cmdFacade, &AWAHSipLib::callInfo, this, &CallStatistic::on_callInfo);
     ui->tableView->setModel(m_statModel);
     ui->tableView->setAlternatingRowColors(true);
     ui->tableView->resizeColumnsToContents();
@@ -41,7 +34,6 @@ CallStatistic::CallStatistic(QWidget *parent, CmdFacade *lib, int AccID, int Cal
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->horizontalHeader()->hide();
     ui->tableView->verticalHeader()->hide();
-
 }
 
 CallStatistic::~CallStatistic()
@@ -54,19 +46,22 @@ void CallStatistic::on_pushButton_close_clicked()
     CallStatistic::close();
 }
 
-void CallStatistic::timeoutSlot()
+void CallStatistic::on_callInfo(int accId, int callId, QJsonObject callInfo)
 {
-    callinfo = m_cmdFacade->getCallInfo(m_CallID,m_AccID);
-    m_statModel->layoutChanged();
+    if(m_AccID == accId && m_CallID == callId){
+        m_callinfo = callInfo;
+        m_statModel->layoutChanged();
+        ui->tableView->resizeColumnsToContents();
+    }
 }
 
 
 // ************************************** Model Call info **************************
 
 StatisticModel::StatisticModel(QJsonObject *callinfo, QObject *parent) :
-QAbstractTableModel(parent), m_callinfo(callinfo)
+    QAbstractTableModel(parent), m_callinfo(callinfo)
 {
-    
+
 }
 
 int StatisticModel::rowCount(const QModelIndex& parent) const

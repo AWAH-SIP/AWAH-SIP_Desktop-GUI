@@ -236,10 +236,24 @@ void WebsocketClient::audioRoutesTableChanged(QJsonObject &data)
     QJsonObject portListObj;
     if(jCheckObject(portListObj, data["portList"])) {
         m_cmdFacade->m_getConfPortsList.fromJSON(portListObj);
-        emit m_cmdFacade->audioRoutesTableChanged(m_cmdFacade->m_getConfPortsList);
+        //emit m_cmdFacade->audioRoutesTableChanged(m_cmdFacade->m_getConfPortsList);
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
+}
+
+void WebsocketClient::AccountsChanged(QJsonObject &data){
+    QJsonArray accountsArr;
+    if(jCheckArray(accountsArr, data["Accounts"])){
+        m_cmdFacade->m_Accounts.clear();
+        for (auto && account : qAsConst(accountsArr)) {
+            QJsonObject entryObj = account.toObject();
+            s_account entry;
+            entry.fromJSON(entryObj);
+            m_cmdFacade->m_Accounts.append(entry);
+        }
+    }
+    emit m_cmdFacade->AccountsChanged(&m_cmdFacade->m_Accounts);
 }
 
 void WebsocketClient::sendCommand(QJsonObject &completeRequestObj)

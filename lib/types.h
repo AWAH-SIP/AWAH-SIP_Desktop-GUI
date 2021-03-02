@@ -137,8 +137,11 @@ struct s_account{
     int rec_id = -1;
     int AccID;
     int splitterSlot;
-    QList <int> CallList;       // In JSON only QList <int> as an List of Call IDs
+    QList <int> CallList;
     QList <s_callHistory> CallHistory;
+    bool fixedJitterBuffer = true;
+    uint fixedJitterBufferValue = 160;
+    bool autoredialLastCall = false;
     QJsonObject toJSON() const {
         QJsonArray callListJSON, callHistoryJSON;
         for (auto & pPJCall: CallList) {
@@ -155,12 +158,12 @@ struct s_account{
             {"uid", uid},
             {"FileRecordPath", FileRecordPath},
             {"FilePlayPath", FilePlayPath},
-            {"player_id", player_id},
-            {"rec_id", rec_id},
             {"AccID", AccID},
-            {"splitterSlot", splitterSlot},
             {"CallList", callListJSON},
             {"CallHistory", callHistoryJSON},
+            {"fixedJitterBuffer", fixedJitterBuffer},
+            {"fixedJitterBufferValue", (int)fixedJitterBufferValue},
+            {"autoredialLastCall", autoredialLastCall}
         };
     }
     s_account* fromJSON(QJsonObject &accountJSON){
@@ -189,6 +192,9 @@ struct s_account{
         rec_id = accountJSON["rec_id"].toInt();
         AccID = accountJSON["AccID"].toInt();
         splitterSlot = accountJSON["splitterSlot"].toInt();
+        fixedJitterBuffer = accountJSON["fixedJitterBuffer"].toBool();
+        fixedJitterBufferValue = accountJSON["fixedJitterBufferValue"].toInt();
+        autoredialLastCall = accountJSON["autoredialLastCall"].toBool();
         return this;
     }
 };

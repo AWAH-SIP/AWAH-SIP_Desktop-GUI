@@ -46,7 +46,7 @@ private slots:
 
     void on_lineEdit_user_textChanged(const QString &arg1);
 
-    void on_lineEdit_password_textChanged(const QString &arg1);
+    void on_lineEdit_password_textEdited(const QString &arg1);
 
     void on_pushButtonbrowserec_clicked();
 
@@ -59,6 +59,10 @@ private slots:
     void on_lineEdit_recdir_textChanged(const QString &arg1);
 
     void on_lineEdit_playpath_textChanged(const QString &arg1);
+
+    void on_comboBox_JBType_currentIndexChanged(int index);
+
+    void on_spinBox_JB_FixedDel_valueChanged(int arg1);
 
 private:
     Ui::AccountDialog *ui;
