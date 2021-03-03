@@ -87,7 +87,7 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
                     return QVariant();
                 else return QBrush(QColor(153, 255, 153));
             }
-            else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5 && m_AccountList->at(index.row()).CallList.count()==1)
+            else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5)
                 return QBrush(QColor(153, 255, 153));  // light green if only one call is connected
 
             else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5 && m_AccountList->at(index.row()).CallList.count()>1)
@@ -168,7 +168,6 @@ void SipStateModel::OnCallStateChanged(int accID, int role, int callId, bool rem
     Q_UNUSED(remoteofferer);
     Q_UNUSED(lastStatusCode);
     QString CallTxt;
-
     if(accID<PJSUA_MAX_ACC)
     {
         switch(state){

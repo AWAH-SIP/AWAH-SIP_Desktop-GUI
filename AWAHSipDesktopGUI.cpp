@@ -69,9 +69,6 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
     connect(m_cmdFacade, SIGNAL(signalSipStatus(int, int, QString )),
             SIPstate, SLOT (Onsip_status(int, int,QString)));
 
-    connect(m_cmdFacade, SIGNAL(signalSipStatus(int, int, QString )),
-           this, SLOT (Onsip_status(int, int,QString)));
-
     connect(m_cmdFacade, SIGNAL(callStateChanged(int, int, int,bool,long, int, int, QString,QString)),
            SIPstate, SLOT(OnCallStateChanged(int, int, int,bool,long, int, int, QString,QString)));
 

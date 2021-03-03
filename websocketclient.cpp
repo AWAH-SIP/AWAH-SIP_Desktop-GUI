@@ -176,7 +176,7 @@ void WebsocketClient::callStateChanged(QJsonObject &data)
     bool remoteofferer;
     long calldur;
     QString statustxt, remoteUri, calldurStr;
-    if(     jCheckInt(accID, data["accID"]) &&
+    if(     jCheckInt(accID, data["accId"]) &&
             jCheckInt(role, data["role"]) &&
             jCheckInt(callId, data["callId"]) &&
             jCheckBool(remoteofferer, data["remoteofferer"]) &&
@@ -255,6 +255,15 @@ void WebsocketClient::AccountsChanged(QJsonObject &data){
     }
     emit m_cmdFacade->AccountsChanged(&m_cmdFacade->m_Accounts);
 }
+
+void WebsocketClient::callInfo(QJsonObject &data){
+    int accId, callId;
+    QJsonObject callInfo;
+    if(jCheckObject(callInfo, data["callInfo"]) && jCheckInt(accId, data["accId"]) && jCheckInt(callId, data["callId"])) {
+        emit m_cmdFacade->callInfo(accId, callId, callInfo);
+    }
+}
+
 
 void WebsocketClient::sendCommand(QJsonObject &completeRequestObj)
 {

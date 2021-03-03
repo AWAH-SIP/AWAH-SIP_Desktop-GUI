@@ -72,6 +72,7 @@ signals:
     void audioRoutesChanged(QList<s_audioRoutes> audioRoutes);
     void audioRoutesTableChanged(const s_audioPortList& portList);
     void AccountsChanged(QList <s_account> *Accounts);
+    void callInfo(int accId, int callId,QJsonObject callInfo);
 
 private:
     WebsocketClient *m_wsClient;

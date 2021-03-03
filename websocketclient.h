@@ -41,6 +41,7 @@ private slots:
     void audioRoutesChanged(QJsonObject &data);
     void audioRoutesTableChanged(QJsonObject &data);
     void AccountsChanged(QJsonObject &data);
+    void callInfo(QJsonObject &data);
 
 private:
     void sendCommand(QJsonObject &completeRequestObj);

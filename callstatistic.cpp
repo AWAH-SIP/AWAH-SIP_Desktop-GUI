@@ -26,7 +26,7 @@ CallStatistic::CallStatistic(QWidget *parent, CmdFacade *lib, int AccID, int Cal
 {
     ui->setupUi(this);
     m_statModel = new StatisticModel(&m_callinfo,this);
-    //connect(m_cmdFacade, &AWAHSipLib::callInfo, this, &CallStatistic::on_callInfo);
+    connect(m_cmdFacade, &CmdFacade::callInfo, this, &CallStatistic::on_callInfo);
     ui->tableView->setModel(m_statModel);
     ui->tableView->setAlternatingRowColors(true);
     ui->tableView->resizeColumnsToContents();

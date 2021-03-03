@@ -143,10 +143,7 @@ struct s_account{
     uint fixedJitterBufferValue = 160;
     bool autoredialLastCall = false;
     QJsonObject toJSON() const {
-        QJsonArray callListJSON, callHistoryJSON;
-        for (auto & pPJCall: CallList) {
-            callListJSON.append(pPJCall);
-        }
+        QJsonArray callHistoryJSON;
         for (auto & callhistory: CallHistory) {
             callHistoryJSON.append(callhistory.toJSON());
         }
@@ -159,7 +156,6 @@ struct s_account{
             {"FileRecordPath", FileRecordPath},
             {"FilePlayPath", FilePlayPath},
             {"AccID", AccID},
-            {"CallList", callListJSON},
             {"CallHistory", callHistoryJSON},
             {"fixedJitterBuffer", fixedJitterBuffer},
             {"fixedJitterBufferValue", (int)fixedJitterBufferValue},
@@ -170,13 +166,9 @@ struct s_account{
         QJsonArray callListArr, callHistoryArr;
         CallList.clear();
         CallHistory.clear();
-        if(accountJSON["CallList"].isArray() && accountJSON["CallHistory"].isArray()) {
+        if(accountJSON["CallHistory"].isArray()) {
             s_callHistory entry;
-            callListArr = accountJSON["CallList"].toArray();
             callHistoryArr = accountJSON["CallHistory"].toArray();
-            for (auto && callIdEntry : qAsConst(callListArr)) {
-                CallList.append(callIdEntry.toInt());
-            }
             for (auto && callHistEntry : callHistoryArr) {
                 CallHistory.append(*entry.fromJSON(callHistEntry.toObject()));
             }
