@@ -27,10 +27,11 @@
 SipStateModel::SipStateModel(QObject *parent, CmdFacade *lib)
     : QAbstractTableModel(parent), m_cmdFacade(lib)
 {
-    SIPStatusText.fill("Trying to register account ...",PJSUA_MAX_ACC);
+    SIPStatusText.fill("Waiting for SIP message ...",PJSUA_MAX_ACC);
     SIPStatusCode.fill(0,PJSUA_MAX_ACC);
     CallStatusText.fill("Idle ...",PJSUA_MAX_ACC);
     CallStatusCode.fill(0,PJSUA_MAX_ACC);
+    connect(m_cmdFacade, &CmdFacade::callInfo, this, &SipStateModel::on_callInfo);
 }
 
 void SipStateModel::setActiveAccounts(QList <s_account> *accounts)
@@ -87,7 +88,7 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
                     return QVariant();
                 else return QBrush(QColor(153, 255, 153));
             }
-            else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5)
+            else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5  && m_AccountList->at(index.row()).CallList.count()==1)
                 return QBrush(QColor(153, 255, 153));  // light green if only one call is connected
 
             else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5 && m_AccountList->at(index.row()).CallList.count()>1)
@@ -167,6 +168,7 @@ void SipStateModel::OnCallStateChanged(int accID, int role, int callId, bool rem
     Q_UNUSED(calldur);
     Q_UNUSED(remoteofferer);
     Q_UNUSED(lastStatusCode);
+    Q_UNUSED(callId);
     QString CallTxt;
     if(accID<PJSUA_MAX_ACC)
     {
@@ -202,14 +204,12 @@ void SipStateModel::OnCallStateChanged(int accID, int role, int callId, bool rem
 
         CallStatusText.replace(accID, CallTxt);
         CallStatusCode.replace(accID, state);
-        m_callID[accID] = callId;
         refresh();
     }
 }
 
 void SipStateModel::onTableClicked(const QModelIndex &index)
 {
-
     if (index.isValid() && index.column()== 4) {
         if(m_AccountList->at(index.row()).CallList.count()== 0){
             MakeCall makeCall(nullptr,m_cmdFacade,m_AccountList->at(index.row()).AccID);
@@ -238,10 +238,22 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
         }
      }
    if (index.isValid() && index.column()== 5) {
-       if (m_AccountList->at(index.row()).CallList. count()){
+       if (m_AccountList->at(index.row()).CallList.count()){
             CallStatistic callstat(nullptr,m_cmdFacade, m_AccountList->at(index.row()).AccID, m_AccountList->at(index.row()).CallList.first());
             callstat.setModal(false);
             callstat.exec();
        }
    }
+}
+
+
+void SipStateModel::on_callInfo(int accId, int callId, QJsonObject callInfo){
+    QString callstate, ConnTo;
+    callstate = callInfo["Status:"].toString();
+    if(callstate == "[CONFIRMED] "){
+        ConnTo = callInfo["Connected to:"].toString();
+        CallStatusText.replace(accId, QString("Connected to: ") +ConnTo);
+        CallStatusCode.replace(accId, 5);
+        refresh();
+    }
 }

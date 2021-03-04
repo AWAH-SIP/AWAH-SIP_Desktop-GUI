@@ -49,8 +49,9 @@ private:
     QVector <int> SIPStatusCode;
     QVector <QString> CallStatusText;
     QVector <int> CallStatusCode;
-    QMap <int, int> m_callID;
 
+private slots:
+    void on_callInfo(int accId, int callId, QJsonObject callInfo);
 };
 
 #endif // SIPSTATEMODEL_H

@@ -165,6 +165,12 @@ struct s_account{
     s_account* fromJSON(QJsonObject &accountJSON){
         QJsonArray callListArr, callHistoryArr;
         CallList.clear();
+        if(accountJSON["CallList"].isArray()){
+            callListArr = accountJSON["CallList"].toArray();
+            for (auto && callListEntry : callListArr) {
+                CallList.append(callListEntry.toInt());
+            }
+        }
         CallHistory.clear();
         if(accountJSON["CallHistory"].isArray()) {
             s_callHistory entry;
