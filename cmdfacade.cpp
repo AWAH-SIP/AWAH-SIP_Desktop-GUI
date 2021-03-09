@@ -384,16 +384,16 @@ QList<s_audioDevices>* CmdFacade::getAudioDevices()
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
     if(!cmd.hasError()) {
-        m_getAudioDevices.clear();
+        m_AudioDevices.clear();
         QJsonArray audioDevArr = cmd.getReturnData()["audioDevicesArray"].toArray();
         for (auto && audioDev : qAsConst(audioDevArr)) {
             QJsonObject entryObj = audioDev.toObject();
             s_audioDevices entry;
             entry.fromJSON(entryObj);
-            m_getAudioDevices.append(entry);
+            m_AudioDevices.append(entry);
         }
     }
-    return &m_getAudioDevices;
+    return &m_AudioDevices;
 }
 
 

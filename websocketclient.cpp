@@ -236,7 +236,8 @@ void WebsocketClient::audioRoutesTableChanged(QJsonObject &data)
     QJsonObject portListObj;
     if(jCheckObject(portListObj, data["portList"])) {
         m_cmdFacade->m_getConfPortsList.fromJSON(portListObj);
-        //emit m_cmdFacade->audioRoutesTableChanged(m_cmdFacade->m_getConfPortsList);
+        qDebug() << "************************" << portListObj;
+        emit m_cmdFacade->audioRoutesTableChanged(m_cmdFacade->m_getConfPortsList);
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
@@ -254,6 +255,20 @@ void WebsocketClient::AccountsChanged(QJsonObject &data){
         }
     }
     emit m_cmdFacade->AccountsChanged(&m_cmdFacade->m_Accounts);
+}
+
+void WebsocketClient::AudioDevicesChanged(QJsonObject &data){
+    QJsonArray AudioDevArr;
+    if(jCheckArray(AudioDevArr, data["AudioDevices"])){
+        m_cmdFacade->m_AudioDevices.clear();
+        for (auto && device : qAsConst(AudioDevArr)) {
+            QJsonObject deviceObj = device.toObject();
+            s_audioDevices AudDev;
+            AudDev.fromJSON(deviceObj);
+            m_cmdFacade->m_AudioDevices.append(AudDev);
+        }
+    }
+    emit m_cmdFacade->AudioDevicesChanged(&m_cmdFacade->m_AudioDevices);
 }
 
 void WebsocketClient::callInfo(QJsonObject &data){

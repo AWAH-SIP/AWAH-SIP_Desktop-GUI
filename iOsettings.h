@@ -64,6 +64,8 @@ private slots:
 
     void on_pushButton_add_play_clicked();
 
+    void AudioDevicesChanged(QList<s_audioDevices>* audioDev);
+
 private:
     Ui::IOSettings *ui;
     CmdFacade *m_cmdFacade;

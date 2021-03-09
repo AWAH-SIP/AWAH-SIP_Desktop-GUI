@@ -43,6 +43,8 @@ IOSettings::IOSettings(QWidget *parent, CmdFacade *lib) :
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    connect(m_cmdFacade, &CmdFacade::AudioDevicesChanged, this, &IOSettings::AudioDevicesChanged);
 }
 
 IOSettings::~IOSettings()
@@ -56,9 +58,6 @@ void IOSettings::on_pushButton_add_snd_dev_clicked()
     addSoundDev sounddev(this,m_cmdFacade);
     sounddev.setModal(true);
     sounddev.exec();
-    devModel->refresh();
-    ui->tableView->viewport()->update();
-
 }
 
 void IOSettings::on_pushButton_add_generator_clicked()
@@ -68,8 +67,6 @@ void IOSettings::on_pushButton_add_generator_clicked()
     if (ok)
     {
         m_cmdFacade->addToneGen(freq);
-        devModel->refresh();
-        ui->tableView->viewport()->update();
     }
 }
 
@@ -81,8 +78,6 @@ void IOSettings::on_pushButton_remove_dev_clicked()
         row = index.row();
     }
        m_cmdFacade->removeAudioDevice(row);
-       devModel->refresh();
-       ui->tableView->viewport()->update();
 }
 
 void IOSettings::on_pushButton_add_play_clicked()
@@ -90,6 +85,10 @@ void IOSettings::on_pushButton_add_play_clicked()
     AddFilePlayer fileplayer(this,m_cmdFacade);
     fileplayer.setModal(true);
     fileplayer.exec();
+}
+
+void IOSettings::AudioDevicesChanged(QList<s_audioDevices>* audioDev){
+    m_DeviceList = audioDev;
     devModel->refresh();
     ui->tableView->viewport()->update();
 }

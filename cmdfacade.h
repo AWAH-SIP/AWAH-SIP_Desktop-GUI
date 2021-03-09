@@ -72,6 +72,7 @@ signals:
     void audioRoutesChanged(QList<s_audioRoutes> audioRoutes);
     void audioRoutesTableChanged(const s_audioPortList& portList);
     void AccountsChanged(QList <s_account> *Accounts);
+    void AudioDevicesChanged(QList<s_audioDevices>* audioDev);
     void callInfo(int accId, int callId,QJsonObject callInfo);
 
 private:
@@ -83,7 +84,7 @@ private:
     QList <s_audioRoutes> m_getAudioRoutes;
     QStringList m_listSoundDev;
     s_audioPortList m_getConfPortsList;
-    QList<s_audioDevices> m_getAudioDevices;
+    QList<s_audioDevices> m_AudioDevices;
     QStringList m_listCodec;
     QStringList m_readNewestLog;
     QJsonObject m_getSettings;
