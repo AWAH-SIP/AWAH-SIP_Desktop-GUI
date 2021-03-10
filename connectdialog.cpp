@@ -60,7 +60,7 @@ void ConnectDialog::on_pushButton_close_clicked()
 
 
 void ConnectDialog::on_Connected(){
-    DesktopGui = new AWAHSipDesktopGUI(this, m_websocketClient);
+    DesktopGui = new AWAHSipDesktopGUI(nullptr, m_websocketClient);
     ui->label_connstate->setText("connected");
     DesktopGui->show();
     this->hide();

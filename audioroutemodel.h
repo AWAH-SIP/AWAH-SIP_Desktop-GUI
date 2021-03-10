@@ -57,6 +57,7 @@ private:
     QVector<bool> m_routesPersistant;
     QMap<int, int> m_srcSlotMap;
     QMap<int, int> m_destSlotMap;
+    QList<s_audioRoutes> m_routesOriginal;
 };
 
 //a header view that renders text vertically

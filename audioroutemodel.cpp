@@ -23,6 +23,7 @@ AudioRouteModel::AudioRouteModel(CmdFacade *lib, Ui::Route *uiParent, QObject *p
                 : QAbstractTableModel(parent), m_cmdFacade(lib), m_uiParent(uiParent)
 {
     onTableChanged(m_cmdFacade->getConfPortsList());
+    onRoutesChanged(m_cmdFacade->getAudioRoutes());
 }
 
 int AudioRouteModel::rowCount(const QModelIndex & /*parent*/) const
@@ -83,6 +84,7 @@ QVariant AudioRouteModel::headerData(int section, Qt::Orientation orientation, i
 
 void AudioRouteModel::onRoutesChanged(QList<s_audioRoutes> routes)
 {
+    m_routesOriginal = routes;
     emit layoutAboutToBeChanged();
     m_routes.clear();
     m_routes.resize(m_audioPortList.srcPorts.size() * m_rowWidth);
@@ -137,7 +139,7 @@ void AudioRouteModel::onTableChanged(const s_audioPortList& portList)
     for(int i=0; i< m_audioPortList.destPorts.size(); i++){
         m_destSlotMap[m_audioPortList.destPorts.at(i).slot] = i;
     }
-    onRoutesChanged(m_cmdFacade->getAudioRoutes());
+    onRoutesChanged(m_routesOriginal);
 }
 
 void AudioRouteModel::setCrosspoint(const QModelIndex &index)
