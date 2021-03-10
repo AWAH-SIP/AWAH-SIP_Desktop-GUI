@@ -30,7 +30,7 @@ class SipStateModel : public QAbstractTableModel
 {
     Q_OBJECT;
 public:
-    SipStateModel(QObject *parent = nullptr,CmdFacade *lib = nullptr);
+    SipStateModel(QObject *parent = nullptr, QWidget* parentWidget = nullptr, CmdFacade *lib = nullptr);
     void setActiveAccounts(QList <s_account> *accounts);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -43,6 +43,7 @@ public slots:
     void onTableClicked(const QModelIndex &index);
 
 private:
+    QWidget* m_parentWidget;
     QList <s_account> *m_AccountList;
     CmdFacade *m_cmdFacade;
     QVector <QString> SIPStatusText;

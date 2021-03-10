@@ -46,7 +46,7 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     ui->setupUi(this);
 
-    SIPstate = new SipStateModel(this, m_cmdFacade);
+    SIPstate = new SipStateModel(this, this, m_cmdFacade);
     m_Accounts = m_cmdFacade->getAccounts();
     SIPstate->setActiveAccounts(m_Accounts);
 

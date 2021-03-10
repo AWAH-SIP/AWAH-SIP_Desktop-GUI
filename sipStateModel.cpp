@@ -24,8 +24,8 @@
 
 #define PJSUA_MAX_ACC 32  // TODO: Remove this!
 
-SipStateModel::SipStateModel(QObject *parent, CmdFacade *lib)
-    : QAbstractTableModel(parent), m_cmdFacade(lib)
+SipStateModel::SipStateModel(QObject *parent, QWidget *parentWidget, CmdFacade *lib)
+    : QAbstractTableModel(parent), m_parentWidget(parentWidget), m_cmdFacade(lib)
 {
     SIPStatusText.fill("Waiting for SIP message ...",PJSUA_MAX_ACC);
     SIPStatusCode.fill(0,PJSUA_MAX_ACC);
@@ -212,7 +212,7 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
 {
     if (index.isValid() && index.column()== 4) {
         if(m_AccountList->at(index.row()).CallList.count()== 0){
-            MakeCall makeCall(nullptr,m_cmdFacade,m_AccountList->at(index.row()).AccID);
+            MakeCall makeCall(m_parentWidget, m_cmdFacade, m_AccountList->at(index.row()).AccID);
             makeCall.setModal(true);
             makeCall.exec();
             }
@@ -223,7 +223,7 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
             }
             else message = "Connected to: " + QString::number(m_AccountList->at(index.row()).CallList.first()) //heavily changed only to bring it to compile...
                                                        + "\n\n Do you really want to dissconect this call?";
-            int ret = QMessageBox::question(nullptr, tr("AWAHSip Call"),
+            int ret = QMessageBox::question(m_parentWidget, tr("AWAHSip Call"),
                                    tr(message.toLocal8Bit()));
             if(ret == QMessageBox::Yes){
 
@@ -239,7 +239,7 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
      }
    if (index.isValid() && index.column()== 5) {
        if (m_AccountList->at(index.row()).CallList.count()){
-            CallStatistic callstat(nullptr,m_cmdFacade, m_AccountList->at(index.row()).AccID, m_AccountList->at(index.row()).CallList.first());
+            CallStatistic callstat(m_parentWidget, m_cmdFacade, m_AccountList->at(index.row()).AccID, m_AccountList->at(index.row()).CallList.first());
             callstat.setModal(false);
             callstat.exec();
        }
