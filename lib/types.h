@@ -142,6 +142,10 @@ struct s_account{
     bool fixedJitterBuffer = true;
     uint fixedJitterBufferValue = 160;
     bool autoredialLastCall = false;
+    QString SIPStatusText = "waiting for SIP state...";
+    int SIPStatusCode = 0;
+    QString CallStatusText = "Idle... ";
+    int CallStatusCode = 0;
     QJsonObject toJSON() const {
         QJsonArray callHistoryJSON;
         for (auto & callhistory: CallHistory) {
@@ -193,6 +197,10 @@ struct s_account{
         fixedJitterBuffer = accountJSON["fixedJitterBuffer"].toBool();
         fixedJitterBufferValue = accountJSON["fixedJitterBufferValue"].toInt();
         autoredialLastCall = accountJSON["autoredialLastCall"].toBool();
+        SIPStatusCode = accountJSON["SIPStatusCode"].toInt();
+        SIPStatusText = accountJSON["SIPStatusText"].toString();
+        CallStatusCode = accountJSON["CallStatusCode"].toInt();
+        CallStatusText = accountJSON["CallStatusText"].toString();
         return this;
     }
 };

@@ -12,6 +12,7 @@ class CmdFacade : public QObject
 public:
     explicit CmdFacade(QObject *parent = nullptr, WebsocketClient *wsClient = nullptr);
 
+    void initializeVariables();
     // Public API - Accounts
     void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
     void modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
@@ -22,7 +23,6 @@ public:
     void acceptCall(int callId, int AccID) const;
     void holdCall(int callId, int AccID) const;
     void transferCall(int callId, int AccID, QString destination) const;
-    QJsonObject getCallInfo(int callID, int AccID) const;
     const QList<s_callHistory>* getCallHistory(int AccID);
     const s_account* getAccountByID(int ID);
 
@@ -81,7 +81,7 @@ private:
     QList<s_account> m_Accounts;
     QList<s_callHistory> m_getCallHistory;
     s_account m_getAccountByID;             //TODO: Der muss weg der wird nur probleme machen...
-    QList <s_audioRoutes> m_getAudioRoutes;
+    QList <s_audioRoutes> m_AudioRoutes;
     QStringList m_listSoundDev;
     s_audioPortList m_getConfPortsList;
     QList<s_audioDevices> m_AudioDevices;

@@ -16,6 +16,42 @@ const s_account* CmdFacade::getAccountByID(int ID){
 }
 */
 
+void CmdFacade::initializeVariables(){
+    QJsonObject obj, data;
+    obj["command"] = "getAllVariables";
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(!cmd.hasError()) {
+        m_Accounts.clear();
+        QJsonArray accountsArr = cmd.getReturnData()["accountsArray"].toArray();
+        for (auto && account : qAsConst(accountsArr)) {
+            QJsonObject entryObj = account.toObject();
+            s_account entry;
+            entry.fromJSON(entryObj);
+            m_Accounts.append(entry);
+            emit signalSipStatus(entry.AccID , entry.SIPStatusCode, entry.SIPStatusText);
+        }
+        m_AudioRoutes.clear();
+        QJsonArray audioRoutesArr = cmd.getReturnData()["audioRoutesArray"].toArray();
+        for (auto && audioRoute : qAsConst(audioRoutesArr)) {
+            QJsonObject entryObj = audioRoute.toObject();
+            s_audioRoutes entry;
+            entry.fromJSON(entryObj);
+            m_AudioRoutes.append(entry);
+        }
+
+        m_AudioDevices.clear();
+        QJsonArray audioDevArr = cmd.getReturnData()["audioDevicesArray"].toArray();
+        for (auto && audioDev : qAsConst(audioDevArr)) {
+            QJsonObject entryObj = audioDev.toObject();
+            s_audioDevices entry;
+            entry.fromJSON(entryObj);
+            m_AudioDevices.append(entry);
+        }
+    }
+}
+
 // Public API - Accounts
 void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const
 {
@@ -64,24 +100,7 @@ void CmdFacade::removeAccount(int index) const
 
 QList <s_account>* CmdFacade::getAccounts()
 {
-    QJsonObject obj, data;
-    obj["command"] = "getAccounts";
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(cmd.hasError()) {
-        return &m_Accounts;
-    } else {
-        m_Accounts.clear();
-        QJsonArray accountsArr = cmd.getReturnData()["accountsArray"].toArray();
-        for (auto && account : qAsConst(accountsArr)) {
-            QJsonObject entryObj = account.toObject();
-            s_account entry;
-            entry.fromJSON(entryObj);
-            m_Accounts.append(entry);
-        }
-        return &m_Accounts;
-    }
+   return &m_Accounts;
 }
 
 void CmdFacade::makeCall(QString number, int AccID) const
@@ -140,22 +159,6 @@ void CmdFacade::transferCall(int callId, int AccID, QString destination) const
     cmd.execute();
 }
 
-QJsonObject CmdFacade::getCallInfo(int callID, int AccID) const
-{
-    QJsonObject obj, data;
-    obj["command"] = "getCallInfo";
-    data["callId"] = callID;
-    data["AccID"] = AccID;
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(cmd.hasError()) {
-        return QJsonObject();
-    } else {
-        return cmd.getReturnData()["callHistoryObj"].toObject();
-    }
-}
-
 const QList<s_callHistory>* CmdFacade::getCallHistory(int AccID)
 {
     QJsonObject obj, data;
@@ -199,22 +202,7 @@ const s_account* CmdFacade::getAccountByID(int ID)
 // Public API - AudioRouter
 QList <s_audioRoutes> CmdFacade::getAudioRoutes()
 {
-    QJsonObject obj, data;
-    obj["command"] = "getAudioRoutes";
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(!cmd.hasError()) {
-        m_getAudioRoutes.clear();
-        QJsonArray audioRoutesArr = cmd.getReturnData()["audioRoutesArray"].toArray();
-        for (auto && audioRoute : qAsConst(audioRoutesArr)) {
-            QJsonObject entryObj = audioRoute.toObject();
-            s_audioRoutes entry;
-            entry.fromJSON(entryObj);
-            m_getAudioRoutes.append(entry);
-        }
-    }
-    return m_getAudioRoutes;
+    return m_AudioRoutes;
 }
 
 QStringList CmdFacade::listSoundDev()
@@ -378,21 +366,6 @@ int CmdFacade::addToneGen(int freq) const
 
 QList<s_audioDevices>* CmdFacade::getAudioDevices()
 {
-    QJsonObject obj, data;
-    obj["command"] = "getAudioDevices";
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(!cmd.hasError()) {
-        m_AudioDevices.clear();
-        QJsonArray audioDevArr = cmd.getReturnData()["audioDevicesArray"].toArray();
-        for (auto && audioDev : qAsConst(audioDevArr)) {
-            QJsonObject entryObj = audioDev.toObject();
-            s_audioDevices entry;
-            entry.fromJSON(entryObj);
-            m_AudioDevices.append(entry);
-        }
-    }
     return &m_AudioDevices;
 }
 

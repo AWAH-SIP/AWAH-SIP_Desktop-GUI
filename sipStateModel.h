@@ -46,13 +46,6 @@ private:
     QWidget* m_parentWidget;
     QList <s_account> *m_AccountList;
     CmdFacade *m_cmdFacade;
-    QVector <QString> SIPStatusText;
-    QVector <int> SIPStatusCode;
-    QVector <QString> CallStatusText;
-    QVector <int> CallStatusCode;
-
-private slots:
-    void on_callInfo(int accId, int callId, QJsonObject callInfo);
 };
 
 #endif // SIPSTATEMODEL_H

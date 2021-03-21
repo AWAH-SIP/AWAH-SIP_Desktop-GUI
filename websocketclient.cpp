@@ -165,6 +165,12 @@ void WebsocketClient::sipStatus(QJsonObject &data)
     QString remoteUri;
     if(jCheckInt(accId, data["accId"]) && jCheckInt(status, data["status"]) && jCheckString(remoteUri, data["remoteUri"])) {
         emit m_cmdFacade->signalSipStatus(accId, status, remoteUri);
+        for(auto& account : m_cmdFacade->m_Accounts){
+            if(account.AccID == accId){
+                account.SIPStatusCode = status;
+                account.SIPStatusText = remoteUri;
+            }
+         }
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
@@ -187,6 +193,42 @@ void WebsocketClient::callStateChanged(QJsonObject &data)
             jCheckString(remoteUri, data["remoteUri"]))
     {
         calldur = calldurStr.toLong();
+        for(auto& account : m_cmdFacade->m_Accounts){
+            if(account.AccID == accID){
+                account.CallStatusCode = state;
+                QString CallTxt;
+                switch(state){
+                 case 0:
+                   CallTxt = "Disconnected ";
+                   break;
+
+                 case 1:
+                    CallTxt = "Calling ";
+                    break;
+
+                 case 2:
+                    CallTxt = "Incoming Call from " + remoteUri;
+                    break;
+
+                 case 3:
+                    CallTxt = "Connecting "+ statustxt;
+                   break;
+
+                case 4:
+                    CallTxt = "Connecting ";
+                    break;
+
+                case 5:
+                    CallTxt = "Connected to " + remoteUri;
+                    break;
+
+                case 6:
+                   CallTxt = "Disconnected " + statustxt;
+                   break;
+                }
+                account.CallStatusText = CallTxt;
+            }
+        }
         emit m_cmdFacade->callStateChanged(accID, role, callId, remoteofferer, calldur, state, lastStatusCode, statustxt, remoteUri);
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
@@ -218,14 +260,14 @@ void WebsocketClient::audioRoutesChanged(QJsonObject &data)
 {
     QJsonArray audioRoutesArr;
     if(jCheckArray(audioRoutesArr, data["audioRoutes"])) {
-        m_cmdFacade->m_getAudioRoutes.clear();
+        m_cmdFacade->m_AudioRoutes.clear();
         for (auto && audioRoute: qAsConst(audioRoutesArr)) {
             if(audioRoute.isObject()) {
                 s_audioRoutes entry;
-                m_cmdFacade->m_getAudioRoutes.append(*entry.fromJSON(audioRoute.toObject()));
+                m_cmdFacade->m_AudioRoutes.append(*entry.fromJSON(audioRoute.toObject()));
             }
         }
-        emit m_cmdFacade->audioRoutesChanged(m_cmdFacade->m_getAudioRoutes);
+        emit m_cmdFacade->audioRoutesChanged(m_cmdFacade->m_AudioRoutes);
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
@@ -236,7 +278,6 @@ void WebsocketClient::audioRoutesTableChanged(QJsonObject &data)
     QJsonObject portListObj;
     if(jCheckObject(portListObj, data["portList"])) {
         m_cmdFacade->m_getConfPortsList.fromJSON(portListObj);
-        qDebug() << "************************" << portListObj;
         emit m_cmdFacade->audioRoutesTableChanged(m_cmdFacade->m_getConfPortsList);
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";

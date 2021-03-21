@@ -27,11 +27,7 @@
 SipStateModel::SipStateModel(QObject *parent, QWidget *parentWidget, CmdFacade *lib)
     : QAbstractTableModel(parent), m_parentWidget(parentWidget), m_cmdFacade(lib)
 {
-    SIPStatusText.fill("Waiting for SIP message ...",PJSUA_MAX_ACC);
-    SIPStatusCode.fill(0,PJSUA_MAX_ACC);
-    CallStatusText.fill("Idle ...",PJSUA_MAX_ACC);
-    CallStatusCode.fill(0,PJSUA_MAX_ACC);
-    connect(m_cmdFacade, &CmdFacade::callInfo, this, &SipStateModel::on_callInfo);
+
 }
 
 void SipStateModel::setActiveAccounts(QList <s_account> *accounts)
@@ -51,6 +47,7 @@ int SipStateModel::columnCount(const QModelIndex & /*parent*/) const
 
 QVariant SipStateModel::data(const QModelIndex &index, int role) const
 {
+    QString Temp;
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         switch (index.column()) {
             case 0:
@@ -60,38 +57,41 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
                 return m_AccountList->at(index.row()).user;
                 break;
             case 2:
-                return  SIPStatusText.at(m_AccountList->at(index.row()).AccID);
+                Temp.append(QString::number(m_AccountList->at(index.row()).SIPStatusCode));
+                Temp.append(" ");
+                Temp.append(m_AccountList->at(index.row()).SIPStatusText);
+                return  Temp;
                 break;
             case 3:
                 if(m_AccountList->at(index.row()).CallList.count()>1){
                     return "Multiple calls connected! ";
                 }
-                else return CallStatusText.at(m_AccountList->at(index.row()).AccID);
+                else return m_AccountList->at(index.row()).CallStatusText;
                 break;
     }
 
     if(role == Qt::BackgroundColorRole)
         if (index.column()== 2) {
-            if(SIPStatusCode.at(m_AccountList->at(index.row()).AccID)<200)
+            if(m_AccountList->at(index.row()).SIPStatusCode<200)
             return QBrush(QColor(102, 153, 255)); // light blue
 
-            else if(SIPStatusCode.at(m_AccountList->at(index.row()).AccID)<300)
+            else if(m_AccountList->at(index.row()).SIPStatusCode<300)
             return QBrush(QColor(153, 255, 153));  // light green
 
-            else if(SIPStatusCode.at(m_AccountList->at(index.row()).AccID)>299)
+            else if(m_AccountList->at(index.row()).SIPStatusCode>299)
             return QBrush(QColor(255, 153, 153)); // light red
         }
     if(role == Qt::BackgroundColorRole)
         if (index.column()== 3) {
-            if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==0 ||CallStatusCode.at(m_AccountList->at(index.row()).AccID)==6){
+            if(m_AccountList->at(index.row()).CallStatusCode==0 ||m_AccountList->at(index.row()).CallStatusCode==6){
                 if (m_AccountList->at(index.row()).CallList.count()== 0)
                     return QVariant();
                 else return QBrush(QColor(153, 255, 153));
             }
-            else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5  && m_AccountList->at(index.row()).CallList.count()==1)
+            else if(m_AccountList->at(index.row()).CallStatusCode==5  && m_AccountList->at(index.row()).CallList.count()==1)
                 return QBrush(QColor(153, 255, 153));  // light green if only one call is connected
 
-            else if(CallStatusCode.at(m_AccountList->at(index.row()).AccID)==5 && m_AccountList->at(index.row()).CallList.count()>1)
+            else if(m_AccountList->at(index.row()).CallStatusCode==5 && m_AccountList->at(index.row()).CallList.count()>1)
               return QBrush(QColor(255, 194, 153));     // light orange if more than one call is connected
 
             else
@@ -151,15 +151,10 @@ void SipStateModel::refresh() {
 
 void SipStateModel::Onsip_status(int accountid, int sipstatus ,QString statusText)
 {
-    QString Temp;
-    Temp.append(QString::number(sipstatus));
-    Temp.append(" ");
-    Temp.append(statusText);
-    if(accountid<PJSUA_MAX_ACC)
-    {
-        SIPStatusText.replace(accountid, Temp);
-        SIPStatusCode.replace(accountid, sipstatus);
-    }
+    Q_UNUSED(accountid);
+    Q_UNUSED(sipstatus);
+    Q_UNUSED(statusText);
+    refresh();
 }
 
 void SipStateModel::OnCallStateChanged(int accID, int role, int callId, bool remoteofferer, long calldur, int state, int lastStatusCode, QString statustxt, QString remoteUri)
@@ -169,43 +164,11 @@ void SipStateModel::OnCallStateChanged(int accID, int role, int callId, bool rem
     Q_UNUSED(remoteofferer);
     Q_UNUSED(lastStatusCode);
     Q_UNUSED(callId);
-    QString CallTxt;
-    if(accID<PJSUA_MAX_ACC)
-    {
-        switch(state){
-         case 0:
-           CallTxt = "Disconnected ";
-           break;
-
-         case 1:
-            CallTxt = "Calling ";
-            break;
-
-         case 2:
-            CallTxt = "Incoming Call from " + remoteUri;
-            break;
-
-         case 3:
-            CallTxt = "Connecting "+ statustxt;
-           break;
-
-        case 4:
-            CallTxt = "Connecting ";
-            break;
-
-        case 5:
-            CallTxt = "Connected to " + remoteUri;
-            break;
-
-        case 6:
-           CallTxt = "Disconnected " + statustxt;
-           break;
-        }
-
-        CallStatusText.replace(accID, CallTxt);
-        CallStatusCode.replace(accID, state);
-        refresh();
-    }
+    Q_UNUSED(accID);
+    Q_UNUSED(state);
+    Q_UNUSED(statustxt);
+    Q_UNUSED(remoteUri);
+    refresh();
 }
 
 void SipStateModel::onTableClicked(const QModelIndex &index)
@@ -244,16 +207,4 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
             callstat.exec();
        }
    }
-}
-
-
-void SipStateModel::on_callInfo(int accId, int callId, QJsonObject callInfo){
-    QString callstate, ConnTo;
-    callstate = callInfo["Status:"].toString();
-    if(callstate == "[CONFIRMED] "){
-        ConnTo = callInfo["Connected to:"].toString();
-        CallStatusText.replace(accId, QString("Connected to: ") +ConnTo);
-        CallStatusCode.replace(accId, 5);
-        refresh();
-    }
 }

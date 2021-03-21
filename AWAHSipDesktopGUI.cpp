@@ -43,7 +43,7 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     m_cmdFacade = new CmdFacade(this, m_websocketClient);
     m_websocketClient->setCmdFacade(m_cmdFacade);
-
+     m_cmdFacade->initializeVariables();
     ui->setupUi(this);
 
     SIPstate = new SipStateModel(this, this, m_cmdFacade);
@@ -140,7 +140,6 @@ void AWAHSipDesktopGUI::on_actionAccounts_triggered()
     accountsettings settings(this,m_cmdFacade);
     settings.setModal(true);
     settings.exec();
-    m_Accounts = m_cmdFacade->getAccounts();
     SIPstate->refresh();
 }
 
