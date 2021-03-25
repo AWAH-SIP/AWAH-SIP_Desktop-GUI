@@ -146,6 +146,7 @@ struct s_account{
     int SIPStatusCode = 0;
     QString CallStatusText = "Idle... ";
     int CallStatusCode = 0;
+    QString ConnectedTo;
     QJsonObject toJSON() const {
         QJsonArray callHistoryJSON;
         for (auto & callhistory: CallHistory) {

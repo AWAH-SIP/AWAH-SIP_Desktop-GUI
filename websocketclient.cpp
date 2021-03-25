@@ -153,7 +153,7 @@ void WebsocketClient::regStateChanged(QJsonObject &data)
     int accId;
     bool status;
     if(jCheckInt(accId, data["accId"]) && jCheckBool(status, data["status"]) ) {
-        emit m_cmdFacade->regStateChanged(accId, status);
+        emit m_cmdFacade->StateChanged();;
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
@@ -164,13 +164,13 @@ void WebsocketClient::sipStatus(QJsonObject &data)
     int accId, status;
     QString remoteUri;
     if(jCheckInt(accId, data["accId"]) && jCheckInt(status, data["status"]) && jCheckString(remoteUri, data["remoteUri"])) {
-        emit m_cmdFacade->signalSipStatus(accId, status, remoteUri);
         for(auto& account : m_cmdFacade->m_Accounts){
             if(account.AccID == accId){
                 account.SIPStatusCode = status;
                 account.SIPStatusText = remoteUri;
             }
          }
+        emit m_cmdFacade->StateChanged();
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }
@@ -196,40 +196,11 @@ void WebsocketClient::callStateChanged(QJsonObject &data)
         for(auto& account : m_cmdFacade->m_Accounts){
             if(account.AccID == accID){
                 account.CallStatusCode = state;
-                QString CallTxt;
-                switch(state){
-                 case 0:
-                   CallTxt = "Disconnected ";
-                   break;
-
-                 case 1:
-                    CallTxt = "Calling ";
-                    break;
-
-                 case 2:
-                    CallTxt = "Incoming Call from " + remoteUri;
-                    break;
-
-                 case 3:
-                    CallTxt = "Connecting "+ statustxt;
-                   break;
-
-                case 4:
-                    CallTxt = "Connecting ";
-                    break;
-
-                case 5:
-                    CallTxt = "Connected to " + remoteUri;
-                    break;
-
-                case 6:
-                   CallTxt = "Disconnected " + statustxt;
-                   break;
-                }
-                account.CallStatusText = CallTxt;
+                account.CallStatusText = statustxt;
+                account.ConnectedTo = remoteUri;
             }
         }
-        emit m_cmdFacade->callStateChanged(accID, role, callId, remoteofferer, calldur, state, lastStatusCode, statustxt, remoteUri);
+        emit m_cmdFacade->StateChanged();
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }

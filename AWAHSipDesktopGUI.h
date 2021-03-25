@@ -70,7 +70,7 @@ private:
 
 
 private slots:
-    void Onsip_status(int accountid, int sipstatus ,QString statusText);
+    void OnStateChanged();
     void OnNewMessage(QString type, QByteArray message);
     void AccountsChanged(QList<s_account> *Accounts);
 

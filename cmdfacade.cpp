@@ -30,7 +30,7 @@ void CmdFacade::initializeVariables(){
             s_account entry;
             entry.fromJSON(entryObj);
             m_Accounts.append(entry);
-            emit signalSipStatus(entry.AccID , entry.SIPStatusCode, entry.SIPStatusText);
+            emit StateChanged();
         }
         m_AudioRoutes.clear();
         QJsonArray audioRoutesArr = cmd.getReturnData()["audioRoutesArray"].toArray();
@@ -338,7 +338,7 @@ int CmdFacade::changeConfPortLevel(int src_slot, int sink_slot, float level) con
     obj["command"] = "changeConfPortLevel";
     data["src_slot"] = src_slot;
     data["sink_slot"] = sink_slot;
-    data["level"] = level;
+    data["level"] = QString::number(level);
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
@@ -529,7 +529,7 @@ const QJsonObject CmdFacade::getCodecPriorities()
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
     if(!cmd.hasError()) {
-        m_getCodecPriorities = cmd.getReturnData()["settingsObj"].toObject();
+        m_getCodecPriorities = cmd.getReturnData()["codecPrioritiesObj"].toObject();
     }
     return m_getCodecPriorities;
 }

@@ -38,8 +38,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     void refresh();
 public slots:
-    void Onsip_status(int accountid, int sipstatus ,QString statusText);
-    void OnCallStateChanged(int accID, int role, int callId, bool remoteofferer, long calldur, int state, int lastStatusCode, QString statustxt, QString remoteUri);
     void onTableClicked(const QModelIndex &index);
 
 private:

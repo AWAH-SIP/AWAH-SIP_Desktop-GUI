@@ -63,9 +63,7 @@ public:
     void setSCodecPriorities(QJsonObject Codecpriority);
 
 signals:
-    void regStateChanged(int accId, bool status);
-    void signalSipStatus(int accId, int status, QString remoteUri);
-    void callStateChanged(int accID, int role, int callId, bool remoteofferer, long calldur, int state, int lastStatusCode, QString statustxt, QString remoteUri);
+    void StateChanged();
     void signalBuddyStatus(QString buddy, int status);
     void signalMessage(QString type, QByteArray message);
     void logMessage(QString msg);

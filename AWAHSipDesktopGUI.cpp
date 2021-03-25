@@ -62,15 +62,10 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
     restoreGeometry(settings.value("MainWindow/Geometry").toByteArray());
 
     connect(m_cmdFacade, &CmdFacade::AccountsChanged, this, &AWAHSipDesktopGUI::AccountsChanged);
+    connect(m_cmdFacade, &CmdFacade::StateChanged, this, &AWAHSipDesktopGUI::OnStateChanged);
 
     connect(ui->tableView, SIGNAL(pressed(const QModelIndex &)),
             SIPstate, SLOT(onTableClicked(const QModelIndex &)));
-
-    connect(m_cmdFacade, SIGNAL(signalSipStatus(int, int, QString )),
-            SIPstate, SLOT (Onsip_status(int, int,QString)));
-
-    connect(m_cmdFacade, SIGNAL(callStateChanged(int, int, int,bool,long, int, int, QString,QString)),
-           SIPstate, SLOT(OnCallStateChanged(int, int, int,bool,long, int, int, QString,QString)));
 
 //       connect(pjsua, SIGNAL(signalBuddyStatus(QString,int)),
 //               this, SIGNAL (buddy_status(QString,int)));
@@ -83,7 +78,6 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     connect(m_cmdFacade, SIGNAL(logMessage(QString)),
            m_uiLogWindow, SLOT(OnNewLogEntry(QString)));
-
 }
 
 
@@ -105,11 +99,8 @@ void AWAHSipDesktopGUI::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 }
 
-void AWAHSipDesktopGUI::Onsip_status(int accountid, int sipstatus ,QString statusText)
+void AWAHSipDesktopGUI::OnStateChanged()
 {
-    Q_UNUSED(accountid);
-    Q_UNUSED(sipstatus);
-    Q_UNUSED(statusText);
     SIPstate->refresh();
 }
 

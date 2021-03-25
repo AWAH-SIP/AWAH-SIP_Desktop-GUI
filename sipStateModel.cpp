@@ -22,8 +22,6 @@
 #include "makecall.h"
 #include "callstatistic.h"
 
-#define PJSUA_MAX_ACC 32  // TODO: Remove this!
-
 SipStateModel::SipStateModel(QObject *parent, QWidget *parentWidget, CmdFacade *lib)
     : QAbstractTableModel(parent), m_parentWidget(parentWidget), m_cmdFacade(lib)
 {
@@ -42,7 +40,7 @@ int SipStateModel::rowCount(const QModelIndex & /*parent*/) const
 
 int SipStateModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 7;       // 7th emtpy column to fill unused space
+    return 6;
 }
 
 QVariant SipStateModel::data(const QModelIndex &index, int role) const
@@ -66,7 +64,40 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
                 if(m_AccountList->at(index.row()).CallList.count()>1){
                     return "Multiple calls connected! ";
                 }
-                else return m_AccountList->at(index.row()).CallStatusText;
+                else{
+                    QString CallTxt;
+                    switch(m_AccountList->at(index.row()).CallStatusCode){
+                     case 0:
+                       CallTxt = "Disconnected ";
+                       break;
+
+                     case 1:
+                        CallTxt = "Calling ";
+                        break;
+
+                     case 2:
+                        CallTxt = "Incoming Call from " + m_AccountList->at(index.row()).ConnectedTo;
+                        break;
+
+                     case 3:
+                        CallTxt = "Connecting "+ m_AccountList->at(index.row()).CallStatusText;
+                       break;
+
+                    case 4:
+                        CallTxt = "Connecting ";
+                        break;
+
+                    case 5:
+                        CallTxt = "Connected to " + m_AccountList->at(index.row()).ConnectedTo;
+                        break;
+
+                    case 6:
+                       CallTxt = "Disconnected " + m_AccountList->at(index.row()).CallStatusText;
+                       break;
+                    }
+                    return CallTxt;
+                }
+
                 break;
     }
 
@@ -148,28 +179,6 @@ void SipStateModel::refresh() {
                      index(rowCount(), columnCount()));  // update whole view
     emit layoutChanged();
   }
-
-void SipStateModel::Onsip_status(int accountid, int sipstatus ,QString statusText)
-{
-    Q_UNUSED(accountid);
-    Q_UNUSED(sipstatus);
-    Q_UNUSED(statusText);
-    refresh();
-}
-
-void SipStateModel::OnCallStateChanged(int accID, int role, int callId, bool remoteofferer, long calldur, int state, int lastStatusCode, QString statustxt, QString remoteUri)
-{
-    Q_UNUSED(role);
-    Q_UNUSED(calldur);
-    Q_UNUSED(remoteofferer);
-    Q_UNUSED(lastStatusCode);
-    Q_UNUSED(callId);
-    Q_UNUSED(accID);
-    Q_UNUSED(state);
-    Q_UNUSED(statustxt);
-    Q_UNUSED(remoteUri);
-    refresh();
-}
 
 void SipStateModel::onTableClicked(const QModelIndex &index)
 {
