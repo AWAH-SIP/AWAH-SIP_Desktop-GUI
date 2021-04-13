@@ -66,6 +66,9 @@ private slots:
 
     void AudioDevicesChanged(QList<s_audioDevices>* audioDev);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     Ui::IOSettings *ui;
     CmdFacade *m_cmdFacade;

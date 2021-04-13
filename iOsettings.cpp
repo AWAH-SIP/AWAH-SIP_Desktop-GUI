@@ -29,6 +29,8 @@ IOSettings::IOSettings(QWidget *parent, CmdFacade *lib) :
     m_cmdFacade(lib)
 {
     ui->setupUi(this);
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    restoreGeometry(settings.value("IOSettings/Geometry").toByteArray());
     m_DeviceList = m_cmdFacade->getAudioDevices();
 
     devModel = new DevModel();
@@ -93,6 +95,12 @@ void IOSettings::AudioDevicesChanged(QList<s_audioDevices>* audioDev){
     ui->tableView->viewport()->update();
 }
 
+void IOSettings::closeEvent(QCloseEvent* event)
+{
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    settings.setValue("IOSettings/Geometry", saveGeometry());
+    QDialog::closeEvent(event);
+}
 
 // *********************** Device Model needed to display the sound devices ***************
 

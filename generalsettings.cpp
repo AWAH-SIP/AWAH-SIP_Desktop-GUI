@@ -29,6 +29,8 @@ GeneralSettings::GeneralSettings(QWidget *parent, CmdFacade *lib) :
     m_cmdFacade(lib)
 {
     ui->setupUi(this);
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    restoreGeometry(settings.value("GeneralSettings/Geometry").toByteArray());
     QModelIndex index;
     m_settings = m_cmdFacade->getSettings();
     m_GlobalSettings = m_settings->value("GlobalSettings").toObject();
@@ -154,5 +156,12 @@ void GeneralSettings::on_pushButton_ok_clicked()
 void GeneralSettings::on_pushButton_cancel_clicked()
 {
     GeneralSettings::close();
+}
+
+void GeneralSettings::closeEvent(QCloseEvent* event)
+{
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    settings.setValue("GeneralSettings/Geometry", saveGeometry());
+    QDialog::closeEvent(event);
 }
 

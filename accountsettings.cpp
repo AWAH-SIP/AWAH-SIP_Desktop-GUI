@@ -28,6 +28,8 @@ accountsettings::accountsettings(QWidget *parent, CmdFacade *lib):
 {
     connect( m_cmdFacade, &CmdFacade::AccountsChanged, this, &accountsettings::on_AccountsChanged );
     ui->setupUi(this);
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    restoreGeometry(settings.value("AccountSettingsWindow/Geometry").toByteArray());
     m_AccList = m_cmdFacade->getAccounts();
     accModel = new AccModel();
     accModel->setActiveAccounts(m_AccList);
@@ -105,6 +107,13 @@ void accountsettings::on_AccountsChanged(QList <s_account>* Accounts)
 {
     m_AccList = Accounts;
     accModel->refresh();
+}
+
+void accountsettings::closeEvent(QCloseEvent* event)
+{
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    settings.setValue("AccountSettingsWindow/Geometry", saveGeometry());
+    QDialog::closeEvent(event);
 }
 
 

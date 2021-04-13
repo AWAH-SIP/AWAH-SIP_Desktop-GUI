@@ -27,6 +27,9 @@ CodecSettings::CodecSettings(QWidget *parent, CmdFacade *lib, QString codecID) :
     m_cmdFacade(lib), m_codecID(codecID)
 {
     ui->setupUi(this);
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    restoreGeometry(settings.value("CodecSettingsWindow/Geometry").toByteArray());
+
     m_codecsetting = lib->getCodecParam(m_codecID);
     QModelIndex index;
 
@@ -73,4 +76,10 @@ void CodecSettings::on_pushButton_cancel_clicked()
     CodecSettings::close();
 }
 
+void CodecSettings::closeEvent(QCloseEvent* event)
+{
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    settings.setValue("CodecSettingsWindow/Geometry", saveGeometry());
+    QDialog::closeEvent(event);
+}
 

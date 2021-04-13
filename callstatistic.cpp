@@ -25,6 +25,8 @@ CallStatistic::CallStatistic(QWidget *parent, CmdFacade *lib, int AccID, int Cal
     m_cmdFacade(lib), m_AccID(AccID), m_CallID(CallID)
 {
     ui->setupUi(this);
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    restoreGeometry(settings.value("CallStatistic/Geometry").toByteArray());
     m_statModel = new StatisticModel(&m_callinfo,this);
     connect(m_cmdFacade, &CmdFacade::callInfo, this, &CallStatistic::on_callInfo);
     ui->tableView->setModel(m_statModel);
@@ -53,6 +55,13 @@ void CallStatistic::on_callInfo(int accId, int callId, QJsonObject callInfo)
         m_statModel->layoutChanged();
         ui->tableView->resizeColumnsToContents();
     }
+}
+
+void CallStatistic::closeEvent(QCloseEvent* event)
+{
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    settings.setValue("CallStatistic/Geometry", saveGeometry());
+    QDialog::closeEvent(event);
 }
 
 

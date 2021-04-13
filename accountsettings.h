@@ -70,6 +70,9 @@ private slots:
 
     void on_tableView_doubleClicked(const QModelIndex &index);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     Ui::accountsettings *ui;
     CmdFacade *m_cmdFacade;

@@ -47,6 +47,9 @@ private slots:
 
     void on_pushButton_cancel_clicked();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     Ui::CodecSettings *ui;
     CmdFacade *m_cmdFacade ;

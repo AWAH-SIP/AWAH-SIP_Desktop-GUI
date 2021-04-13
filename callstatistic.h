@@ -62,6 +62,9 @@ public:
 signals:
     void SignalDataChanged(QStringList statistic);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_pushButton_close_clicked();
     void on_callInfo(int accId, int callId, QJsonObject callInfo);

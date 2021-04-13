@@ -20,6 +20,12 @@ public:
 public slots:
     void OnNewLogEntry(QString message);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
+private slots:
+    void on_checkBox_autoscroll_stateChanged(int arg1);
+
 private:
     Ui::LogWindow *ui;
     CmdFacade *m_cmdFacade;

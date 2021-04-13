@@ -44,6 +44,9 @@ public:
     explicit GeneralSettings(QWidget *parent = nullptr, CmdFacade *lib = nullptr);
     ~GeneralSettings();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_pushButton_ok_clicked();
 

@@ -191,10 +191,10 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
         else if (m_AccountList->at(index.row()).CallList.count()>=1){
             QString message;
             if(m_AccountList->at(index.row()).CallList.count()>1){
-                message = "multiple calls connected!! \n\n Do you really want to dissconect all calls?";
+                message = "multiple calls connected!! \n\n Do you really want to disconnect all calls?";
             }
             else message = "Connected to: " + QString::number(m_AccountList->at(index.row()).CallList.first()) //heavily changed only to bring it to compile...
-                                                       + "\n\n Do you really want to dissconect this call?";
+                                                       + "\n\n Do you really want to disconnect this call?";
             int ret = QMessageBox::question(m_parentWidget, tr("AWAHSip Call"),
                                    tr(message.toLocal8Bit()));
             if(ret == QMessageBox::Yes){
@@ -212,7 +212,6 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
    if (index.isValid() && index.column()== 5) {
        if (m_AccountList->at(index.row()).CallList.count()){
             CallStatistic callstat(m_parentWidget, m_cmdFacade, m_AccountList->at(index.row()).AccID, m_AccountList->at(index.row()).CallList.first());
-            callstat.setModal(false);
             callstat.exec();
        }
    }
