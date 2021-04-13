@@ -34,7 +34,14 @@ addSoundDev::~addSoundDev()
     delete ui;
 }
 
-void addSoundDev::on_buttonBox_accepted()
+
+void addSoundDev::on_pushButton_addDev_clicked()
 {
     m_cmdFacade->addAudioDevice(ui->comboBox_RecDev->currentIndex(),ui->comboBox_PbDev->currentIndex());
+    addSoundDev::close();
+}
+
+void addSoundDev::on_pushButton_cancel_clicked()
+{
+    addSoundDev::close();
 }
