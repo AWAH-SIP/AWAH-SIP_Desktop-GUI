@@ -75,6 +75,7 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     m_uiRouteWindow = new Route(m_cmdFacade, this);
     m_uiLogWindow = new LogWindow(this, m_cmdFacade);
+    m_CallStatisticWindow = new CallStatistic();
 
     connect(m_cmdFacade, SIGNAL(logMessage(QString)),
            m_uiLogWindow, SLOT(OnNewLogEntry(QString)));
@@ -85,9 +86,11 @@ AWAHSipDesktopGUI::~AWAHSipDesktopGUI()
 {
     delete ui;
     delete m_uiRouteWindow;
+    delete m_uiLogWindow;
     delete SIPstate;
     m_cmdFacade->disconnect();
     delete m_cmdFacade;
+
 }
 
 
@@ -96,6 +99,17 @@ void AWAHSipDesktopGUI::closeEvent(QCloseEvent *event)
     QSettings settings("awah", "AWAHSipDesktopGUI");
     settings.setValue("MainWindow/Geometry", saveGeometry());
     m_websocketClient->closeConnection();
+    m_uiLogWindow->close();
+    m_uiRouteWindow->close();
+    if (m_IOSettings != nullptr){
+        delete m_IOSettings;
+    }
+    if (m_generalSettings != nullptr){
+        delete m_generalSettings;
+    }
+    if (m_accountSettings != nullptr){
+        delete m_accountSettings;
+    }
     QMainWindow::closeEvent(event);
 }
 
@@ -119,18 +133,18 @@ void AWAHSipDesktopGUI::on_actionAWAH_triggered()
 
 void AWAHSipDesktopGUI::on_actionAudi_I_O_triggered()
 {
-    IOSettings iosetting(this,m_cmdFacade);
-    iosetting.setModal(true);
-    iosetting.exec();
+    m_IOSettings = new IOSettings(this,m_cmdFacade);
+    m_IOSettings->setModal(true);
+    m_IOSettings->exec();
 }
 
 
 
 void AWAHSipDesktopGUI::on_actionAccounts_triggered()
 {
-    accountsettings settings(this,m_cmdFacade);
-    settings.setModal(true);
-    settings.exec();
+    m_accountSettings = new accountsettings(this,m_cmdFacade);
+    m_accountSettings->setModal(true);
+    m_accountSettings->exec();
     SIPstate->refresh();
 }
 
@@ -145,15 +159,18 @@ void AWAHSipDesktopGUI::on_actionRouting_triggered()
 
 void AWAHSipDesktopGUI::on_actionSettings_triggered()
 {
-    GeneralSettings settings(this, m_cmdFacade);
-    settings.setModal(true);
-    settings.exec();
+    m_generalSettings = new GeneralSettings (this, m_cmdFacade);
+    m_generalSettings->setModal(true);
+    m_generalSettings->exec();
 }
 
 void AWAHSipDesktopGUI::on_actionLog_triggered()
 {
-    if(m_uiLogWindow->isHidden())
+    if(m_uiLogWindow->isHidden()){
         m_uiLogWindow->show();
+        QSettings settings("awah", "AWAHSipDesktopGUI");
+        m_uiLogWindow->restoreGeometry(settings.value("LogWindow/Geometry").toByteArray());
+    }
     else
         m_uiLogWindow->hide();
 }

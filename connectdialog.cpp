@@ -72,6 +72,7 @@ void ConnectDialog::on_Connected(){
             history.removeLast();
         }
     }
+    else history.move(history.lastIndexOf(wsUrl),0);    // move existing entry to the first entry
     m_timeoutTimer->stop();
 }
 

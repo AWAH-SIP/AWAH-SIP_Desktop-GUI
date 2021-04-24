@@ -30,6 +30,10 @@
 #include "logwindow.h"
 #include "cmdfacade.h"
 #include "websocketclient.h"
+#include "callstatistic.h"
+#include "iOsettings.h"
+#include "generalsettings.h"
+#include "accountsettings.h"
 
 #define APPVERSION
 
@@ -64,9 +68,11 @@ private:
     RotatedHeaderView *m_RotHeaderView;
     QList<s_account> *m_Accounts;
     Route *m_uiRouteWindow;
-    LogWindow *m_uiLogWindow;
-
-
+    LogWindow *m_uiLogWindow = nullptr;;
+    CallStatistic *m_CallStatisticWindow = nullptr;;
+    IOSettings *m_IOSettings = nullptr;
+    GeneralSettings *m_generalSettings = nullptr;
+    accountsettings *m_accountSettings = nullptr;
 
 
 private slots:
