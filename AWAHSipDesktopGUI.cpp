@@ -52,12 +52,15 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     ui->tableView->setModel(SIPstate);
     ui->tableView->resizeColumnsToContents();
+    ui->tableView->setColumnWidth(0, 100);
+    ui->tableView->setColumnWidth(1, 80);
     ui->tableView->setColumnWidth(2, 200);
     ui->tableView->setColumnWidth(3, 250);
     ui->tableView->setColumnWidth(4, 30);
     ui->tableView->setColumnWidth(5, 30);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     restoreGeometry(settings.value("MainWindow/Geometry").toByteArray());
 

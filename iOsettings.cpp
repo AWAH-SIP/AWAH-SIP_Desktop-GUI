@@ -93,6 +93,7 @@ void IOSettings::AudioDevicesChanged(QList<s_audioDevices>* audioDev){
     m_DeviceList = audioDev;
     devModel->refresh();
     ui->tableView->viewport()->update();
+    ui->tableView->resizeColumnsToContents();
 }
 
 void IOSettings::closeEvent(QCloseEvent* event)

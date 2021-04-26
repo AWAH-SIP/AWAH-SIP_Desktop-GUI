@@ -34,6 +34,7 @@ Route::Route(CmdFacade *lib, QWidget *parent) :
     ui->tableView_audioRoutes->verticalHeader()->setDefaultAlignment(Qt::AlignRight);
     ui->tableView_audioRoutes->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableView_audioRoutes->setModel(m_AudioRoutesModel);
+    ui->tableView_audioRoutes->setSelectionMode(QAbstractItemView::NoSelection);
 
     QSettings settings("awah", "AWAHSipDesktopGUI");
     restoreGeometry(settings.value("RoutingWindow/Geometry").toByteArray());

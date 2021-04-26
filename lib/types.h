@@ -202,6 +202,7 @@ struct s_account{
         SIPStatusText = accountJSON["SIPStatusText"].toString();
         CallStatusCode = accountJSON["CallStatusCode"].toInt();
         CallStatusText = accountJSON["CallStatusText"].toString();
+        ConnectedTo = accountJSON["ConnectedTo"].toString();
         return this;
     }
 };
