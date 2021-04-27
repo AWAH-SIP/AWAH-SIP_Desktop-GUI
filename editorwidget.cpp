@@ -151,7 +151,7 @@ m_setting(*setting)
         case STRING:
             layout->addWidget(lineBox);
             break;
-        case BOOL:
+        case BOOL_T:
             layout->addWidget(checkBox);
             break;
         default:

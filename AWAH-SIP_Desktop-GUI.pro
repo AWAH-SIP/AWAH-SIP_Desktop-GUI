@@ -84,5 +84,6 @@ FORMS += \
 RESOURCES += \
     icons.qrc
 
+RC_ICONS = images/AWAH_logo_sm.ico
 
 DISTFILES +=

@@ -295,7 +295,7 @@ Q_DECLARE_METATYPE(QList<s_audioRoutes>);
 enum settingType{
     INTEGER,
     STRING,
-    BOOL,
+    BOOL_T,
     ENUM
 };
 Q_ENUMS(settingType)
