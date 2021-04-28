@@ -158,7 +158,11 @@ QVariant DevModel::data(const QModelIndex &index, int role) const
                 return m_DeviceList->at(index.row()).outputame;
                 break;
     }
-
+    if(role == Qt::BackgroundColorRole){
+            if(m_DeviceList->at(index.row()).devicetype== SoundDevice)
+                if(m_DeviceList->at(index.row()).PBDevID ==-1 || m_DeviceList->at(index.row()).RecDevID == -1)
+                    return QBrush(QColor(255, 153, 153)); // light red
+    }
     return QVariant();
 }
 
