@@ -116,7 +116,7 @@ struct s_callHistory{
     s_callHistory* fromJSON(const QJsonObject &callHistoryJSON) {
         callUri = callHistoryJSON["callUri"].toString();
         duration = callHistoryJSON["duration"].toInt();
-        codec = callHistoryJSON["codec"].toInt();
+        codec = callHistoryJSON["codec"].toString();
         outgoing = callHistoryJSON["outgoing"].toBool();
         count = callHistoryJSON["count"].toInt();
         return this;

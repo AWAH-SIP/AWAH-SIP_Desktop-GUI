@@ -35,6 +35,20 @@ MakeCall::MakeCall(QWidget *parent, CmdFacade *lib, int AccID) :
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
 
+    const s_account* account = m_cmdFacade->getAccountByID(AccID);
+    QString URI = account->CallHistory.at(0).callUri;
+    int startPos = URI.indexOf("sip:") + 4;
+    int endPos = URI.indexOf('@');
+    int length = endPos - startPos;
+    ui->lineEditNumber->setText(URI.mid(startPos, length));
+
+    for(int i=0;i<ui->selcectCodecBox->count();i++){            // we have to search the entry because we don't have the full name e.g. only "opus" instead of "opus/48000/2"
+        if(ui->selcectCodecBox->itemText(i).contains(account->CallHistory.at(0).codec)){
+            ui->selcectCodecBox->setCurrentIndex(i);
+            break;
+        }
+    }
+
     connect(ui->tableView, SIGNAL(pressed(const QModelIndex &)),
             CallHistory, SLOT(onTableClicked(const QModelIndex &)));
 
