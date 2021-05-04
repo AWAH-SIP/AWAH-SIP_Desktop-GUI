@@ -48,10 +48,6 @@ private slots:
 
     void on_lineEdit_password_textEdited(const QString &arg1);
 
-    void on_pushButtonbrowserec_clicked();
-
-    void on_pushButton_browsepath_clicked();
-
     void on_checkBox_enablerec_stateChanged(int arg1);
 
     void on_checkBox_enableplayer_stateChanged(int arg1);

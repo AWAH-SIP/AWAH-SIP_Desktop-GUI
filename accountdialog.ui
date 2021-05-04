@@ -122,21 +122,14 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
+      <y>60</y>
       <width>311</width>
-      <height>71</height>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <layout class="QFormLayout" name="formLayout_2">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButtonbrowserec">
-         <property name="text">
-          <string>browse</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_recorddir">
          <property name="text">
@@ -157,7 +150,7 @@
       <x>0</x>
       <y>20</y>
       <width>71</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -236,9 +229,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
+      <y>50</y>
       <width>311</width>
-      <height>71</height>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
@@ -248,13 +241,6 @@
         <widget class="QLabel" name="label_filepah">
          <property name="text">
           <string>file path:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_browsepath">
-         <property name="text">
-          <string>browse</string>
          </property>
         </widget>
        </item>
@@ -271,7 +257,7 @@
       <x>0</x>
       <y>20</y>
       <width>71</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -287,7 +273,7 @@
       <x>80</x>
       <y>20</y>
       <width>241</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">

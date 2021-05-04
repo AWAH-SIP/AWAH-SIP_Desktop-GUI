@@ -54,8 +54,9 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account) :
         ui->lineEdit_recdir->setHidden(1);
         ui->lineEdit_rec_template->setHidden(1);
         ui->label_rectemplate->setHidden(1);
-        ui->pushButtonbrowserec->setHidden(1);
         ui->label_recorddir->setHidden(1);
+        ui->label_tempdef1->setHidden(1);
+        ui->label_tempdef2->setHidden(1);
     }
 
    if(!m_s_account->FilePlayPath.isEmpty()){
@@ -64,7 +65,6 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account) :
    }
    else{
        ui->lineEdit_playpath->setHidden(1);
-       ui->pushButton_browsepath->setHidden(1);
        ui->label_filepah->setHidden(1);
    }
 
@@ -122,34 +122,23 @@ void AccountDialog::on_lineEdit_password_textEdited(const QString &arg1)
     editedaccount.password = arg1;
 }
 
-void AccountDialog::on_pushButtonbrowserec_clicked()
-{
-    QString recpath =  QFileDialog::getExistingDirectory(this, tr("Choose record directory"),  QDir::homePath(), QFileDialog::ReadOnly);
-    ui->lineEdit_recdir->setText(recpath);
-}
-
-void AccountDialog::on_pushButton_browsepath_clicked()
-{
-    QString playpath = QFileDialog::getOpenFileName(this,
-             tr("Open Sound File"), QDir::homePath(), tr("wav Files (*.wav)"));
-    ui->lineEdit_playpath->setText(playpath);
-}
-
 void AccountDialog::on_checkBox_enablerec_stateChanged(int arg1)
 {
     if(arg1){
         ui->lineEdit_recdir->setHidden(0);
-        ui->pushButtonbrowserec->setHidden(0);
         ui->label_recorddir->setHidden(0);
         ui->lineEdit_rec_template->setHidden(0);
         ui->label_rectemplate->setHidden(0);
+        ui->label_tempdef1->setHidden(0);
+        ui->label_tempdef2->setHidden(0);
     }
     else{
         ui->lineEdit_recdir->setHidden(1);
-        ui->pushButtonbrowserec->setHidden(1);
         ui->label_recorddir->setHidden(1);
         ui->lineEdit_rec_template->setHidden(1);
         ui->label_rectemplate->setHidden(1);
+        ui->label_tempdef1->setHidden(1);
+        ui->label_tempdef2->setHidden(1);
         editedaccount.FileRecordPath.clear();
    }
 }
@@ -158,12 +147,10 @@ void AccountDialog::on_checkBox_enableplayer_stateChanged(int arg1)
 {
     if(arg1){
         ui->lineEdit_playpath->setHidden(0);
-        ui->pushButton_browsepath->setHidden(0);
         ui->label_filepah->setHidden(0);
     }
     else{
         ui->lineEdit_playpath->setHidden(1);
-        ui->pushButton_browsepath->setHidden(1);
         ui->label_filepah->setHidden(1);
         editedaccount.FilePlayPath.clear();
     }
