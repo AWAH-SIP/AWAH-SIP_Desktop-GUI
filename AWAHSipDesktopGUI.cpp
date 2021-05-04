@@ -30,7 +30,6 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
     ui(new Ui::AWAHSipDesktopGUI),
     m_websocketClient(WebSocket)
 {
-    //CmdFacade::prepareLib();
 
     QSettings settings("awah", "AWAHSipDesktopGUI");
     QCoreApplication::setOrganizationName("awah");
@@ -43,7 +42,7 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     m_cmdFacade = new CmdFacade(this, m_websocketClient);
     m_websocketClient->setCmdFacade(m_cmdFacade);
-     m_cmdFacade->initializeVariables();
+    m_cmdFacade->initializeVariables();
     ui->setupUi(this);
 
     SIPstate = new SipStateModel(this, this, m_cmdFacade);
@@ -55,7 +54,7 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
     ui->tableView->setColumnWidth(0, 100);
     ui->tableView->setColumnWidth(1, 80);
     ui->tableView->setColumnWidth(2, 200);
-    ui->tableView->setColumnWidth(3, 250);
+    ui->tableView->setColumnWidth(3, 280);
     ui->tableView->setColumnWidth(4, 30);
     ui->tableView->setColumnWidth(5, 30);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
@@ -78,7 +77,6 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     m_uiRouteWindow = new Route(m_cmdFacade, this);
     m_uiLogWindow = new LogWindow(this, m_cmdFacade);
-    m_CallStatisticWindow = new CallStatistic();
 
     connect(m_cmdFacade, SIGNAL(logMessage(QString)),
            m_uiLogWindow, SLOT(OnNewLogEntry(QString)));
@@ -90,7 +88,7 @@ AWAHSipDesktopGUI::~AWAHSipDesktopGUI()
     delete ui;
     delete m_uiRouteWindow;
     delete m_uiLogWindow;
-    delete SIPstate;
+    //delete SIPstate;
     m_cmdFacade->disconnect();
     delete m_cmdFacade;
 
@@ -104,6 +102,7 @@ void AWAHSipDesktopGUI::closeEvent(QCloseEvent *event)
     m_websocketClient->closeConnection();
     m_uiLogWindow->close();
     m_uiRouteWindow->close();
+    delete SIPstate;
     if (m_IOSettings != nullptr){
         delete m_IOSettings;
     }

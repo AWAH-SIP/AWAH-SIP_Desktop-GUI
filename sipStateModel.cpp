@@ -28,6 +28,12 @@ SipStateModel::SipStateModel(QObject *parent, QWidget *parentWidget, CmdFacade *
 
 }
 
+SipStateModel::~SipStateModel()
+{
+    qDeleteAll(*m_CallStatistics);
+    m_CallStatistics->clear();
+}
+
 void SipStateModel::setActiveAccounts(QList <s_account> *accounts)
 {
     m_AccountList = accounts;
@@ -211,8 +217,11 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
      }
    if (index.isValid() && index.column()== 5) {
        if (m_AccountList->at(index.row()).CallList.count()){
-            CallStatistic callstat(m_parentWidget, m_cmdFacade, m_AccountList->at(index.row()).AccID, m_AccountList->at(index.row()).CallList.first());
-            callstat.exec();
+            CallStatistic *callstat = nullptr;
+            callstat   = new CallStatistic(m_parentWidget, m_cmdFacade, m_AccountList->at(index.row()).AccID, m_AccountList->at(index.row()).CallList.first());
+            m_CallStatistics->append(callstat);
+            callstat->show();
+
        }
    }
 }

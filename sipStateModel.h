@@ -23,6 +23,7 @@
 #include "lib/types.h"
 #include "cmdfacade.h"
 #include <QStringListModel>
+#include "callstatistic.h"
 
 
 
@@ -31,6 +32,7 @@ class SipStateModel : public QAbstractTableModel
     Q_OBJECT;
 public:
     SipStateModel(QObject *parent = nullptr, QWidget* parentWidget = nullptr, CmdFacade *lib = nullptr);
+    ~SipStateModel();
     void setActiveAccounts(QList <s_account> *accounts);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -44,6 +46,7 @@ private:
     QWidget* m_parentWidget;
     QList <s_account> *m_AccountList;
     CmdFacade *m_cmdFacade;
+    QList <CallStatistic*> *m_CallStatistics = new QList<CallStatistic*>(); ;
 };
 
 #endif // SIPSTATEMODEL_H

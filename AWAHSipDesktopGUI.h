@@ -69,10 +69,12 @@ private:
     QList<s_account> *m_Accounts;
     Route *m_uiRouteWindow;
     LogWindow *m_uiLogWindow = nullptr;;
-    CallStatistic *m_CallStatisticWindow = nullptr;;
+    //CallStatistic *m_CallStatisticWindow = nullptr;;
+    QList <CallStatistic*> *m_CallStatistics = new QList<CallStatistic*>();
     IOSettings *m_IOSettings = nullptr;
     GeneralSettings *m_generalSettings = nullptr;
     accountsettings *m_accountSettings = nullptr;
+
 
 
 private slots:
