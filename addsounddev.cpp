@@ -25,8 +25,8 @@ addSoundDev::addSoundDev(QWidget *parent, CmdFacade *lib) :
 {
     ui->setupUi(this);
     m_cmdFacade = lib;
-    ui->comboBox_PbDev->addItems(m_cmdFacade->listSoundDev());
-    ui->comboBox_RecDev->addItems(m_cmdFacade->listSoundDev());
+    ui->comboBox_PbDev->addItems(m_cmdFacade->listOutputSoundDev());
+    ui->comboBox_RecDev->addItems(m_cmdFacade->listInputSoundDev());
 }
 
 addSoundDev::~addSoundDev()
@@ -37,7 +37,7 @@ addSoundDev::~addSoundDev()
 
 void addSoundDev::on_pushButton_addDev_clicked()
 {
-    m_cmdFacade->addAudioDevice(ui->comboBox_RecDev->currentIndex(),ui->comboBox_PbDev->currentIndex());
+    m_cmdFacade->addAudioDevice(m_cmdFacade->getSoundDevID(ui->comboBox_RecDev->currentText()),m_cmdFacade->getSoundDevID(ui->comboBox_PbDev->currentText()));
     addSoundDev::close();
 }
 

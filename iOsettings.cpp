@@ -21,7 +21,7 @@
 #include <QInputDialog>
 #include "addsounddev.h"
 #include "addfileplayer.h"
-
+#include "addgpio.h"
 
 IOSettings::IOSettings(QWidget *parent, CmdFacade *lib) :
     QDialog(parent),
@@ -89,7 +89,15 @@ void IOSettings::on_pushButton_add_play_clicked()
     fileplayer.exec();
 }
 
-void IOSettings::AudioDevicesChanged(QList<s_audioDevices>* audioDev){
+
+void IOSettings::on_pushButton_add_GPIO_clicked()
+{
+    addGPIO gpio(this,m_cmdFacade);
+    gpio.setModal(true);
+    gpio.exec();
+}
+
+void IOSettings::AudioDevicesChanged(QList<s_IODevices>* audioDev){
     m_DeviceList = audioDev;
     devModel->refresh();
     ui->tableView->viewport()->update();
@@ -111,7 +119,7 @@ DevModel::DevModel(QObject *parent)
 
 }
 
-void DevModel::setActiveDevices(QList <s_audioDevices> *devices)
+void DevModel::setActiveDevices(QList <s_IODevices> *devices)
 {
     m_DeviceList = devices;
 }

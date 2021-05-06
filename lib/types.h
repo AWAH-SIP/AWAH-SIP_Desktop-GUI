@@ -48,13 +48,17 @@ enum DeviceType {
     SoundDevice,
     TestToneGenerator,
     FilePlayer,
-    FileRecorder
+    FileRecorder,
+    GPIODevice
 };
 Q_ENUMS(DeviceType)
 
+enum GPIOprotocol {
+    WebSocketDevice
+};
+Q_ENUMS(GPIOprotocol)
 
-
-struct s_audioDevices{
+struct s_IODevices{
     DeviceType devicetype;
     QString uid;
     QString inputname;
@@ -64,17 +68,18 @@ struct s_audioDevices{
     int RecDevID;                   // only for devicetype AudioDevice
     int PBDevID;
     QString path;                   // ony for devicetype Fileplayer, FileRecorder
+    GPIOprotocol GPIOprotocol;
     QJsonObject toJSON() const {
         QJsonArray portNrArr;
         for (auto & port: portNo) {
             portNrArr.append(port);
         }
         return {{"devicetype", devicetype}, {"uid", uid}, {"inputname", inputname}, {"outputname", outputame}, {"portNo", portNrArr},
-                {"genfrequency", genfrequency}, {"RecDevID", RecDevID}, {"PBDevID", PBDevID}, {"path", path},};
+            {"genfrequency", genfrequency}, {"RecDevID", RecDevID}, {"PBDevID", PBDevID}, {"path", path}, {"GPIOprotocol", GPIOprotocol},};
     }
-    s_audioDevices* fromJSON(QJsonObject &audioDeviceJSON) {
-        QJsonArray portNrArr = audioDeviceJSON["portNo"].toArray();
-        switch (audioDeviceJSON["devicetype"].toInt()) {
+    s_IODevices* fromJSON(QJsonObject &IODevicesJSON) {
+        QJsonArray portNrArr = IODevicesJSON["portNo"].toArray();
+        switch (IODevicesJSON["devicetype"].toInt()) {
         case SoundDevice:
             devicetype = SoundDevice;
             break;
@@ -87,22 +92,29 @@ struct s_audioDevices{
         case FileRecorder:
             devicetype = FileRecorder;
             break;
+        case GPIODevice:
+            devicetype = GPIODevice;
         }
-        uid = audioDeviceJSON["uid"].toString();
-        inputname = audioDeviceJSON["inputname"].toString();
-        outputame = audioDeviceJSON["outputname"].toString();
+        uid = IODevicesJSON["uid"].toString();
+        inputname = IODevicesJSON["inputname"].toString();
+        outputame = IODevicesJSON["outputname"].toString();
         for (auto portNrObj : portNrArr) {
             portNo.append(portNrObj.toInt());
         }
-        genfrequency = audioDeviceJSON["genfrequency"].toInt();
-        RecDevID = audioDeviceJSON["RecDevID"].toInt();
-        PBDevID = audioDeviceJSON["PBDevID"].toInt();
-        path = audioDeviceJSON["path"].toString();
+        genfrequency = IODevicesJSON["genfrequency"].toInt();
+        RecDevID = IODevicesJSON["RecDevID"].toInt();
+        PBDevID = IODevicesJSON["PBDevID"].toInt();
+        path = IODevicesJSON["path"].toString();
+        switch (IODevicesJSON["GPIOprotocol"].toInt()) {
+        case WebSocketDevice:
+            GPIOprotocol = WebSocketDevice;
+            break;
+        }
         return this;
     }
 };
-Q_DECLARE_METATYPE(s_audioDevices);
-Q_DECLARE_METATYPE( QList<s_audioDevices>);
+Q_DECLARE_METATYPE(s_IODevices);
+Q_DECLARE_METATYPE( QList<s_IODevices>);
 
 struct s_callHistory{
     QString callUri;

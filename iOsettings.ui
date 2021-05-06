@@ -85,6 +85,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButton_add_GPIO">
+       <property name="text">
+        <string>Add GPIO</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButton_remove_dev">
        <property name="minimumSize">
         <size>
@@ -108,7 +118,7 @@
    <item row="0" column="2">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>active I/O devices:</string>
+      <string>I/O devices:</string>
      </property>
     </widget>
    </item>

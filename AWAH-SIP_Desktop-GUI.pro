@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    ../AWAH-SIP_Desktop-GUI/addgpio.cpp \
     AWAHSipDesktopGUI.cpp \
     accountdialog.cpp \
     cmdfacade.cpp \
@@ -45,6 +46,7 @@ SOURCES += \
     websocketclient.cpp
 
 HEADERS += \
+    ../AWAH-SIP_Desktop-GUI/addgpio.h \
     AWAHSipDesktopGUI.h \
     accountdialog.h \
     cmdfacade.h \
@@ -66,6 +68,7 @@ HEADERS += \
     websocketclient.h
 
 FORMS += \
+    ../AWAH-SIP_Desktop-GUI/addgpio.ui \
     AWAHSipDesktopGUI.ui \
     accountdialog.ui \
     connectdialog.ui \

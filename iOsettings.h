@@ -29,14 +29,14 @@ class DevModel : public QAbstractTableModel
     Q_OBJECT;
 public:
     DevModel(QObject *parent = nullptr);
-    void setActiveDevices(QList <s_audioDevices> *devices);
+    void setActiveDevices(QList <s_IODevices> *devices);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     void refresh();
 private:
-    QList <s_audioDevices> *m_DeviceList;
+    QList <s_IODevices> *m_DeviceList;
 
 };
 
@@ -64,7 +64,9 @@ private slots:
 
     void on_pushButton_add_play_clicked();
 
-    void AudioDevicesChanged(QList<s_audioDevices>* audioDev);
+    void on_pushButton_add_GPIO_clicked();
+
+    void AudioDevicesChanged(QList<s_IODevices>* audioDev);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -72,7 +74,7 @@ protected:
 private:
     Ui::IOSettings *ui;
     CmdFacade *m_cmdFacade;
-    QList <s_audioDevices> *m_DeviceList;
+    QList <s_IODevices> *m_DeviceList;
     DevModel *devModel;
 };
 

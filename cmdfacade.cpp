@@ -45,7 +45,7 @@ void CmdFacade::initializeVariables(){
         QJsonArray audioDevArr = cmd.getReturnData()["audioDevicesArray"].toArray();
         for (auto && audioDev : qAsConst(audioDevArr)) {
             QJsonObject entryObj = audioDev.toObject();
-            s_audioDevices entry;
+            s_IODevices entry;
             entry.fromJSON(entryObj);
             m_AudioDevices.append(entry);
         }
@@ -205,16 +205,33 @@ QList <s_audioRoutes> CmdFacade::getAudioRoutes()
     return m_AudioRoutes;
 }
 
-QStringList CmdFacade::listSoundDev()
+QStringList CmdFacade::listInputSoundDev()
 {
     QJsonObject obj, data;
-    obj["command"] = "listSoundDev";
+    obj["command"] = "listInputSoundDev";
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
     if(!cmd.hasError()) {
         m_listSoundDev.clear();
-        QJsonArray soundDevArr = cmd.getReturnData()["soundDeviceArray"].toArray();
+        QJsonArray soundDevArr = cmd.getReturnData()["soundInputDeviceArray"].toArray();
+        for (auto && soundDev : qAsConst(soundDevArr)) {
+            m_listSoundDev.append(soundDev.toString());
+        }
+    }
+    return m_listSoundDev;
+}
+
+QStringList CmdFacade::listOutputSoundDev()
+{
+    QJsonObject obj, data;
+    obj["command"] = "listOutputSoundDev";
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(!cmd.hasError()) {
+        m_listSoundDev.clear();
+        QJsonArray soundDevArr = cmd.getReturnData()["soundOutputDeviceArray"].toArray();
         for (auto && soundDev : qAsConst(soundDevArr)) {
             m_listSoundDev.append(soundDev.toString());
         }
@@ -364,7 +381,22 @@ int CmdFacade::addToneGen(int freq) const
     }
 }
 
-QList<s_audioDevices>* CmdFacade::getAudioDevices()
+int CmdFacade::getSoundDevID(QString DeviceName)
+{
+    QJsonObject obj, data;
+    obj["command"] = "getSoundDevID";
+    data["DeviceName"] = DeviceName;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(cmd.hasError()) {
+        return -1;
+    } else {
+        return cmd.getReturnData()["returnValue"].toInt();
+    }
+}
+
+QList<s_IODevices>* CmdFacade::getAudioDevices()
 {
     return &m_AudioDevices;
 }

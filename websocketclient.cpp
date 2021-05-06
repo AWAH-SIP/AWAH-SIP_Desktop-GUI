@@ -275,7 +275,7 @@ void WebsocketClient::AudioDevicesChanged(QJsonObject &data){
         m_cmdFacade->m_AudioDevices.clear();
         for (auto && device : qAsConst(AudioDevArr)) {
             QJsonObject deviceObj = device.toObject();
-            s_audioDevices AudDev;
+            s_IODevices AudDev;
             AudDev.fromJSON(deviceObj);
             m_cmdFacade->m_AudioDevices.append(AudDev);
         }
