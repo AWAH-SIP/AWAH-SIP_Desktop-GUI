@@ -13,100 +13,154 @@
   <property name="windowTitle">
    <string>add GPIO device</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="4">
-    <widget class="QPushButton" name="pushButton_ok">
-     <property name="text">
-      <string>ok</string>
-     </property>
-     <property name="default">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <widget class="QPushButton" name="pushButton_cancel">
-     <property name="text">
-      <string>cancel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Protocol:</string>
+      <string>Type:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="2" rowspan="2" colspan="3">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>WebSocket GPIO:</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Type:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="lineEdit_name"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBox_Device"/>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Name:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QComboBox" name="comboBox_Type"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Select device:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="comboBox_Direction"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Direction:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Port number:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="comboBox_Port"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="3" colspan="2">
+   <item row="0" column="1">
     <widget class="QComboBox" name="comboBox_6">
      <property name="minimumSize">
       <size>
        <width>79</width>
        <height>0</height>
       </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <widget class="QWidget" name="VirtualGPIO">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" rowspan="2" colspan="2">
+        <widget class="QGroupBox" name="groupBox_virual">
+         <property name="title">
+          <string>Virtual GPIO</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_nameVirutal"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Inputs:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox_InputsVirutal"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Outpus:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="spinBox_OutpustVirtual"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="AndGate">
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0" colspan="3">
+        <widget class="QGroupBox" name="groupBox_and">
+         <property name="title">
+          <string>And Gate</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_NameAnd"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Inputs:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox_InputsAnd"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="OrGate">
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>OR Gate</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_NameOr"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox_InputOr"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Inptuts:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="pushButton_cancel">
+     <property name="text">
+      <string>cancel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="pushButton_ok">
+     <property name="text">
+      <string>ok</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

@@ -43,7 +43,6 @@ void ConnectDialog::on_pushButton_connect_clicked()
     else{
         if(wsUrl.isValid()){
             ui->label_connstate->setText("trying to connect...");
-            ui->pushButton_connect->setText("disconnect");
             m_websocketClient->openConnection(wsUrl);
             m_timeoutTimer->start();
         }
@@ -72,7 +71,20 @@ void ConnectDialog::on_Connected(){
             history.removeLast();
         }
     }
-    else history.move(history.lastIndexOf(wsUrl),0);    // move existing entry to the first entry
+    else history.move(history.lastIndexOf(wsUrl.toDisplayString()),0);    // move existing entry to the first entry
+
+    while(ui->listWidget->count()>0)        // we have to clear the list widget and refill it in order to update it
+    {
+      delete ui->listWidget->takeItem(0);
+    }
+
+    QList<QUrl>::iterator i;
+    for (i = history.begin(); i != history.end(); ++i){
+        ui->listWidget->addItem(i->toDisplayString());
+    }
+    wsUrl = history.at(0);
+    ui->lineEdit->setText(wsUrl.host());
+    ui->spinBox->setValue(wsUrl.port());
     m_timeoutTimer->stop();
 }
 
@@ -123,7 +135,9 @@ void ConnectDialog::timeoutSlot()
 
 void ConnectDialog::on_listWidget_currentRowChanged(int currentRow)
 {
-    wsUrl = history.at(currentRow);
-    ui->lineEdit->setText(wsUrl.host());
-    ui->spinBox->setValue(wsUrl.port());
+        if(currentRow >0 && currentRow < history.count()){
+            wsUrl = history.at(currentRow);
+            ui->lineEdit->setText(wsUrl.host());
+            ui->spinBox->setValue(wsUrl.port());
+        }
 }

@@ -24,6 +24,8 @@ private slots:
 
     void on_pushButton_cancel_clicked();
 
+    void on_comboBox_6_currentIndexChanged(int index);
+
 private:
     Ui::addGPIO *ui;
     CmdFacade *m_cmdFacade;
