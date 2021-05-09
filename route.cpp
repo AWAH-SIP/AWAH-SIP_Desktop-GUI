@@ -36,6 +36,16 @@ Route::Route(CmdFacade *lib, QWidget *parent) :
     ui->tableView_audioRoutes->setModel(m_AudioRoutesModel);
     ui->tableView_audioRoutes->setSelectionMode(QAbstractItemView::NoSelection);
 
+    m_GpioRouteModel = new GpioRouteModel(m_cmdFacade, ui, this);
+    m_gpioRotHeaderView = new RotatedHeaderView(Qt::Horizontal);
+    ui->tableView_gpioRoutes->setHorizontalHeader(m_gpioRotHeaderView);
+    ui->tableView_gpioRoutes->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    ui->tableView_gpioRoutes->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tableView_gpioRoutes->verticalHeader()->setDefaultAlignment(Qt::AlignRight);
+    ui->tableView_gpioRoutes->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tableView_gpioRoutes->setModel(m_GpioRouteModel);
+    ui->tableView_gpioRoutes->setSelectionMode(QAbstractItemView::NoSelection);
+
     QSettings settings("awah", "AWAHSipDesktopGUI");
     restoreGeometry(settings.value("RoutingWindow/Geometry").toByteArray());
 
@@ -49,6 +59,16 @@ Route::Route(CmdFacade *lib, QWidget *parent) :
     qRegisterMetaType<s_audioPortList>("s_audioPortList");
     connect(lib, SIGNAL(audioRoutesTableChanged(const s_audioPortList&)),
             m_AudioRoutesModel, SLOT(onTableChanged(const s_audioPortList&)));
+
+    connect(ui->tableView_gpioRoutes, SIGNAL(pressed(const QModelIndex &)),
+            m_GpioRouteModel, SLOT(onTableClicked(const QModelIndex &)));
+
+    qRegisterMetaType<QList<s_gpioRoute>>("QList<s_gpioRoute>");
+    qRegisterMetaType<s_gpioPortList>("s_gpioPortList");
+    connect(m_cmdFacade, &CmdFacade::gpioRoutesChanged, m_GpioRouteModel, &GpioRouteModel::onRoutesChanged);
+    connect(m_cmdFacade, &CmdFacade::gpioRoutesTableChanged, m_GpioRouteModel, &GpioRouteModel::onTableChanged);
+    connect(m_cmdFacade, &CmdFacade::gpioStatesChanged, m_GpioRouteModel, &GpioRouteModel::onStatesChanged);
+
 }
 
 Route::~Route()
@@ -56,6 +76,8 @@ Route::~Route()
     delete ui;
     delete m_AudioRoutesModel;
     delete m_RotHeaderView;
+    delete m_GpioRouteModel;
+    delete m_gpioRotHeaderView;
 }
 
 

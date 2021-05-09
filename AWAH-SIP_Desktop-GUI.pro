@@ -30,6 +30,7 @@ SOURCES += \
     cmdfacade.cpp \
     connectdialog.cpp \
     generalsettings.cpp \
+    gpioroutemodel.cpp \
     iOsettings.cpp \
     sipStateModel.cpp \
     accountsettings.cpp \
@@ -52,6 +53,7 @@ HEADERS += \
     cmdfacade.h \
     connectdialog.h \
     generalsettings.h \
+    gpioroutemodel.h \
     iOsettings.h \
     sipStateModel.h \
     accountsettings.h \

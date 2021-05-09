@@ -63,6 +63,7 @@ public:
     void connectGpioPort(QString srcSlotId, QString destSlotId, bool inverted, bool persistant = true);
     void disconnectGpioPort(QString srcSlotId, QString destSlotId);
     void changeGpioCrosspoint(QString srcSlotId, QString destSlotId, bool inverted);
+    const QMap<QString, bool> getGpioStates();
 
     // Public API - Log
     QStringList readNewestLog();
@@ -109,6 +110,7 @@ private:
     QList<s_gpioRoute> m_gpioRoutes;
     s_gpioPortList m_gpioPortList;
     QMap<QString, bool> m_changedGpios;
+    QMap<QString, bool> m_getGpioStates;
 
     friend class WebsocketClient;
 };

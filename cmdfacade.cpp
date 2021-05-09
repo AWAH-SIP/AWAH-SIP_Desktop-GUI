@@ -73,6 +73,15 @@ void CmdFacade::initializeVariables(){
 
         QJsonObject gpioPortListObj = cmd.getReturnData()["gpioPortList"].toObject();
         m_gpioPortList.fromJSON(gpioPortListObj);
+
+        m_getGpioStates.clear();
+        QJsonArray gpioStatesArr = cmd.getReturnData()["gpioStatesArray"].toArray();
+        for (auto && gpioState: qAsConst(gpioStatesArr)) {
+            if(gpioState.isObject()) {
+                QJsonObject gpioStateObj = gpioState.toObject();
+                m_getGpioStates[gpioStateObj["slotID"].toString()] = gpioStateObj["state"].toBool();
+            }
+        }
     }
 }
 
@@ -584,6 +593,11 @@ void CmdFacade::changeGpioCrosspoint(QString srcSlotId, QString destSlotId, bool
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
+}
+
+const QMap<QString, bool> CmdFacade::getGpioStates()
+{
+    return m_getGpioStates;
 }
 
 // Public API - Log

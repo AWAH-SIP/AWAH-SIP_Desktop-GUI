@@ -23,6 +23,7 @@
 #include "lib/types.h"
 #include "cmdfacade.h"
 #include "audioroutemodel.h"
+#include "gpioroutemodel.h"
 
 
 namespace Ui {
@@ -43,8 +44,10 @@ protected:
 private:
     Ui::Route *ui;
     CmdFacade *m_cmdFacade;
-    AudioRouteModel *m_AudioRoutesModel ;
+    AudioRouteModel *m_AudioRoutesModel;
+    GpioRouteModel *m_GpioRouteModel;
     RotatedHeaderView *m_RotHeaderView;
+    RotatedHeaderView *m_gpioRotHeaderView;
 };
 
 #endif // ROUTE_H

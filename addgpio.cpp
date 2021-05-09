@@ -14,9 +14,9 @@ addGPIO::addGPIO(QWidget *parent, CmdFacade *lib) :
     ui->spinBox_InputsVirutal->setMaximum(16);
     ui->spinBox_OutpustVirtual->setMinimum(0);
     ui->spinBox_OutpustVirtual->setMaximum(16);
-    ui->spinBox_InputOr->setMinimum(1);
+    ui->spinBox_InputOr->setMinimum(2);
     ui->spinBox_InputOr->setMaximum(8);
-    ui->spinBox_InputsAnd->setMinimum(1);
+    ui->spinBox_InputsAnd->setMinimum(2);
     ui->spinBox_InputsAnd->setMaximum(8);
 
 }
@@ -30,12 +30,15 @@ void addGPIO::on_pushButton_ok_clicked()
     switch (ui->stackedWidget->currentIndex()) {
         case 0:
             qDebug() << "Add Virtual GPIO: " << ui->lineEdit_nameVirutal->text() << "inputs: " << ui->spinBox_InputsVirutal->value() << "outputs: " << ui->spinBox_OutpustVirtual->value();
+            m_cmdFacade->createGpioDev(VirtualGpioDevice, ui->spinBox_InputsVirutal->value(), ui->spinBox_OutpustVirtual->value(), ui->lineEdit_nameVirutal->text());
             break;
         case 1:
             qDebug() << "Add Virtual AND Gate: " << ui->lineEdit_NameAnd->text() << "inputs: " << ui->spinBox_InputsAnd->value();
+            m_cmdFacade->createGpioDev(LogicAndGpioDevice, 1, ui->spinBox_InputsAnd->value(), ui->lineEdit_NameAnd->text());
             break;
         case 2:
             qDebug() << "Add Virtual Or Gate: " << ui->lineEdit_NameOr->text() << "inputs: " << ui->spinBox_InputOr->value();
+            m_cmdFacade->createGpioDev(LogicOrGpioDevice, 1, ui->spinBox_InputOr->value(), ui->lineEdit_NameOr->text());
             break;
     }
     addGPIO::close();

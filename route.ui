@@ -20,7 +20,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Audio">
       <attribute name="title">
@@ -111,8 +111,38 @@
        <string>GPIO</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
+       <item row="1" column="2">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0" colspan="3">
         <widget class="QTableView" name="tableView_gpioRoutes"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="defInversion_checkBox">
+         <property name="text">
+          <string>Default Normal Routes</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="gpioTmpRoute_checkBox">
+         <property name="text">
+          <string>temporary Route</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
