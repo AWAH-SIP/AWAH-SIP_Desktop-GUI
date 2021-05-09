@@ -49,6 +49,30 @@ void CmdFacade::initializeVariables(){
             entry.fromJSON(entryObj);
             m_AudioDevices.append(entry);
         }
+
+        QJsonObject audioPortListObj = cmd.getReturnData()["confPortList"].toObject();
+        m_getConfPortsList.fromJSON(audioPortListObj);
+
+        m_gpioRoutes.clear();
+        QJsonArray gpioRoutesArr = cmd.getReturnData()["gpioRoutesArray"].toArray();
+        for (auto && gpioRoute : qAsConst(gpioRoutesArr)) {
+            QJsonObject entryObj = gpioRoute.toObject();
+            s_gpioRoute entry;
+            entry.fromJSON(entryObj);
+            m_gpioRoutes.append(entry);
+        }
+
+        m_gpioDevices.clear();
+        QJsonArray gpioDevArr = cmd.getReturnData()["gpioDevicesArray"].toArray();
+        for (auto && gpioDev : qAsConst(gpioDevArr)) {
+            QJsonObject entryObj = gpioDev.toObject();
+            s_IODevices entry;
+            entry.fromJSON(entryObj);
+            m_gpioDevices.append(entry);
+        }
+
+        QJsonObject gpioPortListObj = cmd.getReturnData()["gpioPortList"].toObject();
+        m_gpioPortList.fromJSON(gpioPortListObj);
     }
 }
 
@@ -303,15 +327,6 @@ int CmdFacade::addFileRecorder(QString File) const
 
 const s_audioPortList& CmdFacade::getConfPortsList()
 {
-    QJsonObject obj, data;
-    obj["command"] = "getConfPortsList";
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(!cmd.hasError()) {
-        QJsonObject confPortListObj = cmd.getReturnData()["confPortList"].toObject();
-        m_getConfPortsList.fromJSON(confPortListObj);
-    }
     return m_getConfPortsList;
 }
 
@@ -495,6 +510,81 @@ int CmdFacade::setCodecParam(QString codecId, QJsonObject codecParam) const
     }
 }
 
+// Public API - GpioDeviceManager
+void CmdFacade::createGpioDev(DeviceType type, uint inCount, uint outCount, QString devName)
+{
+    QJsonObject obj, data;
+    obj["command"] = "createGpioDev";
+    data["type"] = type;
+    data["inCount"] = (int) inCount;
+    data["outCount"] = (int) outCount;
+    data["devName"] = devName;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient, true);
+    cmd.execute();
+}
+
+void CmdFacade::removeGpioDevice(QString uid)
+{
+    QJsonObject obj, data;
+    obj["command"] = "removeGpioDevice";
+    data["uid"] = uid;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient, true);
+    cmd.execute();
+}
+
+const QList<s_IODevices>& CmdFacade::getGpioDevices() const
+{
+    return m_gpioDevices;
+}
+
+// Public API - GpioRouter
+const QList<s_gpioRoute>& CmdFacade::getGpioRoutes()
+{
+    return m_gpioRoutes;
+}
+
+const s_gpioPortList& CmdFacade::getGpioPortsList()
+{
+    return m_gpioPortList;
+}
+
+void CmdFacade::connectGpioPort(QString srcSlotId, QString destSlotId, bool inverted, bool persistant)
+{
+    QJsonObject obj, data;
+    obj["command"] = "connectGpioPort";
+    data["srcSlotId"] = srcSlotId;
+    data["destSlotId"] = destSlotId;
+    data["inverted"] = inverted;
+    data["persistant"] = persistant;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient, true);
+    cmd.execute();
+}
+
+void CmdFacade::disconnectGpioPort(QString srcSlotId, QString destSlotId)
+{
+    QJsonObject obj, data;
+    obj["command"] = "disconnectGpioPort";
+    data["srcSlotId"] = srcSlotId;
+    data["destSlotId"] = destSlotId;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient, true);
+    cmd.execute();
+}
+
+void CmdFacade::changeGpioCrosspoint(QString srcSlotId, QString destSlotId, bool inverted)
+{
+    QJsonObject obj, data;
+    obj["command"] = "changeGpioCrosspoint";
+    data["srcSlotId"] = srcSlotId;
+    data["destSlotId"] = destSlotId;
+    data["inverted"] = inverted;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient, true);
+    cmd.execute();
+}
 
 // Public API - Log
 QStringList CmdFacade::readNewestLog()

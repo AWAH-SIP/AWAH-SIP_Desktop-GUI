@@ -291,6 +291,65 @@ void WebsocketClient::callInfo(QJsonObject &data){
     }
 }
 
+void WebsocketClient::gpioDevicesChanged(QJsonObject &data){
+    QJsonArray gpioDevArr;
+    if(jCheckArray(gpioDevArr, data["GpioDevices"])){
+        m_cmdFacade->m_gpioDevices.clear();
+        for (auto && device : qAsConst(gpioDevArr)) {
+            QJsonObject deviceObj = device.toObject();
+            s_IODevices gpioDev;
+            gpioDev.fromJSON(deviceObj);
+            m_cmdFacade->m_gpioDevices.append(gpioDev);
+        }
+    }
+    emit m_cmdFacade->gpioDevicesChanged(m_cmdFacade->m_gpioDevices);
+}
+
+void WebsocketClient::gpioRoutesChanged(QJsonObject &data)
+{
+    QJsonArray gpioRoutesArr;
+    if(jCheckArray(gpioRoutesArr, data["gpioRoutes"])) {
+        m_cmdFacade->m_gpioRoutes.clear();
+        for (auto && gpioRoute: qAsConst(gpioRoutesArr)) {
+            if(gpioRoute.isObject()) {
+                s_gpioRoute entry;
+                m_cmdFacade->m_gpioRoutes.append(*entry.fromJSON(gpioRoute.toObject()));
+            }
+        }
+        emit m_cmdFacade->gpioRoutesChanged(m_cmdFacade->m_gpioRoutes);
+    } else {
+        qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
+    }
+}
+
+void WebsocketClient::gpioRoutesTableChanged(QJsonObject &data)
+{
+    QJsonObject portListObj;
+    if(jCheckObject(portListObj, data["portList"])) {
+        m_cmdFacade->m_gpioPortList.fromJSON(portListObj);
+        emit m_cmdFacade->gpioRoutesTableChanged(m_cmdFacade->m_gpioPortList);
+    } else {
+        qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
+    }
+}
+
+void WebsocketClient::gpioStatesChanged(QJsonObject &data)
+{
+    QJsonArray gpioStatesArr;
+    if(jCheckArray(gpioStatesArr, data["gpioStates"])) {
+        m_cmdFacade->m_changedGpios.clear();
+        for (auto && gpioState: qAsConst(gpioStatesArr)) {
+            if(gpioState.isObject()) {
+                QJsonObject gpioStateObj = gpioState.toObject();
+                m_cmdFacade->m_changedGpios[gpioStateObj["slotID"].toString()] = gpioStateObj["state"].toBool();
+            }
+        }
+        emit m_cmdFacade->gpioStatesChanged(m_cmdFacade->m_changedGpios);
+    } else {
+        qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
+    }
+}
+
 
 void WebsocketClient::sendCommand(QJsonObject &completeRequestObj)
 {

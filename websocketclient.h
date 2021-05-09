@@ -43,6 +43,10 @@ private slots:
     void AccountsChanged(QJsonObject &data);
     void AudioDevicesChanged(QJsonObject &data);
     void callInfo(QJsonObject &data);
+    void gpioDevicesChanged(QJsonObject &data);
+    void gpioRoutesChanged(QJsonObject &data);
+    void gpioRoutesTableChanged(QJsonObject &data);
+    void gpioStatesChanged(QJsonObject &data);
 
 private:
     void sendCommand(QJsonObject &completeRequestObj);

@@ -152,6 +152,8 @@ QVariant DevModel::data(const QModelIndex &index, int role) const
                     case FileRecorder:
                         return "File Recorder";
                         break;
+                default:
+                    return "Unknown Device";
                 }
 
                 if(m_DeviceList->at(index.row()).devicetype== SoundDevice)

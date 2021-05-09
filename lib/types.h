@@ -49,14 +49,12 @@ enum DeviceType {
     TestToneGenerator,
     FilePlayer,
     FileRecorder,
-    GPIODevice
+    VirtualGpioDevice,
+    LogicAndGpioDevice,
+    LogicOrGpioDevice,
+    AccountGpioDevice
 };
 Q_ENUMS(DeviceType)
-
-enum GPIOprotocol {
-    WebSocketDevice
-};
-Q_ENUMS(GPIOprotocol)
 
 struct s_IODevices{
     DeviceType devicetype;
@@ -68,18 +66,19 @@ struct s_IODevices{
     int RecDevID;                   // only for devicetype AudioDevice
     int PBDevID;
     QString path;                   // ony for devicetype Fileplayer, FileRecorder
-    GPIOprotocol GPIOprotocol;
+    uint inChannelCount = 0;
+    uint outChannelCount = 0;
     QJsonObject toJSON() const {
         QJsonArray portNrArr;
         for (auto & port: portNo) {
             portNrArr.append(port);
         }
         return {{"devicetype", devicetype}, {"uid", uid}, {"inputname", inputname}, {"outputname", outputame}, {"portNo", portNrArr},
-            {"genfrequency", genfrequency}, {"RecDevID", RecDevID}, {"PBDevID", PBDevID}, {"path", path}, {"GPIOprotocol", GPIOprotocol},};
+                {"genfrequency", genfrequency}, {"RecDevID", RecDevID}, {"PBDevID", PBDevID}, {"path", path}, {"inChannelCount", (int) inChannelCount}, {"outChannelCount", (int) outChannelCount}};
     }
-    s_IODevices* fromJSON(QJsonObject &IODevicesJSON) {
-        QJsonArray portNrArr = IODevicesJSON["portNo"].toArray();
-        switch (IODevicesJSON["devicetype"].toInt()) {
+    s_IODevices* fromJSON(QJsonObject &ioDeviceJSON) {
+        QJsonArray portNrArr = ioDeviceJSON["portNo"].toArray();
+        switch (ioDeviceJSON["devicetype"].toInt()) {
         case SoundDevice:
             devicetype = SoundDevice;
             break;
@@ -92,24 +91,31 @@ struct s_IODevices{
         case FileRecorder:
             devicetype = FileRecorder;
             break;
-        case GPIODevice:
-            devicetype = GPIODevice;
+        case VirtualGpioDevice:
+            devicetype = VirtualGpioDevice;
+            break;
+        case LogicAndGpioDevice:
+            devicetype = LogicAndGpioDevice;
+            break;
+        case LogicOrGpioDevice:
+            devicetype = LogicOrGpioDevice;
+            break;
+        case AccountGpioDevice:
+            devicetype = AccountGpioDevice;
+            break;
         }
-        uid = IODevicesJSON["uid"].toString();
-        inputname = IODevicesJSON["inputname"].toString();
-        outputame = IODevicesJSON["outputname"].toString();
+        uid = ioDeviceJSON["uid"].toString();
+        inputname = ioDeviceJSON["inputname"].toString();
+        outputame = ioDeviceJSON["outputname"].toString();
         for (auto portNrObj : portNrArr) {
             portNo.append(portNrObj.toInt());
         }
-        genfrequency = IODevicesJSON["genfrequency"].toInt();
-        RecDevID = IODevicesJSON["RecDevID"].toInt();
-        PBDevID = IODevicesJSON["PBDevID"].toInt();
-        path = IODevicesJSON["path"].toString();
-        switch (IODevicesJSON["GPIOprotocol"].toInt()) {
-        case WebSocketDevice:
-            GPIOprotocol = WebSocketDevice;
-            break;
-        }
+        genfrequency = ioDeviceJSON["genfrequency"].toInt();
+        RecDevID = ioDeviceJSON["RecDevID"].toInt();
+        PBDevID = ioDeviceJSON["PBDevID"].toInt();
+        path = ioDeviceJSON["path"].toString();
+        inChannelCount = (uint) ioDeviceJSON["inChannelCount"].toInt();
+        outChannelCount = (uint) ioDeviceJSON["outChannelCount"].toInt();
         return this;
     }
 };
@@ -312,5 +318,70 @@ enum settingType{
 };
 Q_ENUMS(settingType)
 
+struct s_gpioPort{
+    QString name;
+    QString slotId;
+    QJsonObject toJSON() const {
+        return {{"name",name}, {"slotId",slotId}};
+    }
+    s_gpioPort* fromJSON(const QJsonObject &audioPortJSON) {
+        name = audioPortJSON["name"].toString();
+        slotId = audioPortJSON["slotId"].toString();
+        return this;
+    }
+};
+Q_DECLARE_METATYPE(s_gpioPort);
+
+struct s_gpioPortList{
+    QList<s_gpioPort> srcPorts;
+    QList<s_gpioPort> destPorts;
+    QJsonObject toJSON() const {
+        QJsonArray srcPortsArr, destPortsArr;
+        for (auto & srcPort: srcPorts) {
+            srcPortsArr.append(srcPort.toJSON());
+        }
+        for (auto & destPort: destPorts) {
+            destPortsArr.append(destPort.toJSON());
+        }
+        return {{"srcPorts", srcPortsArr}, {"destPorts", destPortsArr}};
+    }
+    s_gpioPortList* fromJSON(QJsonObject &gpioPortListJSON) {
+        QJsonArray srcPortArr, destPortArr;
+        srcPorts.clear();
+        destPorts.clear();
+        if(gpioPortListJSON["srcPorts"].isArray() && gpioPortListJSON["destPorts"].isArray()) {
+            s_gpioPort entry;
+            srcPortArr = gpioPortListJSON["srcPorts"].toArray();
+            destPortArr = gpioPortListJSON["destPorts"].toArray();
+            for (auto srcPort : srcPortArr) {
+                srcPorts.append(*entry.fromJSON(srcPort.toObject()));
+            }
+            for (auto destPort : destPortArr) {
+                destPorts.append(*entry.fromJSON(destPort.toObject()));
+            }
+        }
+        return this;
+    }
+};
+Q_DECLARE_METATYPE(s_gpioPortList);
+
+struct s_gpioRoute{
+    QString srcSlotId;
+    QString destSlotId;
+    bool inverted;
+    bool persistant;
+    QJsonObject toJSON() const {
+        return {{"srcSlotId", srcSlotId}, {"destSlotId", destSlotId}, {"inverted", inverted}, {"persistant", persistant} };
+    }
+    s_gpioRoute* fromJSON(const QJsonObject &audioRouteJSON) {
+        srcSlotId = audioRouteJSON["srcSlotId"].toString();
+        destSlotId = audioRouteJSON["destSlot"].toString();
+        inverted = audioRouteJSON["inverted"].toBool();
+        persistant = audioRouteJSON["persistant"].toBool();
+        return this;
+    }
+};
+Q_DECLARE_METATYPE(s_gpioRoute);
+Q_DECLARE_METATYPE(QList<s_gpioRoute>);
 
 #endif // TYPES_H

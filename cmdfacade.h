@@ -52,6 +52,18 @@ public:
     const QJsonObject getCodecParam(QString codecId) const;
     int setCodecParam(QString codecId, QJsonObject codecParam) const;
 
+    // Public API - GpioDeviceManager
+    void createGpioDev(DeviceType type, uint inCount, uint outCount, QString devName);
+    void removeGpioDevice(QString uid);
+    const QList<s_IODevices>& getGpioDevices() const;
+
+    // Public API - GpioRouter
+    const QList<s_gpioRoute>& getGpioRoutes();
+    const s_gpioPortList& getGpioPortsList();
+    void connectGpioPort(QString srcSlotId, QString destSlotId, bool inverted, bool persistant = true);
+    void disconnectGpioPort(QString srcSlotId, QString destSlotId);
+    void changeGpioCrosspoint(QString srcSlotId, QString destSlotId, bool inverted);
+
     // Public API - Log
     QStringList readNewestLog();
 
@@ -74,6 +86,10 @@ signals:
     void AccountsChanged(QList <s_account> *Accounts);
     void AudioDevicesChanged(QList<s_IODevices>* audioDev);
     void callInfo(int accId, int callId,QJsonObject callInfo);
+    void gpioDevicesChanged(const QList<s_IODevices>& deviceList);
+    void gpioRoutesChanged(const QList<s_gpioRoute>& routes);
+    void gpioRoutesTableChanged(const s_gpioPortList& portList);
+    void gpioStatesChanged(const QMap<QString, bool> changedGpios);
 
 private:
     WebsocketClient *m_wsClient;
@@ -89,6 +105,10 @@ private:
     QStringList m_readNewestLog;
     QJsonObject m_getSettings;
     QJsonObject m_getCodecPriorities;
+    QList<s_IODevices> m_gpioDevices;
+    QList<s_gpioRoute> m_gpioRoutes;
+    s_gpioPortList m_gpioPortList;
+    QMap<QString, bool> m_changedGpios;
 
     friend class WebsocketClient;
 };
