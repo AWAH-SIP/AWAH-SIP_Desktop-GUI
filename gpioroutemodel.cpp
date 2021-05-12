@@ -43,9 +43,9 @@ QVariant GpioRouteModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundColorRole:
         if(m_routes.at(idx) != 0){
             if(m_routesPersistant.at(idx))
-                return QBrush(Qt::darkGreen);
+                return QBrush(QColor(113, 183, 144));
             else
-                return QBrush(Qt::blue);
+                return QBrush(QColor(145, 157, 157));
         }
         break;
 
@@ -72,7 +72,7 @@ QVariant GpioRouteModel::headerData(int section, Qt::Orientation orientation, in
         }else {
             active = m_srcStateMap.value(m_gpioPortList.srcPorts.at(section).slotId, false);
         }
-        return active ? QBrush(QColor(0, 191, 0)) : QVariant();
+        return active ? QBrush(QColor(113, 183, 144)) : QVariant();
         break;
     default:
         break;
@@ -169,7 +169,7 @@ void GpioRouteModel::setCrosspoint(const QModelIndex &index)
         inv = false;
     }else{
         QString invStr = QInputDialog::getItem(m_uiParent->tableView_gpioRoutes,
-                                               tr("Set Crosspoint from %1 to %2").arg(m_gpioPortList.srcPorts.at(index.row()).name).arg(m_gpioPortList.destPorts.at(index.column()).name),
+                                               tr("Set Crosspoint from %1 to %2").arg(m_gpioPortList.srcPorts.at(index.row()).name, m_gpioPortList.destPorts.at(index.column()).name),
                                                tr("Signal Inversion:"), {"normal", "inverted"}, 0, false, &ok);
         inv = (invStr == "inverted") ? true : false;
     }
@@ -183,7 +183,7 @@ void GpioRouteModel::changeCrosspointInversion(const QModelIndex &index)
     int idx = index.row() * m_rowWidth + index.column();
     bool ok, inv;
     QString invStr = QInputDialog::getItem(m_uiParent->tableView_gpioRoutes,
-                                           tr("Change Inversion from %1 to %2").arg(m_gpioPortList.srcPorts.at(index.row()).name).arg(m_gpioPortList.destPorts.at(index.column()).name),
+                                           tr("Change Inversion from %1 to %2").arg(m_gpioPortList.srcPorts.at(index.row()).name, m_gpioPortList.destPorts.at(index.column()).name),
                                            tr("Signal Inversion:"), {"normal", "inverted"},
                                            m_routesInverted.at(idx) ? 1 : 0, false, &ok);
     inv = (invStr == "inverted") ? true : false;

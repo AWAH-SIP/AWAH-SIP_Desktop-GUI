@@ -110,29 +110,29 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
     if(role == Qt::BackgroundColorRole)
         if (index.column()== 2) {
             if(m_AccountList->at(index.row()).SIPStatusCode<200)
-            return QBrush(QColor(102, 153, 255)); // light blue
+            return QBrush(QColor(145, 157, 157));   // stone
 
             else if(m_AccountList->at(index.row()).SIPStatusCode<300)
-            return QBrush(QColor(153, 255, 153));  // light green
+            return QBrush(QColor(113, 183, 144));   // green
 
             else if(m_AccountList->at(index.row()).SIPStatusCode>299)
-            return QBrush(QColor(255, 153, 153)); // light red
+            return QBrush(QColor(229, 85, 79));     // red
         }
     if(role == Qt::BackgroundColorRole)
         if (index.column()== 3) {
             if(m_AccountList->at(index.row()).CallStatusCode==0 ||m_AccountList->at(index.row()).CallStatusCode==6){
                 if (m_AccountList->at(index.row()).CallList.count()== 0)
                     return QVariant();
-                else return QBrush(QColor(153, 255, 153));
+                else return QBrush(QColor(230, 166, 93));   // If from multiple Calls one is disconnected
             }
             else if(m_AccountList->at(index.row()).CallStatusCode==5  && m_AccountList->at(index.row()).CallList.count()==1)
-                return QBrush(QColor(153, 255, 153));  // light green if only one call is connected
+                return QBrush(QColor(113, 183, 144));   // green if only one call is connected
 
             else if(m_AccountList->at(index.row()).CallStatusCode==5 && m_AccountList->at(index.row()).CallList.count()>1)
-              return QBrush(QColor(255, 194, 153));     // light orange if more than one call is connected
+              return QBrush(QColor(230, 166, 93));      // peach if more than one call is connected
 
             else
-            return QBrush(QColor(255, 255, 153));   // light yellow
+            return QBrush(QColor(179, 213, 125));       // lime
         }
 
     if (role== Qt::DecorationRole){

@@ -58,9 +58,9 @@ QVariant AudioRouteModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundColorRole:
         if(m_routes.at(idx) != 0){
             if(m_routesPersistant.at(idx))
-                return QBrush(Qt::darkGreen);
+                return QBrush(QColor(113, 183, 144));
             else
-                return QBrush(Qt::blue);
+                return QBrush(QColor(145, 157, 157));
         }
         break;
 
