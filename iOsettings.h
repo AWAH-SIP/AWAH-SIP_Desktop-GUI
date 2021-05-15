@@ -58,11 +58,7 @@ public:
 private slots:
     void on_pushButton_add_snd_dev_clicked();
 
-    void on_pushButton_add_generator_clicked();
-
     void on_pushButton_remove_dev_clicked();
-
-    void on_pushButton_add_play_clicked();
 
     void on_pushButton_add_GPIO_clicked();
 

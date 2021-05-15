@@ -41,6 +41,8 @@ private slots:
 
     void on_pushButton_cancel_clicked();
 
+    void on_comboBox_devType_currentIndexChanged(int index);
+
 private:
     Ui::addSoundDev *ui;
     CmdFacade *m_cmdFacade;

@@ -25,8 +25,16 @@ addSoundDev::addSoundDev(QWidget *parent, CmdFacade *lib) :
 {
     ui->setupUi(this);
     m_cmdFacade = lib;
+    ui->comboBox_devType->addItem("Sound device");
+    ui->comboBox_devType->addItem("Generator");
+    ui->comboBox_devType->addItem("File player");
     ui->comboBox_PbDev->addItems(m_cmdFacade->listOutputSoundDev());
     ui->comboBox_RecDev->addItems(m_cmdFacade->listInputSoundDev());
+    ui->spinBox_GenFreq->setMinimum(20);
+    ui->spinBox_GenFreq->setMaximum(20000);
+    ui->spinBox_GenFreq->setValue(440);
+
+
 }
 
 addSoundDev::~addSoundDev()
@@ -37,11 +45,30 @@ addSoundDev::~addSoundDev()
 
 void addSoundDev::on_pushButton_addDev_clicked()
 {
-    m_cmdFacade->addAudioDevice(m_cmdFacade->getSoundDevID(ui->comboBox_RecDev->currentText()),m_cmdFacade->getSoundDevID(ui->comboBox_PbDev->currentText()));
+    switch (ui->stackedWidget->currentIndex()) {
+        case 0:
+        m_cmdFacade->addAudioDevice(m_cmdFacade->getSoundDevID(ui->comboBox_RecDev->currentText()),m_cmdFacade->getSoundDevID(ui->comboBox_PbDev->currentText()));
+        break;
+    case 1:
+        m_cmdFacade->addToneGen(ui->spinBox_GenFreq->value());
+        break;
+    case 2:
+        m_cmdFacade->addFilePlayer(ui->lineEdit_playerName->text(),ui->lineEdit_playerPath->text());
+        break;
+    default:
+        break;
+
+    }
+
     addSoundDev::close();
 }
 
 void addSoundDev::on_pushButton_cancel_clicked()
 {
     addSoundDev::close();
+}
+
+void addSoundDev::on_comboBox_devType_currentIndexChanged(int index)
+{
+    ui->stackedWidget->setCurrentIndex(index);
 }

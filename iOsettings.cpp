@@ -62,16 +62,6 @@ void IOSettings::on_pushButton_add_snd_dev_clicked()
     sounddev.exec();
 }
 
-void IOSettings::on_pushButton_add_generator_clicked()
-{
-    bool ok ;
-    int freq = QInputDialog::getInt(0,"add Generator","Frequency in Hz", 1000, 50, 20000, 1, &ok);
-    if (ok)
-    {
-        m_cmdFacade->addToneGen(freq);
-    }
-}
-
 void IOSettings::on_pushButton_remove_dev_clicked()
 {
     QModelIndexList indexList = ui->tableView->selectionModel()->selectedIndexes();
@@ -81,14 +71,6 @@ void IOSettings::on_pushButton_remove_dev_clicked()
     }
        m_cmdFacade->removeAudioDevice(row);
 }
-
-void IOSettings::on_pushButton_add_play_clicked()
-{
-    AddFilePlayer fileplayer(this,m_cmdFacade);
-    fileplayer.setModal(true);
-    fileplayer.exec();
-}
-
 
 void IOSettings::on_pushButton_add_GPIO_clicked()
 {
