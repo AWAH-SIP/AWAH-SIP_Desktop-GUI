@@ -37,18 +37,14 @@ ConnectDialog::~ConnectDialog()
 
 void ConnectDialog::on_pushButton_connect_clicked()
 {
-    if(m_websocketClient->isConnected()){
-        m_websocketClient->closeConnection();
+    if(wsUrl.isValid()){
+        ui->label_connstate->setText("trying to connect...");
+        m_websocketClient->openConnection(wsUrl);
+        ui->pushButton_connect->setDisabled(1);
+        m_timeoutTimer->start();
     }
     else{
-        if(wsUrl.isValid()){
-            ui->label_connstate->setText("trying to connect...");
-            m_websocketClient->openConnection(wsUrl);
-            m_timeoutTimer->start();
-        }
-        else{
-            ui->label_connstate->setText("invalid Adress!!");
-        }
+        ui->label_connstate->setText("invalid Adress!!");
     }
 }
 
@@ -60,7 +56,6 @@ void ConnectDialog::on_pushButton_close_clicked()
 
 void ConnectDialog::on_Connected(){
     DesktopGui = new AWAHSipDesktopGUI(nullptr, m_websocketClient);
-    ui->label_connstate->setText("connected");
     DesktopGui->show();
     this->hide();
 
@@ -90,7 +85,7 @@ void ConnectDialog::on_Connected(){
 
 void ConnectDialog::on_Disconnected(){
      ui->label_connstate->setText("connection closed");
-     ui->pushButton_connect->setText("connect");
+     ui->pushButton_connect->setDisabled(0);
      if(DesktopGui->isVisible()){
         DesktopGui->close();
      }
@@ -112,6 +107,7 @@ void ConnectDialog::on_Error(QAbstractSocket::SocketError error){
       tmp = "Error opening connection";
     }
     m_timeoutTimer->stop();
+     ui->pushButton_connect->setDisabled(0);
     ui->label_connstate->setText(tmp);
     m_websocketClient->closeConnection();
 }
@@ -129,8 +125,8 @@ void ConnectDialog::on_spinBox_valueChanged(int arg1)
 void ConnectDialog::timeoutSlot()
 {
     ui->label_connstate->setText("Connection timed out");
-    ui->pushButton_connect->setText("connect");
     m_websocketClient->closeConnection();
+     ui->pushButton_connect->setDisabled(0);
 }
 
 void ConnectDialog::on_listWidget_currentRowChanged(int currentRow)

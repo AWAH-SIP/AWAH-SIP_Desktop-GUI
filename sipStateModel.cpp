@@ -100,6 +100,10 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
                     case 6:
                        CallTxt = "Disconnected " + m_AccountList->at(index.row()).CallStatusText;
                        break;
+
+                    case 7:     // RX media lost
+                       CallTxt =  m_AccountList->at(index.row()).CallStatusText;
+                       break;
                     }
                     return CallTxt;
                 }
