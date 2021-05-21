@@ -57,6 +57,7 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account) :
         ui->label_recorddir->setHidden(1);
         ui->label_tempdef1->setHidden(1);
         ui->label_tempdef2->setHidden(1);
+        ui->label_tempdef3->setHidden(1);
     }
 
    if(!m_s_account->FilePlayPath.isEmpty()){
@@ -131,6 +132,7 @@ void AccountDialog::on_checkBox_enablerec_stateChanged(int arg1)
         ui->label_rectemplate->setHidden(0);
         ui->label_tempdef1->setHidden(0);
         ui->label_tempdef2->setHidden(0);
+        ui->label_tempdef3->setHidden(0);
     }
     else{
         ui->lineEdit_recdir->setHidden(1);
@@ -139,6 +141,7 @@ void AccountDialog::on_checkBox_enablerec_stateChanged(int arg1)
         ui->label_rectemplate->setHidden(1);
         ui->label_tempdef1->setHidden(1);
         ui->label_tempdef2->setHidden(1);
+        ui->label_tempdef3->setHidden(1);
         editedaccount.FileRecordPath.clear();
    }
 }
