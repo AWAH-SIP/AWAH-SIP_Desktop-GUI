@@ -41,13 +41,13 @@ void CmdFacade::initializeVariables(){
             m_AudioRoutes.append(entry);
         }
 
-        m_AudioDevices.clear();
-        QJsonArray audioDevArr = cmd.getReturnData()["audioDevicesArray"].toArray();
-        for (auto && audioDev : qAsConst(audioDevArr)) {
-            QJsonObject entryObj = audioDev.toObject();
+        m_IoDevices.clear();
+        QJsonArray ioDevArr = cmd.getReturnData()["ioDevicesArray"].toArray();
+        for (auto && ioDev : qAsConst(ioDevArr)) {
+            QJsonObject entryObj = ioDev.toObject();
             s_IODevices entry;
             entry.fromJSON(entryObj);
-            m_AudioDevices.append(entry);
+            m_IoDevices.append(entry);
         }
 
         QJsonObject audioPortListObj = cmd.getReturnData()["confPortList"].toObject();
@@ -60,15 +60,6 @@ void CmdFacade::initializeVariables(){
             s_gpioRoute entry;
             entry.fromJSON(entryObj);
             m_gpioRoutes.append(entry);
-        }
-
-        m_gpioDevices.clear();
-        QJsonArray gpioDevArr = cmd.getReturnData()["gpioDevicesArray"].toArray();
-        for (auto && gpioDev : qAsConst(gpioDevArr)) {
-            QJsonObject entryObj = gpioDev.toObject();
-            s_IODevices entry;
-            entry.fromJSON(entryObj);
-            m_gpioDevices.append(entry);
         }
 
         QJsonObject gpioPortListObj = cmd.getReturnData()["gpioPortList"].toObject();
@@ -420,9 +411,9 @@ int CmdFacade::getSoundDevID(QString DeviceName)
     }
 }
 
-QList<s_IODevices>* CmdFacade::getAudioDevices()
+QList<s_IODevices>& CmdFacade::getIoDevices()
 {
-    return &m_AudioDevices;
+    return m_IoDevices;
 }
 
 
@@ -541,11 +532,6 @@ void CmdFacade::removeGpioDevice(QString uid)
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
-}
-
-const QList<s_IODevices>& CmdFacade::getGpioDevices() const
-{
-    return m_gpioDevices;
 }
 
 // Public API - GpioRouter

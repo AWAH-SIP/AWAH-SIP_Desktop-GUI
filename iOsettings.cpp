@@ -26,16 +26,13 @@
 IOSettings::IOSettings(QWidget *parent, CmdFacade *lib) :
     QDialog(parent),
     ui(new Ui::IOSettings),
-    m_cmdFacade(lib)
+    m_cmdFacade(lib),
+    m_DeviceList(m_cmdFacade->getIoDevices())
 {
     ui->setupUi(this);
     QSettings settings("awah", "AWAHSipDesktopGUI");
     restoreGeometry(settings.value("IOSettings/Geometry").toByteArray());
-    m_DeviceList = m_cmdFacade->getAudioDevices();
-
-    devModel = new DevModel();
-    devModel->setActiveDevices(m_DeviceList);
-
+    devModel = new DevModel(m_DeviceList, this);
     ui->tableView->setModel(devModel);
     ui->tableView->setAlternatingRowColors(true);
     ui->tableView->resizeColumnsToContents();
@@ -46,7 +43,7 @@ IOSettings::IOSettings(QWidget *parent, CmdFacade *lib) :
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    connect(m_cmdFacade, &CmdFacade::AudioDevicesChanged, this, &IOSettings::AudioDevicesChanged);
+    connect(m_cmdFacade, &CmdFacade::ioDevicesChanged, this, &IOSettings::ioDevicesChanged);
 }
 
 IOSettings::~IOSettings()
@@ -79,7 +76,7 @@ void IOSettings::on_pushButton_add_GPIO_clicked()
     gpio.exec();
 }
 
-void IOSettings::AudioDevicesChanged(QList<s_IODevices>* audioDev){
+void IOSettings::ioDevicesChanged(QList<s_IODevices>& audioDev){
     m_DeviceList = audioDev;
     devModel->refresh();
     ui->tableView->viewport()->update();
@@ -95,20 +92,16 @@ void IOSettings::closeEvent(QCloseEvent* event)
 
 // *********************** Device Model needed to display the sound devices ***************
 
-DevModel::DevModel(QObject *parent)
-    : QAbstractTableModel(parent)
+DevModel::DevModel(QList<s_IODevices> &devList, QObject *parent)
+    : QAbstractTableModel(parent),
+      m_DeviceList(devList)
 {
 
-}
-
-void DevModel::setActiveDevices(QList <s_IODevices> *devices)
-{
-    m_DeviceList = devices;
 }
 
 int DevModel::rowCount(const QModelIndex & /*parent*/) const
 {
-   return m_DeviceList->count();
+   return m_DeviceList.count();
 }
 
 int DevModel::columnCount(const QModelIndex & /*parent*/) const
@@ -120,40 +113,47 @@ QVariant DevModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole)
         switch (index.column()) {
-            case 0:
-                switch(m_DeviceList->at(index.row()).devicetype){
-                    case SoundDevice:
-                        return "Sound Device";
-                        break;
-                    case TestToneGenerator:
-                        return "Generator";
-                        break;
-                    case FilePlayer:
-                        return "File Player";
-                        break;
-                    case FileRecorder:
-                        return "File Recorder";
-                        break;
-                default:
-                    return "Unknown Device";
-                }
+        case 0:
+            switch(m_DeviceList.at(index.row()).devicetype){
+            case SoundDevice:
+                return "Sound Device";
+                break;
+            case TestToneGenerator:
+                return "Generator";
+                break;
+            case FilePlayer:
+                return "File Player";
+                break;
+            case FileRecorder:
+                return "File Recorder";
+                break;
+            case VirtualGpioDevice:
+                return "Virtual GPIO";
+                break;
+            case LogicAndGpioDevice:
+                return "Logic AND";
+                break;
+            case LogicOrGpioDevice:
+                return "Logic OR";
+                break;
+            case AccountGpioDevice:
+                return "Logic Account";
+                break;
+            default:
+                return "Unknown Device";
+            }
 
-                if(m_DeviceList->at(index.row()).devicetype== SoundDevice)
-                    return "Sound Device";
-                if(m_DeviceList->at(index.row()).devicetype== TestToneGenerator)
-                    return "Generator";
-                break;
-            case 1:
-                return m_DeviceList->at(index.row()).inputname;
-                break;
-            case 2:
-                return m_DeviceList->at(index.row()).outputame;
-                break;
-    }
+        case 1:
+            return m_DeviceList.at(index.row()).inputname;
+            break;
+        case 2:
+
+            break;
+        }
     if(role == Qt::BackgroundColorRole){
-            if(m_DeviceList->at(index.row()).devicetype== SoundDevice)
-                if(m_DeviceList->at(index.row()).PBDevID ==-1 || m_DeviceList->at(index.row()).RecDevID == -1)
-                    return QBrush(QColor(255, 153, 153)); // light red
+        if(m_DeviceList.at(index.row()).devicetype== SoundDevice)
+            if(m_DeviceList.at(index.row()).PBDevID ==-1 || m_DeviceList.at(index.row()).RecDevID == -1)
+                return QBrush(QColor(255, 153, 153)); // light red
     }
     return QVariant();
 }
@@ -165,9 +165,9 @@ QVariant DevModel::headerData(int section, Qt::Orientation orientation, int role
             case 0:
                 return QString("Type");
             case 1:
-                return QString("Inputname");
+                return QString("Name");
             case 2:
-                return QString("Outputname");
+                return QString(" ");
             default:
                 return QVariant();
         }

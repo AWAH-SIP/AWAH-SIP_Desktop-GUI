@@ -41,9 +41,8 @@ private slots:
     void audioRoutesChanged(QJsonObject &data);
     void audioRoutesTableChanged(QJsonObject &data);
     void AccountsChanged(QJsonObject &data);
-    void AudioDevicesChanged(QJsonObject &data);
+    void ioDevicesChanged(QJsonObject &data);
     void callInfo(QJsonObject &data);
-    void gpioDevicesChanged(QJsonObject &data);
     void gpioRoutesChanged(QJsonObject &data);
     void gpioRoutesTableChanged(QJsonObject &data);
     void gpioStatesChanged(QJsonObject &data);

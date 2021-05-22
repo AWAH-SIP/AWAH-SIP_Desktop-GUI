@@ -269,18 +269,18 @@ void WebsocketClient::AccountsChanged(QJsonObject &data){
     emit m_cmdFacade->AccountsChanged(&m_cmdFacade->m_Accounts);
 }
 
-void WebsocketClient::AudioDevicesChanged(QJsonObject &data){
-    QJsonArray AudioDevArr;
-    if(jCheckArray(AudioDevArr, data["AudioDevices"])){
-        m_cmdFacade->m_AudioDevices.clear();
-        for (auto && device : qAsConst(AudioDevArr)) {
+void WebsocketClient::ioDevicesChanged(QJsonObject &data){
+    QJsonArray ioDevArr;
+    if(jCheckArray(ioDevArr, data["ioDevices"])){
+        m_cmdFacade->m_IoDevices.clear();
+        for (auto && device : qAsConst(ioDevArr)) {
             QJsonObject deviceObj = device.toObject();
-            s_IODevices AudDev;
-            AudDev.fromJSON(deviceObj);
-            m_cmdFacade->m_AudioDevices.append(AudDev);
+            s_IODevices ioDevice;
+            ioDevice.fromJSON(deviceObj);
+            m_cmdFacade->m_IoDevices.append(ioDevice);
         }
     }
-    emit m_cmdFacade->AudioDevicesChanged(&m_cmdFacade->m_AudioDevices);
+    emit m_cmdFacade->ioDevicesChanged(m_cmdFacade->m_IoDevices);
 }
 
 void WebsocketClient::callInfo(QJsonObject &data){
@@ -289,20 +289,6 @@ void WebsocketClient::callInfo(QJsonObject &data){
     if(jCheckObject(callInfo, data["callInfo"]) && jCheckInt(accId, data["accId"]) && jCheckInt(callId, data["callId"])) {
         emit m_cmdFacade->callInfo(accId, callId, callInfo);
     }
-}
-
-void WebsocketClient::gpioDevicesChanged(QJsonObject &data){
-    QJsonArray gpioDevArr;
-    if(jCheckArray(gpioDevArr, data["GpioDevices"])){
-        m_cmdFacade->m_gpioDevices.clear();
-        for (auto && device : qAsConst(gpioDevArr)) {
-            QJsonObject deviceObj = device.toObject();
-            s_IODevices gpioDev;
-            gpioDev.fromJSON(deviceObj);
-            m_cmdFacade->m_gpioDevices.append(gpioDev);
-        }
-    }
-    emit m_cmdFacade->gpioDevicesChanged(m_cmdFacade->m_gpioDevices);
 }
 
 void WebsocketClient::gpioRoutesChanged(QJsonObject &data)

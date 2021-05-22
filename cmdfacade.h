@@ -13,6 +13,7 @@ public:
     explicit CmdFacade(QObject *parent = nullptr, WebsocketClient *wsClient = nullptr);
 
     void initializeVariables();
+
     // Public API - Accounts
     void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
     void modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
@@ -25,6 +26,8 @@ public:
     void transferCall(int callId, int AccID, QString destination) const;
     const QList<s_callHistory>* getCallHistory(int AccID);
     const s_account* getAccountByID(int ID);
+
+    QList<s_IODevices>& getIoDevices();
 
     // Public API - AudioRouter
     QList <s_audioRoutes> getAudioRoutes();
@@ -39,7 +42,6 @@ public:
     int disconnectConfPort(int src_slot, int sink_slot) const;
     int changeConfPortLevel(int src_slot, int sink_slot, float level) const;
     int addToneGen(int freq) const;
-    QList<s_IODevices>* getAudioDevices();
     int getSoundDevID(QString DeviceName);
 
     // Public API - Buddies
@@ -85,9 +87,8 @@ signals:
     void audioRoutesChanged(QList<s_audioRoutes> audioRoutes);
     void audioRoutesTableChanged(const s_audioPortList& portList);
     void AccountsChanged(QList <s_account> *Accounts);
-    void AudioDevicesChanged(QList<s_IODevices>* audioDev);
+    void ioDevicesChanged(QList<s_IODevices>& ioDev);
     void callInfo(int accId, int callId,QJsonObject callInfo);
-    void gpioDevicesChanged(const QList<s_IODevices>& deviceList);
     void gpioRoutesChanged(const QList<s_gpioRoute>& routes);
     void gpioRoutesTableChanged(const s_gpioPortList& portList);
     void gpioStatesChanged(const QMap<QString, bool> changedGpios);
@@ -101,12 +102,11 @@ private:
     QList <s_audioRoutes> m_AudioRoutes;
     QStringList m_listSoundDev;
     s_audioPortList m_getConfPortsList;
-    QList<s_IODevices> m_AudioDevices;
+    QList<s_IODevices> m_IoDevices;
     QStringList m_listCodec;
     QStringList m_readNewestLog;
     QJsonObject m_getSettings;
     QJsonObject m_getCodecPriorities;
-    QList<s_IODevices> m_gpioDevices;
     QList<s_gpioRoute> m_gpioRoutes;
     s_gpioPortList m_gpioPortList;
     QMap<QString, bool> m_changedGpios;

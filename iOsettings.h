@@ -24,24 +24,7 @@
 #include "cmdfacade.h"
 #include <QStringListModel>
 
-class DevModel : public QAbstractTableModel
-{
-    Q_OBJECT;
-public:
-    DevModel(QObject *parent = nullptr);
-    void setActiveDevices(QList <s_IODevices> *devices);
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
-    void refresh();
-private:
-    QList <s_IODevices> *m_DeviceList;
-
-};
-
-
-
+class DevModel;
 
 namespace Ui {
 class IOSettings;
@@ -62,7 +45,7 @@ private slots:
 
     void on_pushButton_add_GPIO_clicked();
 
-    void AudioDevicesChanged(QList<s_IODevices>* audioDev);
+    void ioDevicesChanged(QList<s_IODevices>& audioDev);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -70,10 +53,25 @@ protected:
 private:
     Ui::IOSettings *ui;
     CmdFacade *m_cmdFacade;
-    QList <s_IODevices> *m_DeviceList;
+    QList <s_IODevices> &m_DeviceList;
     DevModel *devModel;
 };
 
+
+class DevModel : public QAbstractTableModel
+{
+    Q_OBJECT;
+public:
+    DevModel(QList <s_IODevices>& devList, QObject *parent = nullptr);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    void refresh();
+private:
+    QList <s_IODevices> &m_DeviceList;
+
+};
 
 
 #endif // IOSETTINGS_H
