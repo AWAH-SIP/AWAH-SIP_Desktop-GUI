@@ -534,6 +534,20 @@ void CmdFacade::removeGpioDevice(QString uid)
     cmd.execute();
 }
 
+const QJsonObject CmdFacade::getGpioDevTypes() const
+{
+    QJsonObject obj, data, GpioDevTypes;
+    obj["command"] = "getGpioDevTypes";
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(!cmd.hasError()) {
+        GpioDevTypes = cmd.getReturnData()["GpioDevTypesObj"].toObject();
+    }
+    return GpioDevTypes;
+}
+
+
 // Public API - GpioRouter
 const QList<s_gpioRoute>& CmdFacade::getGpioRoutes()
 {

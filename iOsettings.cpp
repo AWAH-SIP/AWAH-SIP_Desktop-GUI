@@ -66,7 +66,22 @@ void IOSettings::on_pushButton_remove_dev_clicked()
     foreach (QModelIndex index, indexList) {
         row = index.row();
     }
-       m_cmdFacade->removeAudioDevice(row);
+    switch (m_DeviceList.at(row).devicetype) {
+    case SoundDevice:
+    case TestToneGenerator:
+    case FilePlayer:
+    case FileRecorder:
+        m_cmdFacade->removeAudioDevice(row);
+        break;
+    case VirtualGpioDevice:
+    case LogicAndGpioDevice:
+    case LogicOrGpioDevice:
+    case AccountGpioDevice:
+        m_cmdFacade->removeGpioDevice(m_DeviceList.at(row).uid);
+        break;
+    default:
+        break;
+    }
 }
 
 void IOSettings::on_pushButton_add_GPIO_clicked()

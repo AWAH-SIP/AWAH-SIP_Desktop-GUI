@@ -58,6 +58,7 @@ public:
     void createGpioDev(DeviceType type, uint inCount, uint outCount, QString devName);
     void removeGpioDevice(QString uid);
     const QList<s_IODevices>& getGpioDevices() const;
+    const QJsonObject getGpioDevTypes() const;
 
     // Public API - GpioRouter
     const QList<s_gpioRoute>& getGpioRoutes();

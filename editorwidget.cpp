@@ -48,8 +48,7 @@ QWidget *SettingsDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     if(index.column() ==1){
         QJsonObject tmp = m_items->value(keys.at(index.row())).toObject();
         EditorWidget *editor = new EditorWidget(&tmp, parent);
-        connect(editor, SIGNAL(datachanged()),
-                this, SLOT(commitEditor()));
+        connect(editor, SIGNAL(datachanged()),this, SLOT(commitEditor()));
         return editor;
     }
     return nullptr;
@@ -150,6 +149,7 @@ m_setting(*setting)
             break;
         case STRING:
             layout->addWidget(lineBox);
+            connect(lineBox,SIGNAL(textChanged(QString)), this, SIGNAL(datachanged()));
             break;
         case BOOL_T:
             layout->addWidget(checkBox);
@@ -211,5 +211,4 @@ int EditorWidget::getValue(){
 
 QString EditorWidget::getText(){
     return lineBox->text();
-    
 }
