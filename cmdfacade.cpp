@@ -542,7 +542,7 @@ const QJsonObject CmdFacade::getGpioDevTypes() const
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
     if(!cmd.hasError()) {
-        GpioDevTypes = cmd.getReturnData()["GpioDevTypesObj"].toObject();
+        GpioDevTypes = cmd.getReturnData()["GpioDevTypes"].toObject();
     }
     return GpioDevTypes;
 }
