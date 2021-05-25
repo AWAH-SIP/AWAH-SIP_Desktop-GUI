@@ -61,8 +61,21 @@ void SettingsDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
     Qt::CheckState state = static_cast<Qt::CheckState>(index.data(Qt::CheckStateRole).toInt());
     widget->setCheckState(state);
     
-    if(m_items->value(keys.at(index.row())).toObject()["type"].toInt() == ENUM){                        // fill the combobox for enum types
+    if(m_items->value(keys.at(index.row())).toObject()["type"].toInt() == ENUM_INT){                        // fill the combobox for enum type int
         int currentVal = m_items->value(keys.at(index.row())).toObject()["value"].toInt();
+        QStringList enums =m_items->value(keys.at(index.row())).toObject()["enumlist"].toObject().keys();
+        QJsonObject enumlist = m_items->value(keys.at(index.row())).toObject()["enumlist"].toObject();
+        QJsonObject::iterator i;
+        int idx = -1;
+        for (i = enumlist.begin(); i != enumlist.end(); ++i) {
+            if (i.value().toInt() == currentVal){
+                idx = widget->findText(i.key());                    // search the key for the value in the enumlist
+            }
+        }
+        widget->setCurrentIndex(idx);                     // set the index of the Combobox according to the key
+    }
+    if(m_items->value(keys.at(index.row())).toObject()["type"].toInt() == ENUM_STRING){                        // fill the combobox for enum type string
+        QString currentVal = m_items->value(keys.at(index.row())).toObject()["value"].toString();
         QStringList enums =m_items->value(keys.at(index.row())).toObject()["enumlist"].toObject().keys();
         QJsonObject enumlist = m_items->value(keys.at(index.row())).toObject()["enumlist"].toObject();
         QJsonObject::iterator i;
@@ -91,9 +104,14 @@ void SettingsDelegate::setEditorData(QWidget *editor, const QModelIndex &index) 
 void SettingsDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
     EditorWidget *widget = static_cast<EditorWidget*>(editor);
     Q_UNUSED(model)
-    if(m_items->value(keys.at(index.row())).toObject()["type"].toInt() == ENUM){
+    if(m_items->value(keys.at(index.row())).toObject()["type"].toInt() == ENUM_INT){
         QJsonObject enumlist = m_items->value(keys.at(index.row())).toObject()["enumlist"].toObject();      // search the new value in the enumlist
         int newvalue = enumlist[widget->currentText()].toInt();
+        m_editeditem->insert(keys.at(index.row()), newvalue);
+    }
+    else if(m_items->value(keys.at(index.row())).toObject()["type"].toInt() == ENUM_STRING){
+        QJsonObject enumlist = m_items->value(keys.at(index.row())).toObject()["enumlist"].toObject();      // search the new value in the enumlist
+        QString newvalue = enumlist[widget->currentText()].toString();
         m_editeditem->insert(keys.at(index.row()), newvalue);
     }
     else if (m_items->value(keys.at(index.row())).toObject()["type"].toInt() == INTEGER){
@@ -136,27 +154,28 @@ m_setting(*setting)
     QHBoxLayout *layout = new QHBoxLayout(this);
     switch (m_setting["type"].toInt() )
     {
-        case ENUM:
-            comboBox->addItems(m_setting["enumlist"].toObject().keys());
-            layout->addWidget(comboBox);
-            connect(comboBox,SIGNAL(currentIndexChanged(int)),
-                    this, SIGNAL(datachanged()));
-            break;
-        case INTEGER:
-            layout->addWidget(spinbox);
-            connect(spinbox,SIGNAL(valueChanged(int)),
-                    this, SIGNAL(datachanged()));
-            break;
-        case STRING:
-            layout->addWidget(lineBox);
-            connect(lineBox,SIGNAL(textChanged(QString)), this, SIGNAL(datachanged()));
-            break;
-        case BOOL_T:
-            layout->addWidget(checkBox);
-            break;
-        default:
-            layout->addWidget(lineBox);
-            break;
+    case ENUM_INT:
+    case ENUM_STRING:
+        comboBox->addItems(m_setting["enumlist"].toObject().keys());
+        layout->addWidget(comboBox);
+        connect(comboBox,SIGNAL(currentIndexChanged(int)),
+                this, SIGNAL(datachanged()));
+        break;
+    case INTEGER:
+        layout->addWidget(spinbox);
+        connect(spinbox,SIGNAL(valueChanged(int)),
+                this, SIGNAL(datachanged()));
+        break;
+    case STRING:
+        layout->addWidget(lineBox);
+        connect(lineBox,SIGNAL(textChanged(QString)), this, SIGNAL(datachanged()));
+        break;
+    case BOOL_T:
+        layout->addWidget(checkBox);
+        break;
+    default:
+        layout->addWidget(lineBox);
+        break;
     }
 }
 

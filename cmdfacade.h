@@ -55,7 +55,7 @@ public:
     int setCodecParam(QString codecId, QJsonObject codecParam) const;
 
     // Public API - GpioDeviceManager
-    void createGpioDev(DeviceType type, uint inCount, uint outCount, QString devName);
+    const QString createGpioDev(QJsonObject &newDev);
     void removeGpioDevice(QString uid);
     const QList<s_IODevices>& getGpioDevices() const;
     const QJsonObject getGpioDevTypes() const;

@@ -45,7 +45,7 @@ private slots:
 
     void on_pushButton_add_GPIO_clicked();
 
-    void ioDevicesChanged(QList<s_IODevices>& audioDev);
+    void ioDevicesChanged(QList<s_IODevices>& ioDevice);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

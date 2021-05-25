@@ -77,6 +77,8 @@ void IOSettings::on_pushButton_remove_dev_clicked()
     case LogicAndGpioDevice:
     case LogicOrGpioDevice:
     case AccountGpioDevice:
+    case LinuxGpioDevice:
+    case AudioCrosspointDevice:
         m_cmdFacade->removeGpioDevice(m_DeviceList.at(row).uid);
         break;
     default:
@@ -91,8 +93,8 @@ void IOSettings::on_pushButton_add_GPIO_clicked()
     gpio.exec();
 }
 
-void IOSettings::ioDevicesChanged(QList<s_IODevices>& audioDev){
-    m_DeviceList = audioDev;
+void IOSettings::ioDevicesChanged(QList<s_IODevices>& ioDevice){
+    m_DeviceList = ioDevice;
     devModel->refresh();
     ui->tableView->viewport()->update();
     ui->tableView->resizeColumnsToContents();
@@ -153,6 +155,12 @@ QVariant DevModel::data(const QModelIndex &index, int role) const
                 break;
             case AccountGpioDevice:
                 return "Logic Account";
+                break;
+            case LinuxGpioDevice:
+                return "Linux GPIO Device";
+                break;
+            case AudioCrosspointDevice:
+                return "Audio Crosspoint Device";
                 break;
             default:
                 return "Unknown Device";

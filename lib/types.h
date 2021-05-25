@@ -52,7 +52,9 @@ enum DeviceType {
     VirtualGpioDevice,
     LogicAndGpioDevice,
     LogicOrGpioDevice,
-    AccountGpioDevice
+    AccountGpioDevice,
+    LinuxGpioDevice,
+    AudioCrosspointDevice
 };
 Q_ENUMS(DeviceType)
 
@@ -314,7 +316,8 @@ enum settingType{
     INTEGER,
     STRING,
     BOOL_T,
-    ENUM
+    ENUM_INT,
+    ENUM_STRING
 };
 Q_ENUMS(settingType)
 

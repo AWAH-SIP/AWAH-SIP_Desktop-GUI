@@ -22,27 +22,20 @@ addGPIO::~addGPIO()
 {
     delete ui;
 }
+
 void addGPIO::on_pushButton_ok_clicked()
-{                              
-                                // get default param from the GpioDevTypes in case not every parameter is edited
-    QString devName = m_GpioDev["Name"].toObject()["value"].toString();
-    uint inCount = m_GpioDev["Inputs"].toObject()["value"].toInt();
-    uint outCount = m_GpioDev["Outputs"].toObject()["value"].toInt();
-
-                                // replace default param with de edited ones
-    devName = m_editedParam["Name"].toString();
-    inCount = m_editedParam["Inputs"].toInt();
-    outCount = m_editedParam["Outputs"].toInt();
-
-    if(devName != ""){
-        m_cmdFacade->createGpioDev(m_devType,inCount,outCount,devName);
+{
+    QString errorMsg;
+    QJsonObject newDevice;
+    newDevice["devType"] = m_devType;
+    newDevice["parameter"] = m_editedParam;
+    errorMsg = m_cmdFacade->createGpioDev(newDevice);
+    if(errorMsg == ""){
         addGPIO::close();
     }
     else{
-       QMessageBox::information(this,"empty Name","Please enter a Name for the device");
+        QMessageBox::warning(this,"device not created",errorMsg);
     }
-
-
 }
 
 void addGPIO::on_pushButton_cancel_clicked()

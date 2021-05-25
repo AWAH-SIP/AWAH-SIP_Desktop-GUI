@@ -511,17 +511,19 @@ int CmdFacade::setCodecParam(QString codecId, QJsonObject codecParam) const
 }
 
 // Public API - GpioDeviceManager
-void CmdFacade::createGpioDev(DeviceType type, uint inCount, uint outCount, QString devName)
+const QString CmdFacade::createGpioDev(QJsonObject &newDev)
 {
     QJsonObject obj, data;
+    QString errorMsg;
     obj["command"] = "createGpioDev";
-    data["type"] = type;
-    data["inCount"] = (int) inCount;
-    data["outCount"] = (int) outCount;
-    data["devName"] = devName;
+    data["newDev"] =newDev;
     obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient, true);
+    Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
+    if(!cmd.hasError()) {
+        errorMsg = cmd.getReturnData()["returnValue"].toString();
+    }
+    return errorMsg;
 }
 
 void CmdFacade::removeGpioDevice(QString uid)
