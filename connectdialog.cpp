@@ -70,14 +70,14 @@ void ConnectDialog::on_Connected(){
 
     while(ui->listWidget->count()>0)        // we have to clear the list widget and refill it in order to update it
     {
-      delete ui->listWidget->takeItem(0);
+        delete ui->listWidget->takeItem(0);
     }
 
     QList<QUrl>::iterator i;
     for (i = history.begin(); i != history.end(); ++i){
         ui->listWidget->addItem(i->toDisplayString());
     }
-    wsUrl = history.at(0);
+    wsUrl = history.first();
     ui->lineEdit->setText(wsUrl.host());
     ui->spinBox->setValue(wsUrl.port());
     m_timeoutTimer->stop();
@@ -96,18 +96,18 @@ void ConnectDialog::on_Error(QAbstractSocket::SocketError error){
     QString tmp;
     switch (error) {
     case QAbstractSocket::RemoteHostClosedError:
-      break;
+        break;
     case QAbstractSocket::HostNotFoundError:
-       tmp = "The host was not found.";
-      break;
+        tmp = "The host was not found.";
+        break;
     case QAbstractSocket::ConnectionRefusedError:
-      tmp = "The connection was refused by the peer. ";
-      break;
+        tmp = "The connection was refused by the peer. ";
+        break;
     default:
-      tmp = "Error opening connection";
+        tmp = "Error opening connection";
     }
     m_timeoutTimer->stop();
-     ui->pushButton_connect->setDisabled(0);
+    ui->pushButton_connect->setDisabled(0);
     ui->label_connstate->setText(tmp);
     m_websocketClient->closeConnection();
 }
@@ -126,14 +126,17 @@ void ConnectDialog::timeoutSlot()
 {
     ui->label_connstate->setText("Connection timed out");
     m_websocketClient->closeConnection();
-     ui->pushButton_connect->setDisabled(0);
+    ui->pushButton_connect->setDisabled(0);
+    wsUrl = history.at(ui->listWidget->currentIndex().row());
+    ui->lineEdit->setText(wsUrl.host());
+    ui->spinBox->setValue(wsUrl.port());
 }
 
 void ConnectDialog::on_listWidget_currentRowChanged(int currentRow)
 {
-        if(currentRow >0 && currentRow < history.count()){
-            wsUrl = history.at(currentRow);
-            ui->lineEdit->setText(wsUrl.host());
-            ui->spinBox->setValue(wsUrl.port());
-        }
+    if(currentRow >0 && currentRow < history.count()){
+        wsUrl = history.at(currentRow);
+        ui->lineEdit->setText(wsUrl.host());
+        ui->spinBox->setValue(wsUrl.port());
+    }
 }

@@ -105,6 +105,12 @@ struct s_IODevices{
         case AccountGpioDevice:
             devicetype = AccountGpioDevice;
             break;
+        case LinuxGpioDevice:
+            devicetype = LinuxGpioDevice;
+            break;
+        case AudioCrosspointDevice:
+            devicetype = AudioCrosspointDevice;
+            break;
         }
         uid = ioDeviceJSON["uid"].toString();
         inputname = ioDeviceJSON["inputname"].toString();

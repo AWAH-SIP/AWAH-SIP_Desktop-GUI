@@ -22,6 +22,7 @@
 #include "addsounddev.h"
 #include "addfileplayer.h"
 #include "addgpio.h"
+#include <qmessagebox.h>
 
 IOSettings::IOSettings(QWidget *parent, CmdFacade *lib) :
     QDialog(parent),
@@ -82,6 +83,7 @@ void IOSettings::on_pushButton_remove_dev_clicked()
         m_cmdFacade->removeGpioDevice(m_DeviceList.at(row).uid);
         break;
     default:
+        QMessageBox::warning(this,"","Don't know what to do with this unknown device");
         break;
     }
 }
