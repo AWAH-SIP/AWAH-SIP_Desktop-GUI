@@ -180,25 +180,30 @@ void WebsocketClient::callStateChanged(QJsonObject &data)
 {
     int accID, role, callId, state, lastStatusCode;
     bool remoteofferer;
-    long calldur;
     QString statustxt, remoteUri, calldurStr;
     if(     jCheckInt(accID, data["accId"]) &&
             jCheckInt(role, data["role"]) &&
             jCheckInt(callId, data["callId"]) &&
             jCheckBool(remoteofferer, data["remoteofferer"]) &&
-            jCheckString(calldurStr, data["calldur"]) &&
             jCheckInt(state, data["state"]) &&
             jCheckInt(lastStatusCode, data["lastStatusCode"]) &&
             jCheckString(statustxt, data["statustxt"]) &&
             jCheckString(remoteUri, data["remoteUri"]))
     {
-        calldur = calldurStr.toLong();
         for(auto& account : m_cmdFacade->m_Accounts){
             if(account.AccID == accID){
-                account.CallStatusCode = state;
-                account.CallStatusText = statustxt;
-                account.ConnectedTo = remoteUri;
+                account.callStatusLastReason = statustxt;
+                for(auto& call : account.CallList){
+                    if(call["callId"].toInt() == callId ){
+                        call["CallStatusText"] = statustxt;
+                        call["CallStatusCode"] = state;
+                        call["ConnectedTo"] = remoteUri;
+                    }
+                }
             }
+         }
+        for(auto& account : m_cmdFacade->m_Accounts){
+           qDebug() << "last reason " << account.callStatusLastReason;
         }
         emit m_cmdFacade->StateChanged();
     } else {

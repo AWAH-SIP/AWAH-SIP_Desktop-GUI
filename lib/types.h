@@ -27,22 +27,6 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-//inline QString createNewUID() { return QUuid::createUuid().toString(QUuid::Id128); }
-
-//inline pj_str_t str2Pj(const QString &input_str)
-//{
-//    pj_str_t output_str;
-//    output_str.ptr = (char*)input_str.toStdString().c_str();
-//    output_str.slen = input_str.size();
-//    return output_str;
-//}
-
-//inline QString pj2Str(const pj_str_t &input_str)
-//{
-//    if (input_str.ptr && input_str.slen>0)
-//        return QString::fromStdString(std::string(input_str.ptr, input_str.slen));
-//    return QString();
-//}
 
 enum DeviceType {
     SoundDevice,
@@ -163,16 +147,14 @@ struct s_account{
     int rec_id = -1;
     int AccID;
     int splitterSlot;
-    QList <int> CallList;
+    QList <QJsonObject> CallList;
     QList <s_callHistory> CallHistory;
     bool fixedJitterBuffer = true;
     uint fixedJitterBufferValue = 160;
     bool autoredialLastCall = false;
     QString SIPStatusText = "waiting for SIP state...";
     int SIPStatusCode = 0;
-    QString CallStatusText = "Idle... ";
-    int CallStatusCode = 0;
-    QString ConnectedTo;
+    QString callStatusLastReason = "";
     QJsonObject toJSON() const {
         QJsonArray callHistoryJSON;
         for (auto & callhistory: CallHistory) {
@@ -199,7 +181,7 @@ struct s_account{
         if(accountJSON["CallList"].isArray()){
             callListArr = accountJSON["CallList"].toArray();
             for (auto && callListEntry : callListArr) {
-                CallList.append(callListEntry.toInt());
+                CallList.append(callListEntry.toObject());
             }
         }
         CallHistory.clear();
@@ -226,9 +208,6 @@ struct s_account{
         autoredialLastCall = accountJSON["autoredialLastCall"].toBool();
         SIPStatusCode = accountJSON["SIPStatusCode"].toInt();
         SIPStatusText = accountJSON["SIPStatusText"].toString();
-        CallStatusCode = accountJSON["CallStatusCode"].toInt();
-        CallStatusText = accountJSON["CallStatusText"].toString();
-        ConnectedTo = accountJSON["ConnectedTo"].toString();
         return this;
     }
 };

@@ -127,14 +127,11 @@ void ConnectDialog::timeoutSlot()
     ui->label_connstate->setText("Connection timed out");
     m_websocketClient->closeConnection();
     ui->pushButton_connect->setDisabled(0);
-    wsUrl = history.at(ui->listWidget->currentIndex().row());
-    ui->lineEdit->setText(wsUrl.host());
-    ui->spinBox->setValue(wsUrl.port());
 }
 
 void ConnectDialog::on_listWidget_currentRowChanged(int currentRow)
 {
-    if(currentRow >0 && currentRow < history.count()){
+    if(currentRow > -1 && currentRow < history.count()){
         wsUrl = history.at(currentRow);
         ui->lineEdit->setText(wsUrl.host());
         ui->spinBox->setValue(wsUrl.port());
