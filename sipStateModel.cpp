@@ -102,7 +102,7 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
 
             case 1:
                 if (role == Qt::DisplayRole || role == Qt::EditRole)
-                    return "Calling ";
+                    return "Calling "+ m_AccountList->at(index.row()).CallList.first()["ConnectedTo"].toString();
                 if(role == Qt::BackgroundColorRole)
                     return QBrush(QColor(179, 213, 125));  // lime
                 break;
@@ -154,6 +154,12 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
             case 7:     // RX media lost
                 if (role == Qt::DisplayRole || role == Qt::EditRole)
                     return  m_AccountList->at(index.row()).CallList.first()["CallStatusText"].toString();
+                if(role == Qt::BackgroundColorRole)
+                    return QBrush(QColor(179, 213, 125));  // lime
+                break;
+            case 8:     // RX media lost
+                if (role == Qt::DisplayRole || role == Qt::EditRole)
+                    return  QString("trying to hang up");
                 if(role == Qt::BackgroundColorRole)
                     return QBrush(QColor(179, 213, 125));  // lime
                 break;

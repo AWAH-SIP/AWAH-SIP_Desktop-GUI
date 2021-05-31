@@ -208,6 +208,7 @@ struct s_account{
         autoredialLastCall = accountJSON["autoredialLastCall"].toBool();
         SIPStatusCode = accountJSON["SIPStatusCode"].toInt();
         SIPStatusText = accountJSON["SIPStatusText"].toString();
+        callStatusLastReason = accountJSON["callStatusLastReason"].toString();
         return this;
     }
 };

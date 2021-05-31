@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
+    <width>329</width>
     <height>295</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>329</width>
+    <height>295</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>600</width>
+    <height>1000</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>add GPIO device</string>

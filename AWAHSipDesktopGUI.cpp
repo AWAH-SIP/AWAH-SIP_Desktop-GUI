@@ -59,7 +59,6 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
     ui->tableView->setColumnWidth(5, 30);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     restoreGeometry(settings.value("MainWindow/Geometry").toByteArray());
 
