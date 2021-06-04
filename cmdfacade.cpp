@@ -640,10 +640,10 @@ const QJsonObject CmdFacade::getCodecPriorities()
     return m_getCodecPriorities;
 }
 
-void CmdFacade::setSCodecPriorities(QJsonObject Codecpriority)
+void CmdFacade::setCodecPriorities(QJsonObject Codecpriority)
 {
     QJsonObject obj, data;
-    obj["command"] = "setSCodecPriorities";
+    obj["command"] = "setCodecPriorities";
     data["Codecpriority"] = Codecpriority;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);

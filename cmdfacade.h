@@ -78,7 +78,7 @@ public:
     const QJsonObject* getSettings();
     void setSettings(QJsonObject editedSetting);
     const QJsonObject getCodecPriorities();
-    void setSCodecPriorities(QJsonObject Codecpriority);
+    void setCodecPriorities(QJsonObject Codecpriority);
 
 signals:
     void StateChanged();

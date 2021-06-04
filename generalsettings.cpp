@@ -145,9 +145,11 @@ GeneralSettings::~GeneralSettings()
 
 void GeneralSettings::on_pushButton_ok_clicked()
 {
-    m_cmdFacade->setSettings(m_editedSettings);
-    m_cmdFacade->setSCodecPriorities(m_editedCodecPrio);
+    if(!m_editedCodecPrio.empty()){
+        m_cmdFacade->setCodecPriorities(m_editedCodecPrio);
+    }
     if(!m_editedSettings.empty()){
+        m_cmdFacade->setSettings(m_editedSettings);
         QMessageBox::information(this,"Warning","Some settings need a restart in order to get active");
     }
     GeneralSettings::close();
