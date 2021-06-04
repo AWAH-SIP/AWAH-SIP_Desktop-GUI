@@ -47,6 +47,8 @@ private slots:
 
     void ioDevicesChanged(QList<s_IODevices>& ioDevice);
 
+    void on_pushButton_close_clicked();
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 

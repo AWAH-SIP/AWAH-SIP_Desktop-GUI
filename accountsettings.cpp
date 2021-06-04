@@ -49,7 +49,7 @@ accountsettings::~accountsettings()
 void accountsettings::on_pushButton_add_clicked()
 {
    s_account newacc;
-   newacc.serverURI = "siperver.url";
+   newacc.serverURI = "sipserver.url";
    newacc.user = "username";
    newacc.password = "password";
     AccountDialog accdialog(this,&newacc);

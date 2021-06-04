@@ -76,7 +76,6 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
 
     m_uiRouteWindow = new Route(m_cmdFacade, this);
     m_uiLogWindow = new LogWindow(this, m_cmdFacade);
-
     connect(m_cmdFacade, SIGNAL(logMessage(QString)),
            m_uiLogWindow, SLOT(OnNewLogEntry(QString)));
 }
@@ -90,6 +89,7 @@ AWAHSipDesktopGUI::~AWAHSipDesktopGUI()
     //delete SIPstate;
     m_cmdFacade->disconnect();
     delete m_cmdFacade;
+    delete m_buddySettings;
 
 }
 
@@ -178,7 +178,10 @@ void AWAHSipDesktopGUI::on_actionLog_triggered()
 
 void AWAHSipDesktopGUI::on_actionBuddies_triggered()
 {
-    QMessageBox::information(this,"Sorry","Sorry you have to wait for a future release");
+    //QMessageBox::information(this,"Sorry","Sorry you have to wait for a future release");
+    m_buddySettings = new BuddySettings (this, m_cmdFacade);
+    m_buddySettings->setModal(true);
+    m_buddySettings->exec();
 }
 
 void AWAHSipDesktopGUI::AccountsChanged(QList<s_account> *Accounts)

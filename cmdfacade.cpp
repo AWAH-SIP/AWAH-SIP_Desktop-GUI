@@ -263,7 +263,7 @@ QStringList CmdFacade::listOutputSoundDev()
     return m_listSoundDev;
 }
 
-int CmdFacade::addAudioDevice(int recordDevId, int playbackDevId) const
+void CmdFacade::addAudioDevice(int recordDevId, int playbackDevId) const
 {
     QJsonObject obj, data;
     obj["command"] = "addAudioDevice";
@@ -272,29 +272,20 @@ int CmdFacade::addAudioDevice(int recordDevId, int playbackDevId) const
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
 }
 
-int CmdFacade::removeAudioDevice(int DevIndex) const
+void CmdFacade::removeAudioDevice(QString uid) const
 {
     QJsonObject obj, data;
     obj["command"] = "removeAudioDevice";
-    data["DevIndex"] = DevIndex;
+    data["DevUid"] = uid;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
 }
 
-int CmdFacade::addFilePlayer(QString Name, QString File) const
+
+void CmdFacade::addFilePlayer(QString Name, QString File) const
 {
     QJsonObject obj, data;
     obj["command"] = "addFilePlayer";
@@ -303,14 +294,9 @@ int CmdFacade::addFilePlayer(QString Name, QString File) const
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
 }
 
-int CmdFacade::addFileRecorder(QString File) const
+void CmdFacade::addFileRecorder(QString File) const
 {
     QJsonObject obj, data;
     obj["command"] = "addFileRecorder";
@@ -318,11 +304,6 @@ int CmdFacade::addFileRecorder(QString File) const
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
 }
 
 const s_audioPortList& CmdFacade::getConfPortsList()
@@ -381,7 +362,7 @@ int CmdFacade::changeConfPortLevel(int src_slot, int sink_slot, float level) con
     }
 }
 
-int CmdFacade::addToneGen(int freq) const
+void CmdFacade::addToneGen(int freq) const
 {
     QJsonObject obj, data;
     obj["command"] = "addToneGen";
@@ -389,11 +370,6 @@ int CmdFacade::addToneGen(int freq) const
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
 }
 
 int CmdFacade::getSoundDevID(QString DeviceName)
@@ -418,36 +394,28 @@ QList<s_IODevices>& CmdFacade::getIoDevices()
 
 
 // Public API - Buddies
-bool CmdFacade::registerBuddy(int AccID, QString buddyUrl) const
+void CmdFacade::addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codecSettings)  const
 {
     QJsonObject obj, data;
-    obj["command"] = "registerBuddy";
-    data["AccID"] = AccID;
+    obj["command"] = "addBuddy";
     data["buddyUrl"] = buddyUrl;
+    data["name"] = name;
+    data["accUid"] = accUid;
+    data["codecSettings"] = codecSettings;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
-    if(cmd.hasError()) {
-        return false;
-    } else {
-        return cmd.getReturnData()["returnValue"].toBool();
-    }
 }
 
-bool CmdFacade::deleteBuddy(int AccID, QString buddyUrl) const
+void CmdFacade::removeBuddy(QString buddyUrl, QString accUid) const
 {
     QJsonObject obj, data;
-    obj["command"] = "deleteBuddy";
-    data["AccID"] = AccID;
+    obj["command"] = "removeBuddy";
     data["buddyUrl"] = buddyUrl;
+    data["accUid"] = accUid;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
-    if(cmd.hasError()) {
-        return false;
-    } else {
-        return cmd.getReturnData()["returnValue"].toBool();
-    }
 }
 
 

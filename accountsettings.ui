@@ -126,6 +126,9 @@
        <property name="text">
         <string>close</string>
        </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>

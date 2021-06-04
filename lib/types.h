@@ -373,4 +373,23 @@ struct s_gpioRoute{
 Q_DECLARE_METATYPE(s_gpioRoute);
 Q_DECLARE_METATYPE(QList<s_gpioRoute>);
 
+struct s_buddy{
+    QString buddyUrl = "";
+    QString Name = "";
+    int status = 0;
+    QString accUid = "";
+    QString autoConnectFromAccountUid = "";
+    QJsonObject toJSON() const {
+        return{{"buddyUrl", buddyUrl}, {"Name", Name}, {"status", status} };
+    }
+    s_buddy* fromJSON(const QJsonObject &buddyJSON) {
+        buddyUrl = buddyJSON["buddyUrl"].toString();
+        Name = buddyJSON["Name"].toString();
+        status = buddyJSON["status"].toInt();
+        return this;
+    }
+};
+Q_DECLARE_METATYPE(s_buddy);
+Q_DECLARE_METATYPE(QList<s_buddy>);
+
 #endif // TYPES_H

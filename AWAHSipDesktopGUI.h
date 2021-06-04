@@ -34,6 +34,7 @@
 #include "iOsettings.h"
 #include "generalsettings.h"
 #include "accountsettings.h"
+#include "buddysettings.h"
 
 #define APPVERSION
 
@@ -74,6 +75,7 @@ private:
     IOSettings *m_IOSettings = nullptr;
     GeneralSettings *m_generalSettings = nullptr;
     accountsettings *m_accountSettings = nullptr;
+    BuddySettings *m_buddySettings = nullptr;
 
 
 

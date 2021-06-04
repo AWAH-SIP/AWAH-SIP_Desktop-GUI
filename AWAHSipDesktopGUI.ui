@@ -98,7 +98,7 @@
      <normalon>:/new/icons/images/Speaker.png</normalon>:/new/icons/images/microphone [#934].svg</iconset>
    </property>
    <property name="text">
-    <string>Audio I/O</string>
+    <string>I/O config</string>
    </property>
    <property name="iconText">
     <string>I/O Config</string>

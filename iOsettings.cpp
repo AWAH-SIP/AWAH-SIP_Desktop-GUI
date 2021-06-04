@@ -72,7 +72,7 @@ void IOSettings::on_pushButton_remove_dev_clicked()
     case TestToneGenerator:
     case FilePlayer:
     case FileRecorder:
-        m_cmdFacade->removeAudioDevice(row);
+        m_cmdFacade->removeAudioDevice(m_DeviceList.at(row).uid);
         break;
     case VirtualGpioDevice:
     case LogicAndGpioDevice:
@@ -100,6 +100,11 @@ void IOSettings::ioDevicesChanged(QList<s_IODevices>& ioDevice){
     devModel->refresh();
     ui->tableView->viewport()->update();
     ui->tableView->resizeColumnsToContents();
+}
+
+void IOSettings::on_pushButton_close_clicked()
+{
+    IOSettings::close();
 }
 
 void IOSettings::closeEvent(QCloseEvent* event)

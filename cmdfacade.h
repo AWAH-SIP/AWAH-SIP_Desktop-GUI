@@ -33,20 +33,20 @@ public:
     QList <s_audioRoutes> getAudioRoutes();
     QStringList listInputSoundDev();
     QStringList listOutputSoundDev();
-    int addAudioDevice(int recordDevId, int playbackDevId) const;
-    int removeAudioDevice(int DevIndex) const;
-    int addFilePlayer(QString Name, QString File) const;
-    int addFileRecorder(QString File) const;
+    void addAudioDevice(int recordDevId, int playbackDevId) const;
+    void removeAudioDevice(QString uid) const;
+    void addFilePlayer(QString Name, QString File) const;
+    void addFileRecorder(QString File) const;
     const s_audioPortList& getConfPortsList();
     int connectConfPort(int src_slot, int sink_slot, float level, bool persistant = true) const;
     int disconnectConfPort(int src_slot, int sink_slot) const;
     int changeConfPortLevel(int src_slot, int sink_slot, float level) const;
-    int addToneGen(int freq) const;
+    void addToneGen(int freq) const;
     int getSoundDevID(QString DeviceName);
 
     // Public API - Buddies
-    bool registerBuddy(int AccID, QString buddyUrl) const;
-    bool deleteBuddy(int AccID, QString buddyUrl) const;
+    void addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codecSettings) const;
+    void removeBuddy(QString buddyUrl, QString accUid) const;
 
     // Public API - Codecs
     QStringList listCodec();
