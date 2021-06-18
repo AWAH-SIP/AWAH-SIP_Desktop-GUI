@@ -59,7 +59,7 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: AWAH-SIP_Desktop-GUI-${{GITHUB_SHA}}.dmg
+          name: AWAH-SIP_Desktop-GUI-$GITHUB_SHA.dmg
           path: build/AWAH-SIP_Desktop-GUI.dmg
         
   Windows:
@@ -101,5 +101,5 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: AWAH-SIP_Desktop-GUI-${{GITHUB_SHA}}.zip
+          name: AWAH-SIP_Desktop-GUI-$GITHUB_SHA.zip
           path: AWAH-SIP_Desktop-GUI-*.zip
