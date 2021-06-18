@@ -54,9 +54,13 @@ jobs:
         run:  cd build && make
         
       - name: MacDeployQT
-        run:  cd build && macdeployqt AWAH-SIP_Desktop-GUI.app -dmg
+        run:  cd build && macdeployqt AWAH-SIP_Desktop-GUI.app -dmg && ls -l
         
-      - run:  ls -l
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: AWAH-SIP_Desktop-GUI-${{GITHUB_SHA}}.dmg
+          path: build/AWAH-SIP_Desktop-GUI.dmg
         
   Windows:
     runs-on: windows-latest
@@ -92,4 +96,10 @@ jobs:
         uses: vimtor/action-zip@v1
         with:
           files: .
-          dest: AWAH-SIP_Desktop-GUI-${GITHUB_SHA}.zip
+          dest: AWAH-SIP_Desktop-GUI-${{GITHUB_SHA}}.zip
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: AWAH-SIP_Desktop-GUI-${{GITHUB_SHA}}.zip
+          path: AWAH-SIP_Desktop-GUI-*.zip
