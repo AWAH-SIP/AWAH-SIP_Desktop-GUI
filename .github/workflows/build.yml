@@ -23,5 +23,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: Build
-        run: qmake AWAH-SIP_Desktop-GUI.pro && make qmake_all
+      - name: QMake
+        run: qmake AWAH-SIP_Desktop-GUI.pro
+        
+      - name: Make
+        run: make
+        
