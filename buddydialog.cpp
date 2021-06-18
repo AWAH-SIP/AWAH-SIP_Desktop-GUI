@@ -10,7 +10,9 @@ buddydialog::buddydialog(CmdFacade *lib, s_buddy &buddy, QWidget *parent) :
     ui->setupUi(this);
     ui->lineEdit_name->setText(m_buddy.Name);
     ui->lineEdit_number->setText(m_buddy.buddyUrl);
-    ui->comboBox_codec->addItems(m_lib->listCodec());
+    for(auto &codec :  m_lib->getActiveCodecs()){
+            ui->comboBox_codec->addItem(codec.displayName);
+    }
     for(auto& account : *lib->getAccounts()){
         ui->comboBox_account->addItem(account.name);
         ui->comboBox_connect_account->addItem(QString("autoconnect from: ") + account.name);

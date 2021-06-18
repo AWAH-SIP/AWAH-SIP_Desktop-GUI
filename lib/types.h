@@ -114,19 +114,38 @@ struct s_IODevices{
 Q_DECLARE_METATYPE(s_IODevices);
 Q_DECLARE_METATYPE( QList<s_IODevices>);
 
-struct s_callHistory{
-    QString callUri;
-    int duration;
-    QString codec;
-    bool outgoing;
-    int count;
+struct s_codec{
+    QString encodingName = "";
+    QString displayName = "";
+    int priority = 0;
+    QJsonObject codecParameters = QJsonObject();
     QJsonObject toJSON() const {
-        return {{"callUri", callUri}, {"duration", duration}, {"codec", codec}, {"outgoing", outgoing}, {"count", count},};
+        return{{"encodingName", encodingName}, {"displayName", displayName}, {"codecParameters", codecParameters}, {"priority", priority}};
+    }
+    s_codec* fromJSON(const QJsonObject &codecJSON) {
+        encodingName = codecJSON["encodingName"].toString();
+        displayName = codecJSON["displayName"].toString();
+        codecParameters = codecJSON["codecParameters"].toObject();
+        priority = codecJSON["priority"].toInt();
+        return this;
+    }
+};
+Q_DECLARE_METATYPE(s_codec);
+Q_DECLARE_METATYPE(QList<s_codec>);
+
+struct s_callHistory{
+    QString callUri = "";
+    int duration = 0;
+    s_codec codec = s_codec();
+    bool outgoing = 0;
+    int count = 0;
+    QJsonObject toJSON() const {
+        return {{"callUri", callUri}, {"duration", duration}, {"codec", codec.toJSON()}, {"outgoing", outgoing}, {"count", count}};
     }
     s_callHistory* fromJSON(const QJsonObject &callHistoryJSON) {
         callUri = callHistoryJSON["callUri"].toString();
         duration = callHistoryJSON["duration"].toInt();
-        codec = callHistoryJSON["codec"].toString();
+        codec.fromJSON(callHistoryJSON["codec"].toObject());
         outgoing = callHistoryJSON["outgoing"].toBool();
         count = callHistoryJSON["count"].toInt();
         return this;

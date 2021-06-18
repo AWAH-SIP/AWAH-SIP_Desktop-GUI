@@ -19,7 +19,7 @@ public:
     void modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
     void removeAccount(int index) const;
     QList <s_account>* getAccounts();
-    void makeCall(QString number, int AccID) const;
+    void makeCall(QString number, int AccID, s_codec codec) const;
     void hangupCall(int callId, int AccID) const;
     void acceptCall(int callId, int AccID) const;
     void holdCall(int callId, int AccID) const;
@@ -49,10 +49,7 @@ public:
     void removeBuddy(QString buddyUrl, QString accUid) const;
 
     // Public API - Codecs
-    QStringList listCodec();
-    void selectCodec(QString selectedcodec) const;
-    const QJsonObject getCodecParam(QString codecId) const;
-    int setCodecParam(QString codecId, QJsonObject codecParam) const;
+    QList<s_codec> getActiveCodecs();
 
     // Public API - GpioDeviceManager
     const QString createGpioDev(QJsonObject &newDev);
@@ -104,7 +101,6 @@ private:
     QStringList m_listSoundDev;
     s_audioPortList m_getConfPortsList;
     QList<s_IODevices> m_IoDevices;
-    QStringList m_listCodec;
     QStringList m_readNewestLog;
     QJsonObject m_getSettings;
     QJsonObject m_getCodecPriorities;

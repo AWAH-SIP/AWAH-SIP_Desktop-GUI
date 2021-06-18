@@ -39,13 +39,12 @@ public slots:
     void onTableClicked(const QModelIndex &index);
 
 signals:
-    void SetParamFromHistory(QString Codec, QString Number);
+    void SetParamFromHistory(s_codec Codec, QString Number);
 
 private:
     CmdFacade *m_cmdFacade;
     int *m_AccID;
-    const s_account* account;
-
+    const s_account* m_account;
 };
 
 
@@ -63,7 +62,7 @@ public:
     ~MakeCall();
 
 public slots:
-    void on_ParamChanged(QString Codec, QString Number);
+    void on_ParamChanged(s_codec Codec, QString Number);
 
 private slots:
     void on_pushButton_cancel_clicked();
@@ -72,11 +71,15 @@ private slots:
 
     void on_pushButton_settings_clicked();
 
+    void on_selcectCodecBox_currentIndexChanged(int index);
+
 private:
     Ui::MakeCall *ui;
     CmdFacade *m_cmdFacade ;
     int m_AccID;
+    QList<s_codec> m_codecs;
     CallHistoryModel *CallHistory;
+    s_codec m_selectedCodec;
 };
 
 #endif // MAKECALL_H

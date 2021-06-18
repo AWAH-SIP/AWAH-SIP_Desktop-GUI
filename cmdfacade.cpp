@@ -127,12 +127,13 @@ QList <s_account>* CmdFacade::getAccounts()
    return &m_Accounts;
 }
 
-void CmdFacade::makeCall(QString number, int AccID) const
+void CmdFacade::makeCall(QString number, int AccID, s_codec codec) const
 {
     QJsonObject obj, data;
     obj["command"] = "makeCall";
     data["number"] = number;
     data["AccID"] = AccID;
+    data["codec"] = codec.toJSON();
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
@@ -420,62 +421,24 @@ void CmdFacade::removeBuddy(QString buddyUrl, QString accUid) const
 
 
 // Public API - Codecs
-QStringList CmdFacade::listCodec()
+
+QList<s_codec> CmdFacade::getActiveCodecs()
 {
+    QList<s_codec> codecList;
     QJsonObject obj, data;
-    obj["command"] = "listCodec";
+    obj["command"] = "getActiveCodecs";
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
     if(!cmd.hasError()) {
-        m_listCodec.clear();
         QJsonArray codecArr = cmd.getReturnData()["codecArray"].toArray();
         for (auto && codecEntry : qAsConst(codecArr)) {
-            m_listCodec.append(codecEntry.toString());
+            s_codec codec;
+            codec.fromJSON(codecEntry.toObject());
+            codecList.append(codec);
         }
     }
-    return m_listCodec;
-}
-
-void CmdFacade::selectCodec(QString selectedcodec) const
-{
-    QJsonObject obj, data;
-    obj["command"] = "selectCodec";
-    data["selectedcodec"] = selectedcodec;
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient, true);
-    cmd.execute();
-}
-
-const QJsonObject CmdFacade::getCodecParam(QString codecId) const
-{
-    QJsonObject obj, data;
-    obj["command"] = "getCodecParam";
-    data["codecId"] = codecId;
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(cmd.hasError()) {
-        return QJsonObject();
-    } else {
-        return cmd.getReturnData()["codecParamObj"].toObject();
-    }
-}
-
-int CmdFacade::setCodecParam(QString codecId, QJsonObject codecParam) const
-{
-    QJsonObject obj, data;
-    obj["command"] = "setCodecParam";
-    data["codecId"] = codecId;
-    data["codecParam"] = codecParam;
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(cmd.hasError()) {
-        return -1;
-    } else {
-        return cmd.getReturnData()["returnValue"].toInt();
-    }
+    return codecList;
 }
 
 // Public API - GpioDeviceManager

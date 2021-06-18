@@ -21,16 +21,16 @@
 #include <QStyledItemDelegate>
 #include "editorwidget.h"
 
-CodecSettings::CodecSettings(QWidget *parent, CmdFacade *lib, QString codecID) :
+CodecSettings::CodecSettings(s_codec &codec, QWidget *parent, CmdFacade *lib) :
     QDialog(parent),
     ui(new Ui::CodecSettings),
-    m_cmdFacade(lib), m_codecID(codecID)
+    m_cmdFacade(lib), m_codec(codec)
 {
     ui->setupUi(this);
     QSettings settings("awah", "AWAHSipDesktopGUI");
     restoreGeometry(settings.value("CodecSettingsWindow/Geometry").toByteArray());
 
-    m_codecsetting = lib->getCodecParam(m_codecID);
+    m_codecsetting = codec.codecParameters;
     QModelIndex index;
 
     settingsmodel = new QStandardItemModel(m_codecsetting.count(), 2, this);
@@ -67,7 +67,12 @@ CodecSettings::~CodecSettings()
 
 void CodecSettings::on_pushButton_ok_clicked()
 {
-    m_cmdFacade->setCodecParam(m_codecID, m_editedsetting);
+    for (auto it = m_editedsetting.constBegin(); it != m_editedsetting.constEnd(); it++) {    // replace the edited values in the codec struct
+        QJsonValueRef ref = m_codec.codecParameters.find(it.key()).value();
+        QJsonObject m_addvalue = ref.toObject();
+        m_addvalue.insert("value",it.value());
+        ref=m_addvalue;
+    }
     CodecSettings::close();
 }
 

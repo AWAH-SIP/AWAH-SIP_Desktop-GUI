@@ -40,7 +40,7 @@ class CodecSettings : public QDialog
     Q_OBJECT
 
 public:
-    explicit CodecSettings(QWidget *parent = nullptr, CmdFacade *lib = nullptr, QString codecID = "");
+    explicit CodecSettings(s_codec &codec, QWidget *parent = nullptr, CmdFacade *lib = nullptr);
     ~CodecSettings();
 private slots:
     void on_pushButton_ok_clicked();
@@ -53,7 +53,7 @@ protected:
 private:
     Ui::CodecSettings *ui;
     CmdFacade *m_cmdFacade ;
-    QString m_codecID;
+    s_codec& m_codec;
     QJsonObject m_codecsetting, m_editedsetting;
     QStandardItemModel *settingsmodel;
 };
