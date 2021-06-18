@@ -48,7 +48,7 @@ jobs:
       - run:  mkdir build && cd build
 
       - name: QMake
-        run: qmake ../AWAH-SIP_Desktop-GUI.pro
+        run: pwd && qmake ../AWAH-SIP_Desktop-GUI.pro
         
       - name: Make
         run:  make
@@ -86,9 +86,10 @@ jobs:
         run:  nmake
         
       - name: WinDeployQT
-        run:  cd release && windeployqt --release --compiler-runtime AWAH-SIP_Desktop-GUI.exe
+        run:  cd release && windeployqt --release --no-translations --compiler-runtime AWAH-SIP_Desktop-GUI.exe
         
-      - name: Zip Release
-        uses: TheDoctor0/zip-release@0.4.2
+      - name: Easy Zip Files
+        uses: vimtor/action-zip@v1
         with:
-          filename: AWAH-SIP_Desktop-GUI-${GITHUB_SHA}.zip
+          files: .
+          dest: AWAH-SIP_Desktop-GUI-${GITHUB_SHA}.zip
