@@ -1,0 +1,29 @@
+name: Build Desktop GUI
+on: [push]
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: "5.15.2"
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - run: ls -l
+
+      - name: Build
+        run: qmake AWAH-SIP_Codec.pro && make qmake_all
