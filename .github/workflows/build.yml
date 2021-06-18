@@ -13,6 +13,8 @@ jobs:
         with:
           path: ../Qt
           key: ${{ runner.os }}-QtCache
+          
+      - uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
