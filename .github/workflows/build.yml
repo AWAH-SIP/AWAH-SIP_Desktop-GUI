@@ -45,16 +45,16 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         
-      - run:  mkdir build && cd build
+      - run:  mkdir build
 
       - name: QMake
-        run: pwd && qmake ../AWAH-SIP_Desktop-GUI.pro
+        run: cd build && qmake ../AWAH-SIP_Desktop-GUI.pro
         
       - name: Make
-        run:  make
+        run:  cd build && make
         
       - name: MacDeployQT
-        run:  macdeployqt AWAH-SIP_Desktop-GUI.app -dmg
+        run:  cd build && macdeployqt AWAH-SIP_Desktop-GUI.app -dmg
         
       - run:  ls -l
         
