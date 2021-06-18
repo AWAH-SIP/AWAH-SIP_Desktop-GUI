@@ -96,7 +96,7 @@ jobs:
         uses: vimtor/action-zip@v1
         with:
           files: .
-          dest: AWAH-SIP_Desktop-GUI-${{GITHUB_SHA}}.zip
+          dest: AWAH-SIP_Desktop-GUI-$GITHUB_SHA.zip
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
