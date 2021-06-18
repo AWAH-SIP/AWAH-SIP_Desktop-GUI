@@ -23,12 +23,5 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - run: |
-              if [ "$RUNNER_OS" == "Windows" ]; then
-                dir
-              else
-                ls -l
-              fi
-
       - name: Build
         run: qmake AWAH-SIP_Desktop-GUI.pro && make qmake_all
