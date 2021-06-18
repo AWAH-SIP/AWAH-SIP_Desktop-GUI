@@ -29,5 +29,11 @@ jobs:
         run: qmake AWAH-SIP_Desktop-GUI.pro
         
       - name: Make
-        run: make
+        run:   |
+                if [ "$RUNNER_OS" == "Windows" ]; then
+                    jom
+               else
+                    make
+               fi
+        shell: bash
         
