@@ -44,12 +44,19 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v2
+        
+      - run:  mkdir build && cd build
 
       - name: QMake
-        run: qmake AWAH-SIP_Desktop-GUI.pro
+        run: qmake ../AWAH-SIP_Desktop-GUI.pro
         
       - name: Make
         run:  make
+        
+      - name: MacDeployQT
+        run:  macdeployqt AWAH-SIP_Desktop-GUI.app -dmg
+        
+      - run:  ls -l
         
   Windows:
     runs-on: windows-latest
@@ -77,3 +84,11 @@ jobs:
         
       - name: Make
         run:  nmake
+        
+      - name: WinDeployQT
+        run:  cd release && windeployqt --release --compiler-runtime AWAH-SIP_Desktop-GUI.exe
+        
+      - name: Zip Release
+        uses: TheDoctor0/zip-release@0.4.2
+        with:
+          filename: AWAH-SIP_Desktop-GUI-${GITHUB_SHA}.zip
