@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.4
         with:
           name: AWAH-SIP_Desktop-GUI_${{ github.sha }}-x86_64.AppImage
-          path: AWAH-SIP_Desktop-GUI-*-x86_64.AppImage
+          path: build/AWAH-SIP_Desktop-GUI-*-x86_64.AppImage
   
   MacOS:
     runs-on: macos-latest
