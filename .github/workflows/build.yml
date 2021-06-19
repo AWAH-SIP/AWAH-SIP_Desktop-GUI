@@ -51,10 +51,10 @@ jobs:
         run: cd build && qmake ../AWAH-SIP_Desktop-GUI.pro
         
       - name: Make
-        run:  cd build && make && mv AWAH-SIP_Desktop-GUI.app AWAH-SIP_Desktop-GUI_${ env.GITHUB_SHA }.app
+        run:  cd build && make && mv AWAH-SIP_Desktop-GUI.app AWAH-SIP_Desktop-GUI_${{ env.GITHUB_SHA }}.app
         
       - name: MacDeployQT
-        run:  cd build && macdeployqt AWAH-SIP_Desktop-GUI_${ env.GITHUB_SHA }.app -dmg && ls -l
+        run:  cd build && macdeployqt AWAH-SIP_Desktop-GUI_${{ env.GITHUB_SHA }}.app -dmg && ls -l
         
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
