@@ -90,16 +90,16 @@ jobs:
         run:  nmake
         
       - name: WinDeployQT
-        run:  cd release && windeployqt --release --no-translations --compiler-runtime AWAH-SIP_Desktop-GUI.exe
+        run:  md deploy && copy release\AWAH-SIP_Desktop-GUI.exe deploy\ && windeployqt --release --no-translations --compiler-runtime deploy\AWAH-SIP_Desktop-GUI.exe
         
       - name: Easy Zip Files
         uses: vimtor/action-zip@v1
         with:
-          files: .
-          dest: AWAH-SIP_Desktop-GUI-$GITHUB_SHA.zip
+          files: deploy
+          dest: AWAH-SIP_Desktop-GUI-${{ github.sha }}.zip
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: AWAH-SIP_Desktop-GUI-$GITHUB_SHA.zip
+          name: AWAH-SIP_Desktop-GUI-${{ github.sha }}.zip
           path: AWAH-SIP_Desktop-GUI-*.zip
