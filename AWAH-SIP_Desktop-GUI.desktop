@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=AWAH-SIP Desktop GUI
+Comment=Desktop Client to the AWAH-SIP Codec
+Exec=AWAH-SIP_Desktop-GUI
+Icon=AWAH_logo_sm
+Terminal=false
+Categories=Network;VoIP;
