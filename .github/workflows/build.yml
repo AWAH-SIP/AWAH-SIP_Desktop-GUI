@@ -28,8 +28,6 @@ jobs:
 
   MacOS:
     runs-on: macos-latest
-    env:
-      SHA8: ${GITHUB_SHA::8}
     steps:
       - name: Cache Qt
         id: cache-qt
@@ -53,16 +51,16 @@ jobs:
         run: cd build && qmake ../AWAH-SIP_Desktop-GUI.pro
         
       - name: Make
-        run:  cd build && make && mv AWAH-SIP_Desktop-GUI.app AWAH-SIP_Desktop-GUI_${SHA8}.app
+        run:  cd build && make && mv AWAH-SIP_Desktop-GUI.app AWAH-SIP_Desktop-GUI_${ env.GITHUB_SHA }.app
         
       - name: MacDeployQT
-        run:  cd build && macdeployqt AWAH-SIP_Desktop-GUI_${SHA8}.app -dmg && ls -l
+        run:  cd build && macdeployqt AWAH-SIP_Desktop-GUI_${ env.GITHUB_SHA }.app -dmg && ls -l
         
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: AWAH-SIP_Desktop-GUI_${SHA8}.dmg
-          path: build/AWAH-SIP_Desktop-GUI_${SHA8}.dmg
+          name: AWAH-SIP_Desktop-GUI_${{ env.GITHUB_SHA }}.dmg
+          path: build/AWAH-SIP_Desktop-GUI_*.dmg
         
   Windows:
     runs-on: windows-latest
