@@ -98,3 +98,17 @@ RESOURCES += \
 RC_ICONS = images/AWAH_logo_sm.ico
 
 DISTFILES +=
+
+linux-g++ {
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+    target.path = $$PREFIX/bin
+
+    desktop.path = $$PREFIX/share/applications/
+    desktop.files += AWAH-SIP_Desktop-GUI.desktop
+    icon40.path = $$PREFIX/share/icons/hicolor/40x40/apps
+    icon40.files += images/AWAH_logo_sm.png
+
+    INSTALLS += icon40 desktop target
+}
