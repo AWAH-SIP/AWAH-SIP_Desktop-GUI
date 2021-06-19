@@ -31,7 +31,7 @@ jobs:
         
       - name: LinuxDeployQT
         run:  |
-          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+          cd build && wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
           chmod a+x linuxdeployqt-continuous-x86_64.AppImage
           ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -verbose=2
           mv "AWAH-SIP_Desktop-GUI-${VERSION}-x86_64.AppImage" AWAH-SIP_Desktop-GUI_${{ github.sha }}-x86_64.AppImage
