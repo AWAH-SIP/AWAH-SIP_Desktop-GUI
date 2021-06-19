@@ -5,4 +5,4 @@ Comment=Desktop Client to the AWAH-SIP Codec
 Exec=AWAH-SIP_Desktop-GUI
 Icon=AWAH_logo_sm
 Terminal=false
-Categories=Network;VoIP;
+Categories=Network;Audio;
