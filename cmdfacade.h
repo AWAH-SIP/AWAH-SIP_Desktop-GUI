@@ -45,8 +45,10 @@ public:
     int getSoundDevID(QString DeviceName);
 
     // Public API - Buddies
-    void addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codecSettings) const;
-    void removeBuddy(QString buddyUrl, QString accUid) const;
+    void addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec) const;
+    void editBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec, QString uid) const;
+    void removeBuddy(QString uid) const;
+    QList<s_buddy> getBuddies();
 
     // Public API - Codecs
     QList<s_codec> getActiveCodecs();

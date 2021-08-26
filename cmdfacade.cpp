@@ -395,28 +395,59 @@ QList<s_IODevices>& CmdFacade::getIoDevices()
 
 
 // Public API - Buddies
-void CmdFacade::addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codecSettings)  const
+void CmdFacade::addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec)  const
 {
     QJsonObject obj, data;
     obj["command"] = "addBuddy";
     data["buddyUrl"] = buddyUrl;
     data["name"] = name;
     data["accUid"] = accUid;
-    data["codecSettings"] = codecSettings;
+    data["codec"] = codec;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
 }
 
-void CmdFacade::removeBuddy(QString buddyUrl, QString accUid) const
+void CmdFacade::editBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec, QString uid) const
 {
     QJsonObject obj, data;
-    obj["command"] = "removeBuddy";
+    obj["command"] = "addBuddy";
     data["buddyUrl"] = buddyUrl;
+    data["name"] = name;
     data["accUid"] = accUid;
+    data["codec"] = codec;
+    data["uid"] = uid;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient);
     cmd.execute();
+}
+
+void CmdFacade::removeBuddy(QString uid) const
+{
+    QJsonObject obj, data;
+    obj["command"] = "removeBuddy";
+    data["buddyUid"] = uid;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+}
+
+QList<s_buddy> CmdFacade::getBuddies(){
+    QList<s_buddy> buddyList;
+    QJsonObject obj, data;
+    obj["command"] = "getBuddies";
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(!cmd.hasError()) {
+        QJsonArray buddyArr = cmd.getReturnData()["buddyArray"].toArray();
+        for (auto && buddyEntry : qAsConst(buddyArr)) {
+            s_buddy buddy;
+            buddy.fromJSON(buddyEntry.toObject());
+            buddyList.append(buddy);
+        }
+    }
+    return buddyList;
 }
 
 

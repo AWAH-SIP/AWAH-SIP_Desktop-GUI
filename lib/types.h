@@ -397,14 +397,18 @@ struct s_buddy{
     QString Name = "";
     int status = 0;
     QString accUid = "";
-    QString autoConnectFromAccountUid = "";
+    QString uid = "";
+    s_codec codec;
     QJsonObject toJSON() const {
-        return{{"buddyUrl", buddyUrl}, {"Name", Name}, {"status", status} };
+        return{{"buddyUrl", buddyUrl}, {"Name", Name}, {"status", status}, {"codec", codec.toJSON()}, {"uid", uid}};
     }
     s_buddy* fromJSON(const QJsonObject &buddyJSON) {
         buddyUrl = buddyJSON["buddyUrl"].toString();
         Name = buddyJSON["Name"].toString();
         status = buddyJSON["status"].toInt();
+        accUid = buddyJSON["accUid"].toString();
+        codec.fromJSON(buddyJSON["codec"].toObject());
+        uid = buddyJSON["uid"].toString();
         return this;
     }
 };
