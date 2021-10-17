@@ -18,6 +18,7 @@
 
 #include "audioroutemodel.h"
 #include <QGuiApplication>
+#include <qtablewidget.h>
 
 AudioRouteModel::AudioRouteModel(CmdFacade *lib, Ui::Route *uiParent, QObject *parent)
                 : QAbstractTableModel(parent), m_cmdFacade(lib), m_uiParent(uiParent)
@@ -105,14 +106,13 @@ void AudioRouteModel::onTableClicked(const QModelIndex &index)
 {
     Qt::MouseButtons pressedBtn = QGuiApplication::mouseButtons();
     int idx = index.row() * m_rowWidth + index.column();
-
     switch (pressedBtn) {
     case Qt::LeftButton:
     case Qt::LeftButton|Qt::RightButton:
         if(m_routes.at(idx) == 0){
             setCrosspoint(index);
         }else{
-            deletCrosspoint(index);
+            deleteCrosspoint(index);
         }
         break;
     case Qt::RightButton:
@@ -124,6 +124,28 @@ void AudioRouteModel::onTableClicked(const QModelIndex &index)
         break;
     }
     m_uiParent->tableView_audioRoutes->clearSelection();
+}
+
+void AudioRouteModel::onVertHeaderDoubleClicked(const int logicalIndex)
+{
+    bool ok;
+    QString customLabel = QInputDialog::getText(m_uiParent->tableView_audioRoutes, tr("Edit channellabel"),
+                                            tr("Edit name:"), QLineEdit::Normal,
+                                            m_audioPortList.srcPorts.at(logicalIndex).name, &ok);
+     if (ok){
+         m_cmdFacade->changeConfportsrcName(m_audioPortList.srcPorts.at(logicalIndex).pjName, customLabel);
+     }
+}
+
+void AudioRouteModel::onHorHeaderDoubleClicked(const int logicalIndex)
+{
+    bool ok;
+    QString customLabel = QInputDialog::getText(m_uiParent->tableView_audioRoutes, tr("Edit channellabel"),
+                                            tr("Edit name:"), QLineEdit::Normal,
+                                            m_audioPortList.destPorts.at(logicalIndex).name, &ok);
+     if (ok){
+         m_cmdFacade->changeConfportdstName(m_audioPortList.destPorts.at(logicalIndex).pjName, customLabel);
+     }
 }
 
 void AudioRouteModel::onTableChanged(const s_audioPortList& portList)
@@ -173,7 +195,7 @@ void AudioRouteModel::changeCrosspointLevel(const QModelIndex &index)
     }
 }
 
-void AudioRouteModel::deletCrosspoint(const QModelIndex &index)
+void AudioRouteModel::deleteCrosspoint(const QModelIndex &index)
 {
     m_cmdFacade->disconnectConfPort(m_srcSlotMap.key(index.row()), m_destSlotMap.key(index.column()));
 }

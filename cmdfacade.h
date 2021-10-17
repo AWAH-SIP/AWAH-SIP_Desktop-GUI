@@ -43,6 +43,8 @@ public:
     int changeConfPortLevel(int src_slot, int sink_slot, float level) const;
     void addToneGen(int freq) const;
     int getSoundDevID(QString DeviceName);
+    void changeConfportsrcName(const QString portName, const QString customName) const;
+    void changeConfportdstName(const QString portName, const QString customName) const;
 
     // Public API - Buddies
     void addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec) const;

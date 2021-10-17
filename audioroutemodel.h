@@ -44,11 +44,13 @@ public slots:
     void onRoutesChanged(QList<s_audioRoutes> routes);
     void onTableClicked(const QModelIndex &index);
     void onTableChanged(const s_audioPortList &portList);
+    void onVertHeaderDoubleClicked(const int logicalIndex);
+    void onHorHeaderDoubleClicked(const int logicalIndex);
 
 private:
     void setCrosspoint(const QModelIndex &index);
     void changeCrosspointLevel(const QModelIndex &index);
-    void deletCrosspoint(const QModelIndex &index);
+    void deleteCrosspoint(const QModelIndex &index);
     CmdFacade* m_cmdFacade;
     Ui::Route *m_uiParent;
     s_audioPortList m_audioPortList;

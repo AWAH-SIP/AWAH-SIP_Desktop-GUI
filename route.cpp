@@ -21,6 +21,7 @@
 #include <QSettings>
 
 
+
 Route::Route(CmdFacade *lib, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Route), m_cmdFacade(lib)
@@ -28,9 +29,13 @@ Route::Route(CmdFacade *lib, QWidget *parent) :
     ui->setupUi(this);
     m_AudioRoutesModel = new AudioRouteModel(m_cmdFacade, ui, this);
     m_RotHeaderView = new RotatedHeaderView(Qt::Horizontal);
+    m_verticalHeaderView = new QHeaderView(Qt::Vertical);
     ui->tableView_audioRoutes->setHorizontalHeader(m_RotHeaderView);
+    ui->tableView_audioRoutes->setVerticalHeader(m_verticalHeaderView);
+    ui->tableView_audioRoutes->verticalHeader()->setSectionsClickable(1);
     ui->tableView_audioRoutes->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     ui->tableView_audioRoutes->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tableView_audioRoutes->horizontalHeader()->setSectionsClickable(1);
     ui->tableView_audioRoutes->verticalHeader()->setDefaultAlignment(Qt::AlignRight);
     ui->tableView_audioRoutes->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableView_audioRoutes->setModel(m_AudioRoutesModel);
@@ -63,12 +68,17 @@ Route::Route(CmdFacade *lib, QWidget *parent) :
     connect(ui->tableView_gpioRoutes, SIGNAL(pressed(const QModelIndex &)),
             m_GpioRouteModel, SLOT(onTableClicked(const QModelIndex &)));
 
+    connect(m_RotHeaderView, SIGNAL(sectionDoubleClicked(int)),
+            m_AudioRoutesModel, SLOT(onHorHeaderDoubleClicked(int)));
+
+    connect(m_verticalHeaderView, SIGNAL(sectionDoubleClicked(int)),
+            m_AudioRoutesModel, SLOT(onVertHeaderDoubleClicked(int)));
+
     qRegisterMetaType<QList<s_gpioRoute>>("QList<s_gpioRoute>");
     qRegisterMetaType<s_gpioPortList>("s_gpioPortList");
     connect(m_cmdFacade, &CmdFacade::gpioRoutesChanged, m_GpioRouteModel, &GpioRouteModel::onRoutesChanged);
     connect(m_cmdFacade, &CmdFacade::gpioRoutesTableChanged, m_GpioRouteModel, &GpioRouteModel::onTableChanged);
     connect(m_cmdFacade, &CmdFacade::gpioStatesChanged, m_GpioRouteModel, &GpioRouteModel::onStatesChanged);
-
 }
 
 Route::~Route()

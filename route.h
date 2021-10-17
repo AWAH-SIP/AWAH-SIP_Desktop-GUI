@@ -48,6 +48,7 @@ private:
     GpioRouteModel *m_GpioRouteModel;
     RotatedHeaderView *m_RotHeaderView;
     RotatedHeaderView *m_gpioRotHeaderView;
+    QHeaderView *m_verticalHeaderView;
 };
 
 #endif // ROUTE_H

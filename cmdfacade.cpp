@@ -388,6 +388,28 @@ int CmdFacade::getSoundDevID(QString DeviceName)
     }
 }
 
+void CmdFacade::changeConfportsrcName(const QString portName, const QString customName) const
+{
+    QJsonObject obj, data;
+    obj["command"] = "changeConfportsrcName";
+    data["portName"] = portName;
+    data["customName"] = customName;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+}
+
+void CmdFacade::changeConfportdstName(const QString portName, const QString customName) const
+{
+    QJsonObject obj, data;
+    obj["command"] = "changeConfportdstName";
+    data["portName"] = portName;
+    data["customName"] = customName;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+}
+
 QList<s_IODevices>& CmdFacade::getIoDevices()
 {
     return m_IoDevices;
