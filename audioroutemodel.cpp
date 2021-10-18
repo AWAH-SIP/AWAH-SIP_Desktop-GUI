@@ -44,8 +44,8 @@ QVariant AudioRouteModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
         if(m_routes.at(idx) != 0){
-            if(!factTodB(m_routes.at(idx))) return QString("  ");
-            else return QString().number(factTodB(m_routes.at(idx)), 'g', 5);
+            if(!(int)factTodB(m_routes.at(idx))) return QString("  ");
+            else return QString().number((int)factTodB(m_routes.at(idx)), 'g', 5);
         }
         else{
             return QString(" ");
