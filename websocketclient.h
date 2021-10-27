@@ -36,6 +36,7 @@ private slots:
     void sipStatus(QJsonObject &data);
     void callStateChanged(QJsonObject &data);
     void buddyStatus(QJsonObject &data);
+    void BuddyEntryChanged(QJsonObject &data);
     //void message(QJsonObject &data);
     void logMessage(QJsonObject &data);
     void audioRoutesChanged(QJsonObject &data);

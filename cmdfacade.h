@@ -26,6 +26,7 @@ public:
     void transferCall(int callId, int AccID, QString destination) const;
     const QList<s_callHistory>* getCallHistory(int AccID);
     const s_account* getAccountByID(int ID);
+    s_account *getAccountByUID(QString uid);
 
     QList<s_IODevices>& getIoDevices();
 
@@ -50,7 +51,7 @@ public:
     void addBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec) const;
     void editBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec, QString uid) const;
     void removeBuddy(QString uid) const;
-    QList<s_buddy> getBuddies();
+    const QList<s_buddy>& getBuddies() const;
 
     // Public API - Codecs
     QList<s_codec> getActiveCodecs();
@@ -84,6 +85,7 @@ public:
 signals:
     void StateChanged();
     void signalBuddyStatus(QString buddy, int status);
+    void buddyEntryChanged();
     void signalMessage(QString type, QByteArray message);
     void logMessage(QString msg);
     void audioRoutesChanged(QList<s_audioRoutes> audioRoutes);
@@ -112,6 +114,7 @@ private:
     s_gpioPortList m_gpioPortList;
     QMap<QString, bool> m_changedGpios;
     QMap<QString, bool> m_getGpioStates;
+    QList<s_buddy> m_buddyList;
 
     friend class WebsocketClient;
 };

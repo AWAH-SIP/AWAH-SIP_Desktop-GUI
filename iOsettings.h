@@ -23,6 +23,7 @@
 #include "lib/types.h"
 #include "cmdfacade.h"
 #include <QStringListModel>
+#include "addsounddev.h"
 
 class DevModel;
 
@@ -57,6 +58,7 @@ private:
     CmdFacade *m_cmdFacade;
     QList <s_IODevices> &m_DeviceList;
     DevModel *devModel;
+    addSoundDev* m_addSounddev = nullptr;
 };
 
 

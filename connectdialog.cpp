@@ -44,7 +44,7 @@ void ConnectDialog::on_pushButton_connect_clicked()
         m_timeoutTimer->start();
     }
     else{
-        ui->label_connstate->setText("invalid Adress!!");
+        ui->label_connstate->setText("invalid Address!!");
     }
 }
 

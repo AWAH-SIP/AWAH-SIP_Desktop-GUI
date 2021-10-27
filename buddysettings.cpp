@@ -7,6 +7,7 @@ BuddySettings::BuddySettings(QWidget *parent, CmdFacade *lib) :
     ui(new Ui::BuddySettings),
     m_cmdFacade(lib)
 {
+    connect(m_cmdFacade, &CmdFacade::buddyEntryChanged , this, &BuddySettings::on_BuddyEntryChanged);
     ui->setupUi(this);
     QSettings settings("awah", "AWAHSipDesktopGUI");
     restoreGeometry(settings.value("BuddySettingsWindow/Geometry").toByteArray());
@@ -22,7 +23,9 @@ BuddySettings::BuddySettings(QWidget *parent, CmdFacade *lib) :
 
 BuddySettings::~BuddySettings()
 {
-    delete m_buddyDialog;
+    if(m_buddyDialog != nullptr){
+        delete m_buddyDialog;
+    }
     delete ui;
 }
 
@@ -38,12 +41,16 @@ void BuddySettings::on_pushButton_remove_clicked()
 
 void BuddySettings::on_pushButton_edit_clicked()
 {
-
-    m_buddyDialog = new buddydialog(m_cmdFacade,m_buddyEdit,this);
+    if(m_buddyEdit.uid.isEmpty()){
+        return;
+    }
+    s_buddy buddytoEdit = m_buddyEdit;
+    m_buddyDialog = new buddydialog(m_cmdFacade,buddytoEdit,this);
     m_buddyDialog->setModal(true);
     m_buddyDialog->exec();
-    if(!m_buddyEdit.buddyUrl.isEmpty()){                                        // abused to check if cancel was pressed
-        m_cmdFacade->editBuddy(m_buddyEdit.buddyUrl, m_buddyEdit.Name, m_buddyEdit.accUid, m_buddyEdit.codec.toJSON(), m_buddyEdit.uid);
+    if(!buddytoEdit.buddyUrl.isEmpty()){                                        // if cancel was pressed fields are empty
+        m_cmdFacade->editBuddy(buddytoEdit.buddyUrl, buddytoEdit.Name, buddytoEdit.accUid, buddytoEdit.codec.toJSON(), buddytoEdit.uid);
+        m_buddyEdit = buddytoEdit;
     }
 }
 
@@ -56,6 +63,12 @@ void BuddySettings::on_pushButton_add_clicked()
     if(!newBuddy.buddyUrl.isEmpty()){                                           // abused to check if cancel was pressed
         m_cmdFacade->addBuddy(newBuddy.buddyUrl, newBuddy.Name, newBuddy.accUid, newBuddy.codec.toJSON());
     }
+}
+
+void BuddySettings::on_BuddyEntryChanged()
+{
+    m_BuddyList = m_cmdFacade->getBuddies();
+    m_buddyModel->refresh();
 }
 
 // *********************** Device Model needed to display the buddies ***************
@@ -75,11 +88,12 @@ int BuddyModel::rowCount(const QModelIndex & /*parent*/) const
 
 int BuddyModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 3;
+    return 4;
 }
 
 QVariant BuddyModel::data(const QModelIndex &index, int role) const
 {
+    auto account = m_cmdFacade->getAccountByUID(m_BuddyList->at(index.row()).accUid);
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         switch (index.column()) {
             case 0:
@@ -90,6 +104,9 @@ QVariant BuddyModel::data(const QModelIndex &index, int role) const
                 break;
             case 2:
                 return m_BuddyList->at(index.row()).codec.displayName;
+                break;
+            case 3:
+                return account->name;
                 break;
             default:
                 return QVariant();
@@ -108,6 +125,9 @@ QVariant BuddyModel::headerData(int section, Qt::Orientation orientation, int ro
                 break;
             case 2:
                 return QString("Codec");
+                break;
+            case 3:
+                return QString("Account");
                 break;
             default:
                 return QVariant();

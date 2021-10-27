@@ -1,5 +1,6 @@
 #include "buddydialog.h"
 #include "ui_buddydialog.h"
+#include "codecsettings.h"
 
 buddydialog::buddydialog(CmdFacade *lib, s_buddy &buddy, QWidget *parent) :
     QDialog(parent),
@@ -19,17 +20,25 @@ buddydialog::buddydialog(CmdFacade *lib, s_buddy &buddy, QWidget *parent) :
     for(auto& account : *m_lib->getAccounts()){
         ui->comboBox_account->addItem(account.name);
     }
+    s_account* buddyaccount = nullptr;
+    buddyaccount = m_lib->getAccountByUID(m_buddy.accUid);
+    if (buddyaccount != nullptr){
+        ui->comboBox_account->setCurrentText(buddyaccount->name);
+    }
 
 }
 
 buddydialog::~buddydialog()
 {
+    if(m_CodecSettings != nullptr){
+        delete m_CodecSettings;
+    }
     delete ui;
 }
 
 void buddydialog::on_pushButton_cancel_clicked()
 {
-    m_buddy.buddyUrl = "";
+    m_buddy = s_buddy();
     buddydialog::close();
 }
 
@@ -45,7 +54,7 @@ void buddydialog::on_pushButton_ok_clicked()
         }
     }
     for(auto &codec :  m_lib->getActiveCodecs()){
-            if(ui->comboBox_codec->currentText()== codec.displayName){
+            if(ui->comboBox_codec->currentText() == codec.displayName){
                 m_buddy.codec = codec;
             }
     }
@@ -54,5 +63,9 @@ void buddydialog::on_pushButton_ok_clicked()
 
 void buddydialog::on_pushButton_settings_clicked()
 {
-
+    if(m_CodecSettings == nullptr){
+        m_CodecSettings = new CodecSettings(m_selectedCodec,this,m_lib);
+    }
+    m_CodecSettings->setModal(true);
+    m_CodecSettings->exec();
 }

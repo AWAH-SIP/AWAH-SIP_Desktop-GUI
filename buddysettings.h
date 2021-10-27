@@ -47,10 +47,12 @@ private slots:
 
     void on_tableView_clicked(const QModelIndex &index);
 
+    void on_BuddyEntryChanged();
+
 private:
     Ui::BuddySettings *ui;
     CmdFacade* m_cmdFacade;
-    buddydialog* m_buddyDialog;
+    buddydialog* m_buddyDialog = nullptr;
     QList<s_buddy> m_BuddyList;
     s_buddy m_buddyEdit;
     BuddyModel *m_buddyModel;

@@ -73,6 +73,15 @@ void CmdFacade::initializeVariables(){
                 m_getGpioStates[gpioStateObj["slotID"].toString()] = gpioStateObj["state"].toBool();
             }
         }
+
+        m_buddyList.clear();
+        QJsonArray buddyArr = cmd.getReturnData()["buddyArray"].toArray();
+        for (auto && buddyEntry : qAsConst(buddyArr)) {
+            s_buddy buddy;
+            buddy.fromJSON(buddyEntry.toObject());
+            m_buddyList.append(buddy);
+
+        }
     }
 }
 
@@ -222,6 +231,15 @@ const s_account* CmdFacade::getAccountByID(int ID)
         QJsonObject accountObj = cmd.getReturnData()["Account"].toObject();
         return m_getAccountByID.fromJSON(accountObj);
     }
+}
+
+s_account* CmdFacade::getAccountByUID(QString uid){
+    for(auto& account : m_Accounts){
+        if(account.uid == uid){
+           return &account;
+        }
+    }
+    return nullptr;
 }
 
 // Public API - AudioRouter
@@ -433,7 +451,7 @@ void CmdFacade::addBuddy(QString buddyUrl, QString name, QString accUid, QJsonOb
 void CmdFacade::editBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec, QString uid) const
 {
     QJsonObject obj, data;
-    obj["command"] = "addBuddy";
+    obj["command"] = "editBuddy";
     data["buddyUrl"] = buddyUrl;
     data["name"] = name;
     data["accUid"] = accUid;
@@ -454,24 +472,11 @@ void CmdFacade::removeBuddy(QString uid) const
     cmd.execute();
 }
 
-QList<s_buddy> CmdFacade::getBuddies(){
-    QList<s_buddy> buddyList;
-    QJsonObject obj, data;
-    obj["command"] = "getBuddies";
-    obj["data"] = data;
-    Command cmd(obj, this->parent(), m_wsClient);
-    cmd.execute();
-    if(!cmd.hasError()) {
-        QJsonArray buddyArr = cmd.getReturnData()["buddyArray"].toArray();
-        for (auto && buddyEntry : qAsConst(buddyArr)) {
-            s_buddy buddy;
-            buddy.fromJSON(buddyEntry.toObject());
-            buddyList.append(buddy);
-        }
-    }
-    return buddyList;
-}
 
+const QList<s_buddy>& CmdFacade::getBuddies() const
+{
+    return m_buddyList;
+}
 
 // Public API - Codecs
 

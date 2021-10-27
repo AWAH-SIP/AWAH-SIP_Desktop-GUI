@@ -51,13 +51,16 @@ IOSettings::~IOSettings()
 {
     delete ui;
     delete devModel;
+    if(m_addSounddev != nullptr){
+        delete m_addSounddev;
+    }
 }
 
 void IOSettings::on_pushButton_add_snd_dev_clicked()
 { 
-    addSoundDev sounddev(this,m_cmdFacade);
-    sounddev.setModal(true);
-    sounddev.exec();
+    m_addSounddev = new addSoundDev(this,m_cmdFacade);
+    m_addSounddev->setModal(true);
+    m_addSounddev->exec();
 }
 
 void IOSettings::on_pushButton_remove_dev_clicked()

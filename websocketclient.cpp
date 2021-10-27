@@ -222,6 +222,23 @@ void WebsocketClient::buddyStatus(QJsonObject &data)
     }
 }
 
+void WebsocketClient::BuddyEntryChanged(QJsonObject &data)
+{
+    QJsonArray buddyArray;
+    if(jCheckArray(buddyArray, data["buddies"])) {
+        m_cmdFacade->m_buddyList.clear();
+        for (auto && jbuddy: qAsConst(buddyArray)) {
+            if(jbuddy.isObject()) {
+                s_buddy buddy;
+                m_cmdFacade->m_buddyList.append(*buddy.fromJSON(jbuddy.toObject()));
+            }
+        }
+        emit m_cmdFacade->buddyEntryChanged();
+    }else {
+        qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
+    }
+}
+
 void WebsocketClient::logMessage(QJsonObject &data)
 {
     QString msg;

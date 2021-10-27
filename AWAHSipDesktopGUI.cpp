@@ -111,6 +111,9 @@ void AWAHSipDesktopGUI::closeEvent(QCloseEvent *event)
     if (m_accountSettings != nullptr){
         delete m_accountSettings;
     }
+    if (m_buddySettings != nullptr){
+        delete m_buddySettings;
+    }
     QMainWindow::closeEvent(event);
 }
 
@@ -178,7 +181,6 @@ void AWAHSipDesktopGUI::on_actionLog_triggered()
 
 void AWAHSipDesktopGUI::on_actionBuddies_triggered()
 {
-    //QMessageBox::information(this,"Sorry","Sorry you have to wait for a future release");
     m_buddySettings = new BuddySettings (this, m_cmdFacade);
     m_buddySettings->setModal(true);
     m_buddySettings->exec();
