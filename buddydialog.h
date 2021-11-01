@@ -31,8 +31,6 @@ private:
     s_buddy& m_buddy;
     QList<s_account>* m_accounts;
     CodecSettings* m_CodecSettings = nullptr;
-    s_codec m_selectedCodec;
-
 
 };
 

@@ -42,6 +42,13 @@ enum DeviceType {
 };
 Q_ENUMS(DeviceType)
 
+enum AWAHPresenceState {
+    unknown = 0,
+    online = 1,
+    busy = 2
+};
+Q_ENUMS(AWAHPresenceState)
+
 struct s_IODevices{
     DeviceType devicetype;
     QString uid;

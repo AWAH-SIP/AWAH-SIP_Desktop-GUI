@@ -8,6 +8,7 @@ BuddySettings::BuddySettings(QWidget *parent, CmdFacade *lib) :
     m_cmdFacade(lib)
 {
     connect(m_cmdFacade, &CmdFacade::buddyEntryChanged , this, &BuddySettings::on_BuddyEntryChanged);
+    connect(m_cmdFacade, &CmdFacade::signalBuddyStatus , this, &BuddySettings::on_BuddyEntryChanged);
     ui->setupUi(this);
     QSettings settings("awah", "AWAHSipDesktopGUI");
     restoreGeometry(settings.value("BuddySettingsWindow/Geometry").toByteArray());
@@ -71,14 +72,13 @@ void BuddySettings::on_BuddyEntryChanged()
     m_buddyModel->refresh();
 }
 
-// *********************** Device Model needed to display the buddies ***************
+// *********************** Buddy Model needed to display the buddies ***************
 
 BuddyModel::BuddyModel(QObject *parent,  QList<s_buddy> *buddies,CmdFacade *lib)
     : QAbstractTableModel(parent), m_BuddyList(buddies), m_cmdFacade(lib)
 {
 
 }
-
 
 
 int BuddyModel::rowCount(const QModelIndex & /*parent*/) const
@@ -88,7 +88,7 @@ int BuddyModel::rowCount(const QModelIndex & /*parent*/) const
 
 int BuddyModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 4;
+    return 5;
 }
 
 QVariant BuddyModel::data(const QModelIndex &index, int role) const
@@ -108,8 +108,36 @@ QVariant BuddyModel::data(const QModelIndex &index, int role) const
             case 3:
                 return account->name;
                 break;
+            case 4:
+            switch (m_BuddyList->at(index.row()).status) {
+                case unknown:
+                return QString("unknown");
+                break;
+            case online:
+                return QString("online");
+                break;
+            case busy:
+                return QString("busy");
+                break;
+            default:
+                break;
+            }
+                break;
             default:
                 return QVariant();
+    }
+    if (role == Qt::BackgroundColorRole){
+        switch(m_BuddyList->at(index.row()).status) {
+        case unknown:
+            return QBrush(QColor(145, 157, 157));   // stone
+            break;
+        case online:
+            return QBrush(QColor(113, 183, 144));   // green
+            break;
+        case busy:
+            return QBrush(QColor(229, 85, 79));     // red
+            break;
+        }
     }
     return QVariant();
 }
@@ -117,20 +145,23 @@ QVariant BuddyModel::data(const QModelIndex &index, int role) const
 QVariant BuddyModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if(role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch(section) {
-            case 0:
-                return QString("Name");
-                break;
-            case 1:
-                return QString("Buddy URI");
-                break;
-            case 2:
-                return QString("Codec");
-                break;
-            case 3:
-                return QString("Account");
-                break;
-            default:
-                return QVariant();
+        case 0:
+            return QString("Name");
+            break;
+        case 1:
+            return QString("Buddy URI");
+            break;
+        case 2:
+            return QString("Codec");
+            break;
+        case 3:
+            return QString("Account");
+            break;
+        case 4:
+            return QString("State");
+            break;
+        default:
+            return QVariant();
         }
     }
     return QVariant();

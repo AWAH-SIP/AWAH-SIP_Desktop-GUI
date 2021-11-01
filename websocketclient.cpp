@@ -213,10 +213,19 @@ void WebsocketClient::callStateChanged(QJsonObject &data)
 
 void WebsocketClient::buddyStatus(QJsonObject &data)
 {
-    QString buddy;
+    QString buddyURL;
     int status;
-    if(jCheckString(buddy, data["buddy"]) && jCheckInt(status, data["status"])) {
-        emit m_cmdFacade->signalBuddyStatus(buddy, status);
+    if(jCheckString(buddyURL, data["buddy"]) && jCheckInt(status, data["status"])) {
+        int startPos = buddyURL.indexOf("sip:") + 4;
+        int endPos = buddyURL.indexOf('@');
+        int length = endPos - startPos;
+        QString URL = (buddyURL.mid(startPos, length));
+        for(auto &buddy : m_cmdFacade->m_buddyList){
+            if(URL == buddy.buddyUrl){
+                buddy.status = status;
+            }
+        }
+        emit m_cmdFacade->signalBuddyStatus();
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
     }

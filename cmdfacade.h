@@ -84,7 +84,7 @@ public:
 
 signals:
     void StateChanged();
-    void signalBuddyStatus(QString buddy, int status);
+    void signalBuddyStatus();
     void buddyEntryChanged();
     void signalMessage(QString type, QByteArray message);
     void logMessage(QString msg);
