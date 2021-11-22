@@ -103,11 +103,11 @@ void CmdFacade::createAccount(QString accountName, QString server, QString user,
     cmd.execute();
 }
 
-void CmdFacade::modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath,  bool fixedJitterBuffer, uint fixedJitterBufferValue) const
+void CmdFacade::modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath,  bool fixedJitterBuffer, uint fixedJitterBufferValue) const
 {
     QJsonObject obj, data;
     obj["command"] = "modifyAccount";
-    data["index"] = index;
+    data["uid"] = uid;
     data["accountName"] = accountName;
     data["server"] = server;
     data["user"] = user;
@@ -121,11 +121,11 @@ void CmdFacade::modifyAccount(int index, QString accountName, QString server, QS
     cmd.execute();
 }
 
-void CmdFacade::removeAccount(int index) const
+void CmdFacade::removeAccount(QString uid) const
 {
     QJsonObject obj, data;
     obj["command"] = "removeAccount";
-    data["index"] = index;
+    data["uid"] = uid;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();

@@ -66,7 +66,7 @@ void accountsettings::on_pushButton_add_clicked()
 
 void accountsettings::on_pushButton_delete_clicked()
 {
-   m_cmdFacade->removeAccount(ui->tableView->selectionModel()->currentIndex().row());
+   m_cmdFacade->removeAccount(m_AccList->at(ui->tableView->selectionModel()->currentIndex().row()).uid);
 }
 
 void accountsettings::on_pushButton_close_clicked()
@@ -85,7 +85,7 @@ void accountsettings::on_pushButton_edit_clicked()
     accdialog.exec();
     editacc = accdialog.getAccount();
     if(editacc.name != ""){                             // TODO: add better Check if something in acoout was edited
-        m_cmdFacade->modifyAccount(ui->tableView->selectionModel()->currentIndex().row(), editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue);
+        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue);
     }
 }
 
@@ -99,7 +99,7 @@ void accountsettings::on_tableView_doubleClicked(const QModelIndex &index)
     accdialog.exec();
     editacc = accdialog.getAccount();
     if(editacc.name != ""){                             // TODO: add better Check if something in acoout was edited
-        m_cmdFacade->modifyAccount(ui->tableView->selectionModel()->currentIndex().row(), editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue);
+        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue);
     }
 }
 

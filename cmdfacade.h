@@ -16,8 +16,8 @@ public:
 
     // Public API - Accounts
     void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
-    void modifyAccount(int index, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
-    void removeAccount(int index) const;
+    void modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
+    void removeAccount(QString uid) const;
     QList <s_account>* getAccounts();
     void makeCall(QString number, int AccID, s_codec codec) const;
     void hangupCall(int callId, int AccID) const;
