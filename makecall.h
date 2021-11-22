@@ -24,6 +24,8 @@
 #include "cmdfacade.h"
 #include <QStringListModel>
 
+class BuddyModel;
+
 class CallHistoryModel : public QAbstractTableModel
 {
     Q_OBJECT;
@@ -47,8 +49,35 @@ private:
     const s_account* m_account;
 };
 
+ //**************************************************************************
 
 
+class BuddyListModel : public QAbstractTableModel
+{
+    Q_OBJECT;
+public:
+    BuddyListModel(QObject *parent = nullptr,CmdFacade *lib = nullptr, int *AccID = nullptr);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    void refresh();
+
+public slots:
+    void onTableClicked(const QModelIndex &index);
+
+signals:
+    void SetParamFromHistory(s_codec Codec, QString Number);
+
+private:
+    CmdFacade *m_cmdFacade;
+    int *m_AccID;
+    const s_account* m_account;
+     QList<s_buddy> m_buddies;
+};
+
+
+// **************************************************************************
 namespace Ui {
 class MakeCall;
 }
@@ -78,7 +107,8 @@ private:
     CmdFacade *m_cmdFacade ;
     int m_AccID;
     QList<s_codec> m_codecs;
-    CallHistoryModel *CallHistory;
+    CallHistoryModel *m_callHistoryModel;
+    BuddyListModel *m_buddyListModel;
     s_codec m_selectedCodec;
 };
 

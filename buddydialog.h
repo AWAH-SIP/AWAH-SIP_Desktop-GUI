@@ -25,12 +25,15 @@ private slots:
 
     void on_pushButton_settings_clicked();
 
+    void on_comboBox_codec_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::buddydialog *ui;
     CmdFacade* m_lib;
     s_buddy& m_buddy;
     QList<s_account>* m_accounts;
     CodecSettings* m_CodecSettings = nullptr;
+    s_codec m_selectedCodec;
 
 };
 

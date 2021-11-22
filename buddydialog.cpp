@@ -25,6 +25,7 @@ buddydialog::buddydialog(CmdFacade *lib, s_buddy &buddy, QWidget *parent) :
     if (buddyaccount != nullptr){
         ui->comboBox_account->setCurrentText(buddyaccount->name);
     }
+    m_selectedCodec = m_buddy.codec;
 }
 
 buddydialog::~buddydialog()
@@ -52,14 +53,24 @@ void buddydialog::on_pushButton_ok_clicked()
             break;
         }
     }
+    m_buddy.codec = m_selectedCodec;
     buddydialog::close();
 }
 
 void buddydialog::on_pushButton_settings_clicked()
 {
     if(m_CodecSettings == nullptr){
-        m_CodecSettings = new CodecSettings(m_buddy.codec,this,m_lib);
+        m_CodecSettings = new CodecSettings(m_selectedCodec,this,m_lib);
     }
     m_CodecSettings->setModal(true);
     m_CodecSettings->exec();
+}
+
+void buddydialog::on_comboBox_codec_currentIndexChanged(const QString &arg1)
+{
+    for(auto &codec :  m_lib->getActiveCodecs()){
+        if(codec.displayName == arg1){
+            m_selectedCodec = codec;
+        }
+    }
 }

@@ -31,13 +31,19 @@ MakeCall::MakeCall(QWidget *parent, CmdFacade *lib, int AccID) :
     for(auto& codec : m_codecs){
         ui->selcectCodecBox->addItem(codec.displayName);
     }
-    CallHistory = new CallHistoryModel(this, m_cmdFacade, &m_AccID);
-    ui->tableView->setModel(CallHistory);
+    m_callHistoryModel = new CallHistoryModel(this, m_cmdFacade, &m_AccID);
+    ui->tableView->setModel(m_callHistoryModel);
     ui->tableView->resizeColumnsToContents();
     ui->tableView->setColumnWidth(0, 30);
     ui->tableView->setColumnWidth(1, 30);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
+
+    m_buddyListModel = new BuddyListModel(this, m_cmdFacade, &m_AccID);
+    ui->tableView_2->setModel(m_buddyListModel);
+    ui->tableView_2->resizeColumnsToContents();
+    ui->tableView_2->horizontalHeader()->setStretchLastSection(true);
+    ui->tableView_2->setSelectionMode(QAbstractItemView::NoSelection);
 
     const s_account* account = m_cmdFacade->getAccountByID(AccID);
     if(!account->CallHistory.isEmpty()) {                           // load newest callhistory entry into ui
@@ -52,9 +58,15 @@ MakeCall::MakeCall(QWidget *parent, CmdFacade *lib, int AccID) :
     }
 
     connect(ui->tableView, SIGNAL(pressed(const QModelIndex &)),
-            CallHistory, SLOT(onTableClicked(const QModelIndex &)));
+            m_callHistoryModel, SLOT(onTableClicked(const QModelIndex &)));
 
-    connect(CallHistory, SIGNAL(SetParamFromHistory(s_codec,QString)),
+    connect(m_callHistoryModel, SIGNAL(SetParamFromHistory(s_codec,QString)),
+            this, SLOT(on_ParamChanged(s_codec,QString)));
+
+    connect(ui->tableView_2, SIGNAL(pressed(const QModelIndex &)),
+            m_buddyListModel, SLOT(onTableClicked(const QModelIndex &)));
+
+    connect(m_buddyListModel, SIGNAL(SetParamFromHistory(s_codec,QString)),
             this, SLOT(on_ParamChanged(s_codec,QString)));
 
 }
@@ -94,6 +106,12 @@ void MakeCall::on_ParamChanged(s_codec Codec, QString Number)
     ui->selcectCodecBox->setCurrentIndex(index);
 }
 
+void MakeCall::on_selcectCodecBox_currentIndexChanged(int index)
+{
+    if(index > -1){
+        m_selectedCodec = m_codecs.at(index);
+    }
+}
 
 
 // ************************** Call histroy model ********************
@@ -139,7 +157,6 @@ QVariant CallHistoryModel::data(const QModelIndex &index, int role) const
         case 4:
             return QDateTime::fromTime_t(m_account->CallHistory.at(index.row()).duration).toUTC().toString("hh:mm:ss");
             break;
-
         }
 
     if (role== Qt::DecorationRole){
@@ -154,7 +171,6 @@ QVariant CallHistoryModel::data(const QModelIndex &index, int role) const
             }
             return icon;
             break;
-
         }
     }
     return QVariant();
@@ -170,7 +186,7 @@ QVariant CallHistoryModel::headerData(int section, Qt::Orientation orientation, 
             return QString("Number");
             break;
         case 3:
-            return QString("codec");
+            return QString("Codec");
             break;
         case 4:
             return QString("duration");
@@ -179,18 +195,14 @@ QVariant CallHistoryModel::headerData(int section, Qt::Orientation orientation, 
             return QVariant();
         }
     }
-
     return QVariant();
 }
-
-
 
 void CallHistoryModel::refresh() {
     emit dataChanged(index(0, 0),
                      index(rowCount(), columnCount()));  // update whole view
     emit layoutChanged();
   }
-
 
 void CallHistoryModel::onTableClicked(const QModelIndex &index)
 {
@@ -203,13 +215,109 @@ void CallHistoryModel::onTableClicked(const QModelIndex &index)
         length = endPos - startPos;
         emit SetParamFromHistory(m_account->CallHistory.at(index.row()).codec,URI.mid(startPos, length));
     }
-
 }
 
 
-void MakeCall::on_selcectCodecBox_currentIndexChanged(int index)
+// ************************** Buddy model ********************
+BuddyListModel::BuddyListModel(QObject *parent, CmdFacade *lib, int *AccID)
+    : QAbstractTableModel(parent), m_cmdFacade(lib), m_AccID(AccID)
 {
-    if(index > -1){
-        m_selectedCodec = m_codecs.at(index);
+    m_account = m_cmdFacade->getAccountByID(*m_AccID);
+    for (auto && buddy : m_cmdFacade->getBuddies()) {
+        s_account* account = m_cmdFacade->getAccountByUID(buddy.accUid);
+        if(account->serverURI == m_account->serverURI){                     // only append buddys that are on the same server
+            m_buddies.append(buddy);
+        }
+    }
+
+}
+
+int BuddyListModel::rowCount(const QModelIndex & /*parent*/) const
+{
+   return m_buddies.size();
+}
+
+int BuddyListModel::columnCount(const QModelIndex & /*parent*/) const
+{
+    return 3;
+}
+
+QVariant BuddyListModel::data(const QModelIndex &index, int role) const
+{
+    QString URI;
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
+        switch (index.column()) {
+        case 0:
+            return  m_buddies.at(index.row()).Name;
+            break;
+        case 1:
+            return m_buddies.at(index.row()).codec.displayName;
+
+            break;
+        case 2:
+            switch (m_buddies.at(index.row()).status) {
+                case unknown:
+                return QString("unknown");
+                break;
+            case online:
+                return QString("online");
+                break;
+            case busy:
+                return QString("busy");
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+    if (role == Qt::BackgroundColorRole){
+        switch(m_buddies.at(index.row()).status) {
+        case unknown:
+            return QBrush(QColor(145, 157, 157));   // stone
+            break;
+        case online:
+            return QBrush(QColor(113, 183, 144));   // green
+            break;
+        case busy:
+            return QBrush(QColor(229, 85, 79));     // red
+            break;
+        }
+    }
+
+    return QVariant();
+}
+
+QVariant BuddyListModel::headerData(int section, Qt::Orientation orientation, int role) const {
+    if(role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+        switch(section) {
+        case 0:
+            return QString("Buddy");
+            break;
+        case 1:
+            return QString("codec");
+            break;
+        case 2:
+            return QString("state");
+            break;
+        default:
+            return QVariant();
+        }
+    }
+    return QVariant();
+}
+
+void BuddyListModel::refresh() {
+    emit dataChanged(index(0, 0),
+                     index(rowCount(), columnCount()));  // update whole view
+    emit layoutChanged();
+  }
+
+void BuddyListModel::onTableClicked(const QModelIndex &index)
+{
+    QString URI;
+    if (index.isValid()) {
+        emit SetParamFromHistory(m_buddies.at(index.row()).codec,m_buddies.at(index.row()).buddyUrl);
     }
 }
+
+

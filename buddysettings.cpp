@@ -24,6 +24,8 @@ BuddySettings::BuddySettings(QWidget *parent, CmdFacade *lib) :
 
 BuddySettings::~BuddySettings()
 {
+    QSettings settings("awah", "AWAHSipDesktopGUI");
+    settings.setValue("BuddySettingsWindow/Geometry", saveGeometry());
     if(m_buddyDialog != nullptr){
         delete m_buddyDialog;
     }
