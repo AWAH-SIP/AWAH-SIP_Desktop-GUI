@@ -169,6 +169,7 @@ struct s_account{
     QString uid;
     QString FileRecordPath;
     QString FilePlayPath;
+    QString autoconnectToBuddyUID = "";
     int player_id = -1;
     int rec_id = -1;
     int AccID;
@@ -177,7 +178,6 @@ struct s_account{
     QList <s_callHistory> CallHistory;
     bool fixedJitterBuffer = true;
     uint fixedJitterBufferValue = 160;
-    bool autoredialLastCall = false;
     QString SIPStatusText = "waiting for SIP state...";
     int SIPStatusCode = 0;
     QString callStatusLastReason = "";
@@ -198,7 +198,7 @@ struct s_account{
             {"CallHistory", callHistoryJSON},
             {"fixedJitterBuffer", fixedJitterBuffer},
             {"fixedJitterBufferValue", (int)fixedJitterBufferValue},
-            {"autoredialLastCall", autoredialLastCall}
+            {"autoconnectToBuddyUID", autoconnectToBuddyUID}
         };
     }
     s_account* fromJSON(QJsonObject &accountJSON){
@@ -231,10 +231,10 @@ struct s_account{
         splitterSlot = accountJSON["splitterSlot"].toInt();
         fixedJitterBuffer = accountJSON["fixedJitterBuffer"].toBool();
         fixedJitterBufferValue = accountJSON["fixedJitterBufferValue"].toInt();
-        autoredialLastCall = accountJSON["autoredialLastCall"].toBool();
         SIPStatusCode = accountJSON["SIPStatusCode"].toInt();
         SIPStatusText = accountJSON["SIPStatusText"].toString();
         callStatusLastReason = accountJSON["callStatusLastReason"].toString();
+        autoconnectToBuddyUID = accountJSON["AutoconnectToBuddyUID"].toString();
         return this;
     }
 };

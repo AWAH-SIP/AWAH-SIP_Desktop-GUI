@@ -21,13 +21,18 @@
 #include <QFileDialog>
 
 
-
-AccountDialog::AccountDialog(QWidget *parent, s_account *account) :
+AccountDialog::AccountDialog(QWidget *parent, s_account *account, CmdFacade *lib) :
     QDialog(parent),
-    ui(new Ui::AccountDialog)
+    ui(new Ui::AccountDialog),
+    m_s_account(account), m_lib(lib)
 {
+    for (auto && buddy : m_lib->getBuddies()) {
+        s_account* buddyaccount = m_lib->getAccountByUID(buddy.accUid);
+        if(buddyaccount != nullptr && buddyaccount->serverURI == account->serverURI){                     // only append buddys that are on the same server
+            m_buddies.append(buddy);
+        }
+    }
     ui->setupUi(this);
-    m_s_account = account;
     editedaccount = *m_s_account;
     ui->lineEdit_Name->setText(m_s_account->name);
     ui->lineEdit_server->setText(m_s_account->serverURI);
@@ -40,6 +45,9 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account) :
     ui->comboBox_JBType->addItem("adaptive");
     ui->comboBox_JBType->addItem("fixed");
     ui->comboBox_JBType->setCurrentIndex(m_s_account->fixedJitterBuffer);
+    for (auto && buddy : m_buddies) {
+     ui->comboBox_AutoconBuddy->addItem(buddy.Name);
+    }
     if(!m_s_account->FileRecordPath.isEmpty()){
         QString path = m_s_account->FileRecordPath;
         int pos = path.lastIndexOf(QChar('/'));

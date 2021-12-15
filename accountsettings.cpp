@@ -52,13 +52,13 @@ void accountsettings::on_pushButton_add_clicked()
    newacc.serverURI = "sipserver.url";
    newacc.user = "username";
    newacc.password = "password";
-    AccountDialog accdialog(this,&newacc);
+    AccountDialog accdialog(this,&newacc, m_cmdFacade);
     accdialog.setModal(true);
     accdialog.setWindowTitle("add Account");
     accdialog.exec();
     newacc = accdialog.getAccount();
     if(newacc.name != ""){
-        m_cmdFacade->createAccount(newacc.name,newacc.serverURI,newacc.user,newacc.password, newacc.FilePlayPath, newacc.FileRecordPath, newacc.fixedJitterBuffer, newacc.fixedJitterBufferValue);
+        m_cmdFacade->createAccount(newacc.name,newacc.serverURI,newacc.user,newacc.password, newacc.FilePlayPath, newacc.FileRecordPath, newacc.fixedJitterBuffer, newacc.fixedJitterBufferValue, newacc.autoconnectToBuddyUID);
         m_AccList = m_cmdFacade->getAccounts();
         accModel->refresh();
     }
@@ -79,13 +79,13 @@ void accountsettings::on_pushButton_edit_clicked()
 {
     s_account editacc;
     editacc = m_AccList->at(ui->tableView->selectionModel()->currentIndex().row());
-    AccountDialog accdialog(this,&editacc);
+    AccountDialog accdialog(this,&editacc, m_cmdFacade);
     accdialog.setModal(true);
     accdialog.setWindowTitle("edit Account");
     accdialog.exec();
     editacc = accdialog.getAccount();
     if(editacc.name != ""){                             // TODO: add better Check if something in acoout was edited
-        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue);
+        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue, editacc.autoconnectToBuddyUID);
     }
 }
 
@@ -93,13 +93,13 @@ void accountsettings::on_tableView_doubleClicked(const QModelIndex &index)
 {
     s_account editacc;
     editacc = m_AccList->at(index.row());
-    AccountDialog accdialog(this,&editacc);
+    AccountDialog accdialog(this,&editacc, m_cmdFacade);
     accdialog.setModal(true);
     accdialog.setWindowTitle("edit Account");
     accdialog.exec();
     editacc = accdialog.getAccount();
     if(editacc.name != ""){                             // TODO: add better Check if something in acoout was edited
-        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue);
+        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue, editacc.autoconnectToBuddyUID);
     }
 }
 
@@ -137,7 +137,7 @@ int AccModel::rowCount(const QModelIndex & /*parent*/) const
 
 int AccModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 6;
+    return 7;
 }
 
 QVariant AccModel::data(const QModelIndex &index, int role) const
@@ -167,6 +167,9 @@ QVariant AccModel::data(const QModelIndex &index, int role) const
             case 5:
                 return m_AccountList->at(index.row()).FileRecordPath;
                 break;
+             //case 6:
+                //s_buddy buddy = m_cmdFacade->getBuddyByUid(m_AccountList->at(index.row()).autoconnectToBuddyUID);
+                //return buddy.Name;
     }
 
     return QVariant();

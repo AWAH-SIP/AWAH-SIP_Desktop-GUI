@@ -86,7 +86,7 @@ void CmdFacade::initializeVariables(){
 }
 
 // Public API - Accounts
-void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const
+void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID) const
 {
     QJsonObject obj, data;
     obj["command"] = "createAccount";
@@ -98,12 +98,13 @@ void CmdFacade::createAccount(QString accountName, QString server, QString user,
     data["fileRecPath"] = fileRecPath;
     data["fixedJitterBuffer"] = fixedJitterBuffer;
     data["fixedJitterBufferValue"] = (int)fixedJitterBufferValue;
+    data["autoconnectToBuddyUID"] = autoconnectToBuddyUID;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
 }
 
-void CmdFacade::modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath,  bool fixedJitterBuffer, uint fixedJitterBufferValue) const
+void CmdFacade::modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath,  bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID) const
 {
     QJsonObject obj, data;
     obj["command"] = "modifyAccount";
@@ -116,6 +117,7 @@ void CmdFacade::modifyAccount(QString uid, QString accountName, QString server, 
     data["fileRecPath"] = fileRecPath;
     data["fixedJitterBuffer"] = fixedJitterBuffer;
     data["fixedJitterBufferValue"] = (int)fixedJitterBufferValue;
+    data["autoconnectToBuddyUID"] = autoconnectToBuddyUID;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
@@ -476,6 +478,19 @@ void CmdFacade::removeBuddy(QString uid) const
 const QList<s_buddy>& CmdFacade::getBuddies() const
 {
     return m_buddyList;
+}
+
+const s_buddy CmdFacade::getBuddyByUid(const QString uid) const
+{
+    if(!m_buddyList.empty()){
+        for(auto& buddy : m_buddyList){
+            if(buddy.uid == uid)
+                return buddy;
+        }
+    }
+    s_buddy newBuddy;
+    newBuddy.Name = "buddy not found";
+    return newBuddy;
 }
 
 // Public API - Codecs

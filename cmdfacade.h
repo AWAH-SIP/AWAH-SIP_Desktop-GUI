@@ -15,8 +15,8 @@ public:
     void initializeVariables();
 
     // Public API - Accounts
-    void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
-    void modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue) const;
+    void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID) const;
+    void modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID) const;
     void removeAccount(QString uid) const;
     QList <s_account>* getAccounts();
     void makeCall(QString number, int AccID, s_codec codec) const;
@@ -52,6 +52,7 @@ public:
     void editBuddy(QString buddyUrl, QString name, QString accUid, QJsonObject codec, QString uid) const;
     void removeBuddy(QString uid) const;
     const QList<s_buddy>& getBuddies() const;
+    const s_buddy getBuddyByUid(const QString uid) const;
 
     // Public API - Codecs
     QList<s_codec> getActiveCodecs();

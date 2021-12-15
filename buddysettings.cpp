@@ -95,7 +95,7 @@ int BuddyModel::columnCount(const QModelIndex & /*parent*/) const
 
 QVariant BuddyModel::data(const QModelIndex &index, int role) const
 {
-    auto account = m_cmdFacade->getAccountByUID(m_BuddyList->at(index.row()).accUid);
+    s_account* account = m_cmdFacade->getAccountByUID(m_BuddyList->at(index.row()).accUid);
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         switch (index.column()) {
             case 0:
@@ -108,7 +108,10 @@ QVariant BuddyModel::data(const QModelIndex &index, int role) const
                 return m_BuddyList->at(index.row()).codec.displayName;
                 break;
             case 3:
-                return account->name;
+                if(account != nullptr){
+                    return account->name;
+                }
+                 return "account not found";
                 break;
             case 4:
             switch (m_BuddyList->at(index.row()).status) {

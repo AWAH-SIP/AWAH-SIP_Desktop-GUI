@@ -21,6 +21,7 @@
 
 #include <QDialog>
 #include "lib/types.h"
+#include "cmdfacade.h"
 
 namespace Ui {
 class AccountDialog;
@@ -31,7 +32,7 @@ class AccountDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AccountDialog(QWidget *parent = nullptr,  s_account *account = nullptr);
+    explicit AccountDialog(QWidget *parent = nullptr,  s_account *account = nullptr, CmdFacade *lib = nullptr);
     ~AccountDialog();
     s_account getAccount();
 
@@ -63,6 +64,8 @@ private slots:
 private:
     Ui::AccountDialog *ui;
     s_account *m_s_account, editedaccount;
+    CmdFacade *m_lib;
+    QList<s_buddy> m_buddies;
 };
 
 #endif // AccountDialog_H

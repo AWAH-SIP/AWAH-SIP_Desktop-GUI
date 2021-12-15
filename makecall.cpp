@@ -225,7 +225,7 @@ BuddyListModel::BuddyListModel(QObject *parent, CmdFacade *lib, int *AccID)
     m_account = m_cmdFacade->getAccountByID(*m_AccID);
     for (auto && buddy : m_cmdFacade->getBuddies()) {
         s_account* account = m_cmdFacade->getAccountByUID(buddy.accUid);
-        if(account->serverURI == m_account->serverURI){                     // only append buddys that are on the same server
+        if(account != nullptr && account->serverURI == m_account->serverURI){                     // only append buddys that are on the same server
             m_buddies.append(buddy);
         }
     }
