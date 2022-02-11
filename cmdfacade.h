@@ -39,9 +39,9 @@ public:
     void addFilePlayer(QString Name, QString File) const;
     void addFileRecorder(QString File) const;
     const s_audioPortList& getConfPortsList();
-    int connectConfPort(int src_slot, int sink_slot, float level, bool persistant = true) const;
+    int connectConfPort(int src_slot, int sink_slot, int level, bool persistant = true) const;
     int disconnectConfPort(int src_slot, int sink_slot) const;
-    int changeConfPortLevel(int src_slot, int sink_slot, float level) const;
+    int changeConfPortLevel(int src_slot, int sink_slot, int level) const;
     void addToneGen(int freq) const;
     int getSoundDevID(QString DeviceName);
     void changeConfportsrcName(const QString portName, const QString customName) const;

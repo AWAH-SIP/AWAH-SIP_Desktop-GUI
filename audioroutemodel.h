@@ -55,7 +55,8 @@ private:
     Ui::Route *m_uiParent;
     s_audioPortList m_audioPortList;
     int m_rowWidth;
-    QVector<float> m_routes;
+    QVector<bool> m_routesHasCrosspoint;
+    QVector<int> m_routesLevel;
     QVector<bool> m_routesPersistant;
     QMap<int, int> m_srcSlotMap;
     QMap<int, int> m_destSlotMap;
@@ -70,16 +71,6 @@ public:
     QSize sectionSizeFromContents(int logicalIndex) const override;
 };
 
-inline float dBtoFact(const float dB)
-{
-   float factor = pow(10, (dB/20));
-   return factor;
-}
 
-inline float factTodB(const float fact)
-{
-   float dB = 20 * log10f(fact);
-   return dB;
-}
 
 #endif // AUDIOROUTEMODEL_H

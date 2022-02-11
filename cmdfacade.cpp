@@ -332,7 +332,7 @@ const s_audioPortList& CmdFacade::getConfPortsList()
     return m_getConfPortsList;
 }
 
-int CmdFacade::connectConfPort(int src_slot, int sink_slot, float level, bool persistant) const
+int CmdFacade::connectConfPort(int src_slot, int sink_slot, int level, bool persistant) const
 {
     QJsonObject obj, data;
     obj["command"] = "connectConfPort";
@@ -366,7 +366,7 @@ int CmdFacade::disconnectConfPort(int src_slot, int sink_slot) const
     }
 }
 
-int CmdFacade::changeConfPortLevel(int src_slot, int sink_slot, float level) const
+int CmdFacade::changeConfPortLevel(int src_slot, int sink_slot, int level) const
 {
     QJsonObject obj, data;
     obj["command"] = "changeConfPortLevel";

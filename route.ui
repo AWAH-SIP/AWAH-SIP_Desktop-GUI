@@ -57,14 +57,17 @@
        </item>
        <item row="1" column="1">
         <widget class="QDoubleSpinBox" name="devVolume_spinBox">
+         <property name="correctionMode">
+          <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+         </property>
          <property name="decimals">
           <number>0</number>
          </property>
          <property name="minimum">
-          <double>-144.000000000000000</double>
+          <double>-43.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>24.000000000000000</double>
+          <double>20.000000000000000</double>
          </property>
          <property name="singleStep">
           <double>1.000000000000000</double>

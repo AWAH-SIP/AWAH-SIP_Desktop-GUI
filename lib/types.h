@@ -295,7 +295,7 @@ struct s_audioRoutes{
     int destSlot;
     QString srcDevName;
     QString destDevName;
-    float level;
+    int level;
     bool persistant;
     QJsonObject toJSON() const {
         return {{"srcSlot", srcSlot}, {"destSlot", destSlot}, {"srcDevName", srcDevName}, {"destDevName", destDevName}, {"level", level}, {"persistant", persistant} };
@@ -306,7 +306,7 @@ struct s_audioRoutes{
         destSlot = audioRoutesJSON["destSlot"].toInt();
         srcDevName = audioRoutesJSON["srcDevName"].toString();
         destDevName = audioRoutesJSON["destDevName"].toString();
-        level = audioRoutesJSON["level"].toVariant().toFloat();
+        level = audioRoutesJSON["level"].toVariant().toInt();
         persistant = audioRoutesJSON["persistant"].toBool();
         return audioroutes;
 
@@ -316,7 +316,7 @@ struct s_audioRoutes{
         destSlot = audioRouteJSON["destSlot"].toInt();
         srcDevName = audioRouteJSON["srcDevName"].toString();
         destDevName = audioRouteJSON["destDevName"].toString();
-        level = audioRouteJSON["level"].toDouble();
+        level = audioRouteJSON["level"].toInt();
         persistant = audioRouteJSON["persistant"].toBool();
         return this;
     }

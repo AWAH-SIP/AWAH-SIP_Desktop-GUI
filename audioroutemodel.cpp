@@ -43,12 +43,14 @@ QVariant AudioRouteModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DisplayRole:
-        if(m_routes.at(idx) != 0){
-            if(!(int)factTodB(m_routes.at(idx))) return QString("  ");
-            else return QString().number((int)factTodB(m_routes.at(idx)), 'g', 5);
-        }
-        else{
-            return QString(" ");
+        if(m_routesHasCrosspoint.at(idx)){
+            if(m_routesLevel.at(idx) < -42){
+                return QString("mute");
+            }
+            if(m_routesLevel.at(idx) != 0){
+                return QString().number(m_routesLevel.at(idx));
+            }
+            else return QString(" ");
         }
         break;
 
@@ -57,7 +59,7 @@ QVariant AudioRouteModel::data(const QModelIndex &index, int role) const
         break;
 
     case Qt::BackgroundColorRole:
-        if(m_routes.at(idx) != 0){
+        if(m_routesHasCrosspoint.at(idx) != 0){
             if(m_routesPersistant.at(idx))
                 return QBrush(QColor(113, 183, 144));
             else
@@ -87,14 +89,17 @@ void AudioRouteModel::onRoutesChanged(QList<s_audioRoutes> routes)
 {
     m_routesOriginal = routes;
     emit layoutAboutToBeChanged();
-    m_routes.clear();
-    m_routes.resize(m_audioPortList.srcPorts.size() * m_rowWidth);
+    m_routesHasCrosspoint.clear();
+    m_routesHasCrosspoint.resize(m_audioPortList.srcPorts.size() * m_rowWidth);
+    m_routesLevel.clear();
+    m_routesLevel.resize(m_audioPortList.srcPorts.size() * m_rowWidth);
     m_routesPersistant.clear();
     m_routesPersistant.resize(m_audioPortList.srcPorts.size() * m_rowWidth);
 
     for(auto& route : routes){
         int idx = m_srcSlotMap.value(route.srcSlot, 0) * m_rowWidth + m_destSlotMap.value(route.destSlot, 0);
-        m_routes[idx] = route.level;
+        m_routesHasCrosspoint[idx] = true;
+        m_routesLevel[idx] = route.level;
         m_routesPersistant[idx] = route.persistant;
     }
     emit layoutChanged();
@@ -109,14 +114,14 @@ void AudioRouteModel::onTableClicked(const QModelIndex &index)
     switch (pressedBtn) {
     case Qt::LeftButton:
     case Qt::LeftButton|Qt::RightButton:
-        if(m_routes.at(idx) == 0){
+        if(m_routesHasCrosspoint.at(idx) == false){
             setCrosspoint(index);
         }else{
             deleteCrosspoint(index);
         }
         break;
     case Qt::RightButton:
-        if(m_routes.at(idx) != 0){
+        if(m_routesHasCrosspoint.at(idx)){
             changeCrosspointLevel(index);
         }
         break;
@@ -167,19 +172,19 @@ void AudioRouteModel::onTableChanged(const s_audioPortList& portList)
 void AudioRouteModel::setCrosspoint(const QModelIndex &index)
 {
     bool ok = false;
-    double d;
+    int d;
     int idx = index.row() * m_rowWidth + index.column();
     if(m_uiParent->defVolume_checkBox->isChecked()){
         ok = true;
         d = m_uiParent->devVolume_spinBox->value();
     }else{
-        d = QInputDialog::getDouble(m_uiParent->tableView_audioRoutes,
+        d = QInputDialog::getInt(m_uiParent->tableView_audioRoutes,
                                        tr("Set Crosspoint from %1 to %2").arg(m_audioPortList.srcPorts.at(index.row()).name).arg(m_audioPortList.destPorts.at(index.column()).name),
-                                       tr("Volume in dB:"),(int)factTodB(m_routes.at(idx)), -144, 24, 1, &ok,
+                                       tr("Volume in dB:"),m_routesLevel.at(idx), -43, 20, 1, &ok,
                                        Qt::WindowFlags());
     }
     if (ok){
-        m_cmdFacade->connectConfPort(m_srcSlotMap.key(index.row()), m_destSlotMap.key(index.column()), dBtoFact(d), !m_uiParent->tempRoute_checkBox->isChecked());
+        m_cmdFacade->connectConfPort(m_srcSlotMap.key(index.row()), m_destSlotMap.key(index.column()), d, !m_uiParent->tempRoute_checkBox->isChecked());
     }
 }
 
@@ -187,12 +192,12 @@ void AudioRouteModel::changeCrosspointLevel(const QModelIndex &index)
 {
     int idx = index.row() * m_rowWidth + index.column();
     bool ok;
-    double d = QInputDialog::getDouble(m_uiParent->tableView_audioRoutes,
+    double d = QInputDialog::getInt(m_uiParent->tableView_audioRoutes,
                                        tr("Change Volume from %1 to %2").arg(m_audioPortList.srcPorts.at(index.row()).name).arg(m_audioPortList.destPorts.at(index.column()).name),
-                                       tr("Volume in dB:"), (int)factTodB(m_routes.at(idx)),-144, 24, 1, &ok,
+                                       tr("Volume in dB:"), m_routesLevel.at(idx),-43, 20, 1, &ok,
                                        Qt::WindowFlags());
-    if (ok && dBtoFact(d) != m_routes.at(idx)){
-        m_cmdFacade->changeConfPortLevel(m_srcSlotMap.key(index.row()), m_destSlotMap.key(index.column()), dBtoFact(d));
+    if (ok && d != m_routesLevel.at(idx)){
+        m_cmdFacade->changeConfPortLevel(m_srcSlotMap.key(index.row()), m_destSlotMap.key(index.column()), d);
     }
 }
 
