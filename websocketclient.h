@@ -41,6 +41,7 @@ private slots:
     void logMessage(QJsonObject &data);
     void audioRoutesChanged(QJsonObject &data);
     void audioRoutesTableChanged(QJsonObject &data);
+    void confportLevelChanged(QJsonObject &data);
     void AccountsChanged(QJsonObject &data);
     void ioDevicesChanged(QJsonObject &data);
     void callInfo(QJsonObject &data);

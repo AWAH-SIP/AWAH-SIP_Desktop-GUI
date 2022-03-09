@@ -286,6 +286,25 @@ void WebsocketClient::audioRoutesTableChanged(QJsonObject &data)
     }
 }
 
+void WebsocketClient::confportLevelChanged(QJsonObject &data)
+{
+    QJsonObject routeObj;
+    s_audioRoutes ChangedRoute;
+    if(jCheckObject(routeObj, data["confportLevelChanged"])) {
+        ChangedRoute.fromJSON(routeObj);
+        QMutableListIterator<s_audioRoutes> i(m_cmdFacade->m_AudioRoutes);
+        while(i.hasNext()){
+            s_audioRoutes& route = i.next();
+            if(route.srcSlot == ChangedRoute.srcSlot && route.destSlot == ChangedRoute.destSlot){
+                route = ChangedRoute;
+                emit m_cmdFacade->audioRoutesChanged(m_cmdFacade->m_AudioRoutes);
+            }
+        }
+    } else {
+        qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";
+    }
+}
+
 void WebsocketClient::AccountsChanged(QJsonObject &data){
     QJsonArray accountsArr;
     if(jCheckArray(accountsArr, data["Accounts"])){
