@@ -61,6 +61,8 @@ private slots:
 
     void on_spinBox_JB_FixedDel_valueChanged(int arg1);
 
+    void on_comboBox_AutoconBuddy_currentIndexChanged(int index);
+
 private:
     Ui::AccountDialog *ui;
     s_account *m_s_account, editedaccount;

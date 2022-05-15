@@ -48,6 +48,17 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account, CmdFacade *lib
     for (auto && buddy : m_buddies) {
      ui->comboBox_AutoconBuddy->addItem(buddy.Name);
     }
+    ui->comboBox_AutoconBuddy->addItem("no autoconnect");
+    ui->comboBox_AutoconBuddy->setCurrentIndex(ui->comboBox_AutoconBuddy->count()-1);       // select no autoconnect item if no buddy is assigned
+    for (auto && buddy : m_buddies) {
+     if(buddy.uid == m_s_account->autoconnectToBuddyUID){
+         int index = ui->comboBox_AutoconBuddy->findText(buddy.Name);
+         if ( index != -1 ) { // -1 for not found
+            ui->comboBox_AutoconBuddy->setCurrentIndex(index);
+            break;
+         }
+     }
+    }
     if(!m_s_account->FileRecordPath.isEmpty()){
         QString path = m_s_account->FileRecordPath;
         int pos = path.lastIndexOf(QChar('/'));
@@ -193,3 +204,14 @@ void AccountDialog::on_spinBox_JB_FixedDel_valueChanged(int arg1)
 {
     editedaccount.fixedJitterBufferValue = arg1;
 }
+
+void AccountDialog::on_comboBox_AutoconBuddy_currentIndexChanged(int index)
+{
+    if(index < m_buddies.count()){
+        editedaccount.autoconnectToBuddyUID = m_buddies.at(index).uid;
+    }
+    else{
+        editedaccount.autoconnectToBuddyUID = "";
+    }
+}
+

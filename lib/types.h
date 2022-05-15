@@ -234,7 +234,7 @@ struct s_account{
         SIPStatusCode = accountJSON["SIPStatusCode"].toInt();
         SIPStatusText = accountJSON["SIPStatusText"].toString();
         callStatusLastReason = accountJSON["callStatusLastReason"].toString();
-        autoconnectToBuddyUID = accountJSON["AutoconnectToBuddyUID"].toString();
+        autoconnectToBuddyUID = accountJSON["autoconnectToBuddyUID"].toString();
         return this;
     }
 };
