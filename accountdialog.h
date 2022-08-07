@@ -63,6 +63,10 @@ private slots:
 
     void on_comboBox_AutoconBuddy_currentIndexChanged(int index);
 
+    void on_checkBox_AutoconEnable_stateChanged(int arg1);
+
+    void on_comboBox_recOptions_currentIndexChanged(int index);
+
 private:
     Ui::AccountDialog *ui;
     s_account *m_s_account, editedaccount;

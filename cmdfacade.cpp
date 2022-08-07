@@ -86,7 +86,7 @@ void CmdFacade::initializeVariables(){
 }
 
 // Public API - Accounts
-void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID) const
+void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable) const
 {
     QJsonObject obj, data;
     obj["command"] = "createAccount";
@@ -96,15 +96,17 @@ void CmdFacade::createAccount(QString accountName, QString server, QString user,
     data["password"] = password;
     data["filePlayPath"] = filePlayPath;
     data["fileRecPath"] = fileRecPath;
+    data["fileRecordRXonly"] = fileRecordRXonly;
     data["fixedJitterBuffer"] = fixedJitterBuffer;
     data["fixedJitterBufferValue"] = (int)fixedJitterBufferValue;
     data["autoconnectToBuddyUID"] = autoconnectToBuddyUID;
+    data["autoconnectEnable"] = autoconnectEnable;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
 }
 
-void CmdFacade::modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath,  bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID) const
+void CmdFacade::modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable) const
 {
     QJsonObject obj, data;
     obj["command"] = "modifyAccount";
@@ -115,9 +117,11 @@ void CmdFacade::modifyAccount(QString uid, QString accountName, QString server, 
     data["password"] = password;
     data["filePlayPath"] = filePlayPath;
     data["fileRecPath"] = fileRecPath;
+    data["fileRecordRXonly"] = fileRecordRXonly;
     data["fixedJitterBuffer"] = fixedJitterBuffer;
     data["fixedJitterBufferValue"] = (int)fixedJitterBufferValue;
     data["autoconnectToBuddyUID"] = autoconnectToBuddyUID;
+    data["autoconnectEnable"] = autoconnectEnable;
     obj["data"] = data;
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();

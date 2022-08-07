@@ -168,8 +168,10 @@ struct s_account{
     QString serverURI;
     QString uid;
     QString FileRecordPath;
+    bool FileRecordRXonly = true;
     QString FilePlayPath;
     QString autoconnectToBuddyUID = "";
+    bool autoconnectEnable = true;
     int player_id = -1;
     int rec_id = -1;
     int AccID;
@@ -193,12 +195,15 @@ struct s_account{
             {"serverURI", serverURI},
             {"uid", uid},
             {"FileRecordPath", FileRecordPath},
+            {"FileRecordRXonly", FileRecordRXonly},
             {"FilePlayPath", FilePlayPath},
             {"AccID", AccID},
             {"CallHistory", callHistoryJSON},
             {"fixedJitterBuffer", fixedJitterBuffer},
             {"fixedJitterBufferValue", (int)fixedJitterBufferValue},
-            {"autoconnectToBuddyUID", autoconnectToBuddyUID}
+            {"autoconnectToBuddyUID", autoconnectToBuddyUID},
+            {"autoconnectEnable", autoconnectEnable},
+            {"uid", uid}
         };
     }
     s_account* fromJSON(QJsonObject &accountJSON){
@@ -224,6 +229,7 @@ struct s_account{
         serverURI = accountJSON["serverURI"].toString();
         uid = accountJSON["uid"].toString();
         FileRecordPath = accountJSON["FileRecordPath"].toString();
+        FileRecordRXonly = accountJSON["FileRecordRXonly"].toBool();
         FilePlayPath = accountJSON["FilePlayPath"].toString();
         player_id = accountJSON["player_id"].toInt();
         rec_id = accountJSON["rec_id"].toInt();
@@ -235,6 +241,7 @@ struct s_account{
         SIPStatusText = accountJSON["SIPStatusText"].toString();
         callStatusLastReason = accountJSON["callStatusLastReason"].toString();
         autoconnectToBuddyUID = accountJSON["autoconnectToBuddyUID"].toString();
+        autoconnectEnable = accountJSON["autoconnectEnable"].toBool();
         return this;
     }
 };

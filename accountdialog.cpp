@@ -45,6 +45,10 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account, CmdFacade *lib
     ui->comboBox_JBType->addItem("adaptive");
     ui->comboBox_JBType->addItem("fixed");
     ui->comboBox_JBType->setCurrentIndex(m_s_account->fixedJitterBuffer);
+    ui->comboBox_recOptions->addItem("Record recieved and local audio");
+    ui->comboBox_recOptions->addItem("Record recieving audio only");
+    ui->comboBox_recOptions->setCurrentIndex(m_s_account->FileRecordRXonly);
+    ui->checkBox_AutoconEnable->setChecked(m_s_account->autoconnectEnable);
     for (auto && buddy : m_buddies) {
      ui->comboBox_AutoconBuddy->addItem(buddy.Name);
     }
@@ -77,6 +81,7 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account, CmdFacade *lib
         ui->label_tempdef1->setHidden(1);
         ui->label_tempdef2->setHidden(1);
         ui->label_tempdef3->setHidden(1);
+        ui->comboBox_recOptions->setHidden(1);
     }
 
    if(!m_s_account->FilePlayPath.isEmpty()){
@@ -152,6 +157,7 @@ void AccountDialog::on_checkBox_enablerec_stateChanged(int arg1)
         ui->label_tempdef1->setHidden(0);
         ui->label_tempdef2->setHidden(0);
         ui->label_tempdef3->setHidden(0);
+        ui->comboBox_recOptions->setHidden(0);
     }
     else{
         ui->lineEdit_recdir->setHidden(1);
@@ -161,6 +167,7 @@ void AccountDialog::on_checkBox_enablerec_stateChanged(int arg1)
         ui->label_tempdef1->setHidden(1);
         ui->label_tempdef2->setHidden(1);
         ui->label_tempdef3->setHidden(1);
+        ui->comboBox_recOptions->setHidden(1);
         editedaccount.FileRecordPath.clear();
    }
 }
@@ -188,6 +195,17 @@ void AccountDialog::on_lineEdit_playpath_textChanged(const QString &arg1)
     editedaccount.FilePlayPath = arg1;
 }
 
+void AccountDialog::on_comboBox_recOptions_currentIndexChanged(int index)
+{
+    if(index){
+        editedaccount.FileRecordRXonly = true;
+    }
+    else{
+        editedaccount.FileRecordRXonly = false;
+    }
+}
+
+
 void AccountDialog::on_comboBox_JBType_currentIndexChanged(int index)
 {
     if(index){
@@ -214,4 +232,14 @@ void AccountDialog::on_comboBox_AutoconBuddy_currentIndexChanged(int index)
         editedaccount.autoconnectToBuddyUID = "";
     }
 }
+
+void AccountDialog::on_checkBox_AutoconEnable_stateChanged(int arg1)
+{
+    editedaccount.autoconnectEnable = arg1;
+}
+
+
+
+
+
 
