@@ -57,6 +57,7 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
     ui->tableView->setColumnWidth(3, 280);
     ui->tableView->setColumnWidth(4, 30);
     ui->tableView->setColumnWidth(5, 30);
+    ui->tableView->setColumnWidth(6, 100);
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
 
@@ -65,8 +66,8 @@ AWAHSipDesktopGUI::AWAHSipDesktopGUI(QWidget *parent, WebsocketClient *WebSocket
     connect(m_cmdFacade, &CmdFacade::AccountsChanged, this, &AWAHSipDesktopGUI::AccountsChanged);
     connect(m_cmdFacade, &CmdFacade::StateChanged, this, &AWAHSipDesktopGUI::OnStateChanged);
 
-    connect(ui->tableView, SIGNAL(pressed(const QModelIndex &)),
-            SIPstate, SLOT(onTableClicked(const QModelIndex &)));
+    connect(ui->tableView, SIGNAL(pressed(QModelIndex)),
+            SIPstate, SLOT(onTableClicked(QModelIndex)));
 
 //       connect(pjsua, SIGNAL(signalBuddyStatus(QString,int)),
 //               this, SIGNAL (buddy_status(QString,int)));

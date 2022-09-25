@@ -244,7 +244,6 @@ int BuddyListModel::columnCount(const QModelIndex & /*parent*/) const
 
 QVariant BuddyListModel::data(const QModelIndex &index, int role) const
 {
-    QString URI;
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         switch (index.column()) {
         case 0:
@@ -314,7 +313,6 @@ void BuddyListModel::refresh() {
 
 void BuddyListModel::onTableClicked(const QModelIndex &index)
 {
-    QString URI;
     if (index.isValid()) {
         emit SetParamFromHistory(m_buddies.at(index.row()).codec,m_buddies.at(index.row()).buddyUrl);
     }

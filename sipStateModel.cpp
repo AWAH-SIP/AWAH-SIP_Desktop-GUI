@@ -21,6 +21,8 @@
 #include <QIcon>
 #include "makecall.h"
 #include "callstatistic.h"
+#include "autoconnectdialog.h"
+
 
 SipStateModel::SipStateModel(QObject *parent, QWidget *parentWidget, CmdFacade *lib)
     : QAbstractTableModel(parent), m_parentWidget(parentWidget), m_cmdFacade(lib)
@@ -46,7 +48,7 @@ int SipStateModel::rowCount(const QModelIndex & /*parent*/) const
 
 int SipStateModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 6;
+    return 7;
 }
 
 QVariant SipStateModel::data(const QModelIndex &index, int role) const
@@ -164,6 +166,20 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
                     return QBrush(QColor(179, 213, 125));  // lime
                 break;
             }
+        case 6:                                                         // column 6
+            if (role == Qt::DisplayRole || role == Qt::EditRole)
+                if(m_AccountList->at(index.row()).autoconnectEnable){
+                    return "active";
+                }
+                else{
+                    return "off";
+                }
+            if(role == Qt::BackgroundColorRole){
+                if(m_AccountList->at(index.row()).autoconnectEnable)
+                    return QBrush(QColor(179, 213, 125));   // lime
+                else
+                     return QBrush(QColor(145, 157, 157));   // stone
+            }
 
         break;
     }
@@ -202,6 +218,9 @@ QVariant SipStateModel::headerData(int section, Qt::Orientation orientation, int
                 break;
             case 3:
                 return QString("Call State");
+                break;
+            case 6:
+                return QString("Auto Connect");
                 break;
             default:
                 return QVariant();
@@ -262,4 +281,20 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
             callstat->show();
        }
    }
+    else if (index.isValid() && index.column()== 6) {
+        if (m_AccountList->at(index.row()).autoconnectEnable){
+            message = " Disable auto connect?";
+            int ret = QMessageBox::question(m_parentWidget, tr("Auto connect"),tr(message.toLocal8Bit()));
+            if(ret == QMessageBox::Yes){
+            m_cmdFacade->modifyAccount(m_AccountList->at(index.row()).uid,m_AccountList->at(index.row()).name,m_AccountList->at(index.row()).serverURI,m_AccountList->at(index.row()).user,"",m_AccountList->at(index.row()).FilePlayPath,m_AccountList->at(index.row()).FileRecordPath,m_AccountList->at(index.row()).FileRecordRXonly,
+                                       m_AccountList->at(index.row()).fixedJitterBuffer,m_AccountList->at(index.row()).fixedJitterBufferValue, m_AccountList->at(index.row()).autoconnectToBuddyUID,false);
+            }
+        }
+        else{
+            autoconnectdialog *autocondial = nullptr;
+            autocondial = new autoconnectdialog(m_parentWidget, m_cmdFacade, &m_AccountList->at(index.row()));
+            autocondial->show();
+        }
+    }
+
 }

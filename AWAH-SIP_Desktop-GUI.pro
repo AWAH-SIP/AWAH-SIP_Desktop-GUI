@@ -27,6 +27,7 @@ SOURCES += \
     ../AWAH-SIP_Desktop-GUI/addgpio.cpp \
     AWAHSipDesktopGUI.cpp \
     accountdialog.cpp \
+    autoconnectdialog.cpp \
     buddydialog.cpp \
     buddysettings.cpp \
     cmdfacade.cpp \
@@ -52,6 +53,7 @@ HEADERS += \
     ../AWAH-SIP_Desktop-GUI/addgpio.h \
     AWAHSipDesktopGUI.h \
     accountdialog.h \
+    autoconnectdialog.h \
     buddydialog.h \
     buddysettings.h \
     cmdfacade.h \
@@ -77,6 +79,7 @@ FORMS += \
     ../AWAH-SIP_Desktop-GUI/addgpio.ui \
     AWAHSipDesktopGUI.ui \
     accountdialog.ui \
+    autoconnectdialog.ui \
     buddydialog.ui \
     buddysettings.ui \
     connectdialog.ui \

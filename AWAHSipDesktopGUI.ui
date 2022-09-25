@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
+    <width>835</width>
     <height>342</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>750</width>
+    <width>835</width>
     <height>200</height>
    </size>
   </property>
@@ -20,7 +20,7 @@
    <string>AWAHsip Desktop GUI</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../awah-sip_desktop-gui/icons.qrc">
+   <iconset resource="icons.qrc">
     <normaloff>:/new/icons/images/AWAH_logo_sm.png</normaloff>:/new/icons/images/AWAH_logo_sm.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -86,14 +86,14 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>750</width>
-     <height>22</height>
+     <width>835</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
   <action name="actionAudi_I_O">
    <property name="icon">
-    <iconset resource="../awah-sip_desktop-gui/icons.qrc">
+    <iconset resource="icons.qrc">
      <normaloff>:/new/icons/images/microphone [#934].svg</normaloff>
      <normalon>:/new/icons/images/Speaker.png</normalon>:/new/icons/images/microphone [#934].svg</iconset>
    </property>
@@ -109,7 +109,7 @@
   </action>
   <action name="actionSettings">
    <property name="icon">
-    <iconset resource="../awah-sip_desktop-gui/icons.qrc">
+    <iconset resource="icons.qrc">
      <normaloff>:/new/icons/images/settings [#1365].svg</normaloff>
      <normalon>:/new/icons/images/Settinngs.png</normalon>:/new/icons/images/settings [#1365].svg</iconset>
    </property>
@@ -125,7 +125,7 @@
   </action>
   <action name="actionAccounts">
    <property name="icon">
-    <iconset resource="../awah-sip_desktop-gui/icons.qrc">
+    <iconset resource="icons.qrc">
      <normaloff>:/new/icons/images/profile_round [#1342].svg</normaloff>
      <normalon>:/new/icons/images/user.png</normalon>:/new/icons/images/profile_round [#1342].svg</iconset>
    </property>
@@ -151,7 +151,7 @@
   </action>
   <action name="actionRouting">
    <property name="icon">
-    <iconset resource="../awah-sip_desktop-gui/icons.qrc">
+    <iconset resource="icons.qrc">
      <normaloff>:/new/icons/images/network_3 [#1116].svg</normaloff>:/new/icons/images/network_3 [#1116].svg</iconset>
    </property>
    <property name="text">
@@ -166,7 +166,7 @@
   </action>
   <action name="actionLog">
    <property name="icon">
-    <iconset resource="../awah-sip_desktop-gui/icons.qrc">
+    <iconset resource="icons.qrc">
      <normaloff>:/new/icons/images/list [#1496].svg</normaloff>:/new/icons/images/list [#1496].svg</iconset>
    </property>
    <property name="text">
@@ -178,7 +178,7 @@
   </action>
   <action name="actionBuddies">
    <property name="icon">
-    <iconset resource="../awah-sip_desktop-gui/icons.qrc">
+    <iconset resource="icons.qrc">
      <normaloff>:/new/icons/images/love [#1489].svg</normaloff>:/new/icons/images/love [#1489].svg</iconset>
    </property>
    <property name="text">
@@ -191,7 +191,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../awah-sip_desktop-gui/icons.qrc"/>
+  <include location="icons.qrc"/>
  </resources>
  <connections/>
 </ui>
