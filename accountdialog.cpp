@@ -27,8 +27,7 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account, CmdFacade *lib
     m_s_account(account), m_lib(lib)
 {
     for (auto && buddy : m_lib->getBuddies()) {
-        s_account* buddyaccount = m_lib->getAccountByUID(buddy.accUid);
-        if(buddyaccount != nullptr && buddyaccount->serverURI == account->serverURI){                     // only append buddys that are on the same server
+        if(buddy.accUid == account->uid){                   // only append buddys that are handled by the account
             m_buddies.append(buddy);
         }
     }

@@ -18,7 +18,6 @@ autoconnectdialog::autoconnectdialog(QWidget *parent, CmdFacade *lib, const s_ac
             int index = ui->comboBox->findText(buddy.Name);
             if ( index != -1 ) { // -1 for not found
                 ui->comboBox->setCurrentIndex(index);
-                break;
             }
         }
     }
@@ -27,16 +26,6 @@ autoconnectdialog::autoconnectdialog(QWidget *parent, CmdFacade *lib, const s_ac
 autoconnectdialog::~autoconnectdialog()
 {
     delete ui;
-}
-
-void autoconnectdialog::on_comboBox_currentIndexChanged(int index)
-{
-    if(index < m_buddies.count()){
-        buddyUID = m_buddies.at(index).uid;
-    }
-    else{
-        buddyUID = "";
-    }
 }
 
 
@@ -53,4 +42,13 @@ void autoconnectdialog::on_pushButtonCancel_clicked()
     autoconnectdialog::close();
 }
 
+
+void autoconnectdialog::on_comboBox_currentTextChanged(const QString &arg1)
+{
+    for (auto && buddy : m_buddies) {
+        if(buddy.Name == arg1){
+            buddyUID = buddy.uid;
+        }
+    }
+}
 

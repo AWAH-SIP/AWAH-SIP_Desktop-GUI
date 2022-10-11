@@ -171,7 +171,7 @@ struct s_account{
     bool FileRecordRXonly = true;
     QString FilePlayPath;
     QString autoconnectToBuddyUID = "";
-    bool autoconnectEnable = true;
+    bool autoconnectEnable = false;
     int player_id = -1;
     int rec_id = -1;
     int AccID;

@@ -18,11 +18,12 @@ public:
     ~autoconnectdialog();
 
 private slots:
-    void on_comboBox_currentIndexChanged(int index);
 
     void on_pushButtonOk_clicked();
 
     void on_pushButtonCancel_clicked();
+
+    void on_comboBox_currentTextChanged(const QString &arg1);
 
 private:
     Ui::autoconnectdialog *ui;
