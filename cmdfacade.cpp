@@ -199,6 +199,22 @@ void CmdFacade::transferCall(int callId, int AccID, QString destination) const
     cmd.execute();
 }
 
+const QString CmdFacade::getSDP(int callId, int AccID) const
+{
+    QJsonObject obj, data;
+    obj["command"] = "getSDP";
+    data["callId"] = callId;
+    data["AccID"] = AccID;
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(cmd.hasError()) {
+        return QString("error recieving SDP");
+    } else {
+        return cmd.getReturnData()["SDP"].toString();
+    }
+}
+
 const QList<s_callHistory>* CmdFacade::getCallHistory(int AccID)
 {
     QJsonObject obj, data;

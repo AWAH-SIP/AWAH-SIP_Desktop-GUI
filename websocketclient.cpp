@@ -202,9 +202,6 @@ void WebsocketClient::callStateChanged(QJsonObject &data)
                 }
             }
          }
-        for(auto& account : m_cmdFacade->m_Accounts){
-           qDebug() << "last reason " << account.callStatusLastReason;
-        }
         emit m_cmdFacade->StateChanged();
     } else {
         qDebug() << "WebsocketError: " << "Signal " << __FUNCTION__ << " : Parameters not accepted";

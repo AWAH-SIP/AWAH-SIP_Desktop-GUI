@@ -55,6 +55,7 @@ MakeCall::MakeCall(QWidget *parent, CmdFacade *lib, int AccID) :
         m_selectedCodec = account->CallHistory.at(0).codec;
         int index = ui->selcectCodecBox->findText(m_selectedCodec.displayName);
         ui->selcectCodecBox->setCurrentIndex(index);
+        on_ParamChanged(account->CallHistory.at(0).codec,URI.mid(startPos, length));
     }
 
     connect(ui->tableView, SIGNAL(pressed(const QModelIndex &)),

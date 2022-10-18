@@ -24,6 +24,7 @@ public:
     void acceptCall(int callId, int AccID) const;
     void holdCall(int callId, int AccID) const;
     void transferCall(int callId, int AccID, QString destination) const;
+    const QString getSDP(int callId, int AccID) const;
     const QList<s_callHistory>* getCallHistory(int AccID);
     const s_account* getAccountByID(int ID);
     s_account *getAccountByUID(QString uid);

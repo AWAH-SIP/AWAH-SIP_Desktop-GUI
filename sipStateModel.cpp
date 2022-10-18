@@ -84,9 +84,6 @@ QVariant SipStateModel::data(const QModelIndex &index, int role) const
         {
             if (role == Qt::DisplayRole || role == Qt::EditRole){
                 return QString("Idle ") + m_AccountList->at(index.row()).callStatusLastReason;
-                for(auto& account :* m_AccountList){
-                   qDebug() << "last reason " << account.callStatusLastReason;
-                }
             }
             if(role == Qt::BackgroundColorRole)
                 return QVariant();

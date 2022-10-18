@@ -36,6 +36,8 @@ CallStatistic::CallStatistic(QWidget *parent, CmdFacade *lib, int AccID, int Cal
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->horizontalHeader()->hide();
     ui->tableView->verticalHeader()->hide();
+    ui->textEdit->setText(m_cmdFacade->getSDP(CallID,AccID));
+    ui->textEdit->setReadOnly(true);
 }
 
 CallStatistic::~CallStatistic()
@@ -52,7 +54,7 @@ void CallStatistic::on_callInfo(int accId, int callId, QJsonObject callInfo)
 {
     if(m_AccID == accId && m_CallID == callId){
         m_callinfo = callInfo;
-        m_statModel->layoutChanged();
+        emit m_statModel->layoutChanged();
         ui->tableView->resizeColumnsToContents();
     }
 }
