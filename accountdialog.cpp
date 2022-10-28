@@ -48,6 +48,7 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account, CmdFacade *lib
     ui->comboBox_recOptions->addItem("Record recieving audio only");
     ui->comboBox_recOptions->setCurrentIndex(m_s_account->FileRecordRXonly);
     ui->checkBox_AutoconEnable->setChecked(m_s_account->autoconnectEnable);
+    ui->checkBox_GPIO->setChecked(m_s_account->hasDTMFGPIO);
     for (auto && buddy : m_buddies) {
      ui->comboBox_AutoconBuddy->addItem(buddy.Name);
     }
@@ -91,11 +92,6 @@ AccountDialog::AccountDialog(QWidget *parent, s_account *account, CmdFacade *lib
        ui->lineEdit_playpath->setHidden(1);
        ui->label_filepah->setHidden(1);
    }
-
-
-
-
-
 }
 
 AccountDialog::~AccountDialog()
@@ -237,8 +233,8 @@ void AccountDialog::on_checkBox_AutoconEnable_stateChanged(int arg1)
     editedaccount.autoconnectEnable = arg1;
 }
 
-
-
-
-
+void AccountDialog::on_checkBox_GPIO_stateChanged(int arg1)
+{
+    editedaccount.hasDTMFGPIO = arg1;
+}
 

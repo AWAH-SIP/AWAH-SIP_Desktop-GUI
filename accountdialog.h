@@ -67,6 +67,8 @@ private slots:
 
     void on_comboBox_recOptions_currentIndexChanged(int index);
 
+    void on_checkBox_GPIO_stateChanged(int arg1);
+
 private:
     Ui::AccountDialog *ui;
     s_account *m_s_account, editedaccount;

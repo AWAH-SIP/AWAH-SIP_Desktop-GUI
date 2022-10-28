@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>376</width>
-    <height>772</height>
+    <height>822</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -108,38 +108,6 @@
        <string>(only 16bit wav files supported)</string>
       </property>
      </widget>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QGroupBox" name="BuddyBox">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>80</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>Auto connect to Buddy:</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0" alignment="Qt::AlignLeft">
-       <widget class="QComboBox" name="comboBox_AutoconBuddy">
-        <property name="minimumSize">
-         <size>
-          <width>250</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" alignment="Qt::AlignRight">
-       <widget class="QCheckBox" name="checkBox_AutoconEnable">
-        <property name="text">
-         <string>enable</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
    <item row="6" column="0">
@@ -343,11 +311,59 @@
       <string>Jitter Buffer:</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="spinBox_JB_FixedDel"/>
+      </item>
       <item row="0" column="0">
        <widget class="QComboBox" name="comboBox_JBType"/>
       </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="spinBox_JB_FixedDel"/>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="BuddyBox">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>80</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Auto connect to Buddy:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0" alignment="Qt::AlignLeft">
+       <widget class="QComboBox" name="comboBox_AutoconBuddy">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" alignment="Qt::AlignRight">
+       <widget class="QCheckBox" name="checkBox_AutoconEnable">
+        <property name="text">
+         <string>enable</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QGroupBox" name="GPIObox">
+     <property name="title">
+      <string>GPIO:</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QCheckBox" name="checkBox_GPIO">
+        <property name="text">
+         <string>GPIO (8 GPIO transmitted with DTMF tones</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

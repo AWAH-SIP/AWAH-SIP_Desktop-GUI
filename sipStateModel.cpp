@@ -284,7 +284,7 @@ void SipStateModel::onTableClicked(const QModelIndex &index)
             int ret = QMessageBox::question(m_parentWidget, tr("Auto connect"),tr(message.toLocal8Bit()));
             if(ret == QMessageBox::Yes){
             m_cmdFacade->modifyAccount(m_AccountList->at(index.row()).uid,m_AccountList->at(index.row()).name,m_AccountList->at(index.row()).serverURI,m_AccountList->at(index.row()).user,"",m_AccountList->at(index.row()).FilePlayPath,m_AccountList->at(index.row()).FileRecordPath,m_AccountList->at(index.row()).FileRecordRXonly,
-                                       m_AccountList->at(index.row()).fixedJitterBuffer,m_AccountList->at(index.row()).fixedJitterBufferValue, m_AccountList->at(index.row()).autoconnectToBuddyUID,false);
+                                       m_AccountList->at(index.row()).fixedJitterBuffer,m_AccountList->at(index.row()).fixedJitterBufferValue, m_AccountList->at(index.row()).autoconnectToBuddyUID,false, m_AccountList->at(index.row()).hasDTMFGPIO );
             }
         }
         else{

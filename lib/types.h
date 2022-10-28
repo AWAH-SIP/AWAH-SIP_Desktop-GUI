@@ -172,6 +172,7 @@ struct s_account{
     QString FilePlayPath;
     QString autoconnectToBuddyUID = "";
     bool autoconnectEnable = false;
+    bool hasDTMFGPIO = false;
     int player_id = -1;
     int rec_id = -1;
     int AccID;
@@ -203,6 +204,7 @@ struct s_account{
             {"fixedJitterBufferValue", (int)fixedJitterBufferValue},
             {"autoconnectToBuddyUID", autoconnectToBuddyUID},
             {"autoconnectEnable", autoconnectEnable},
+            {"hasDTMFGPIO", hasDTMFGPIO},
             {"uid", uid}
         };
     }
@@ -242,6 +244,7 @@ struct s_account{
         callStatusLastReason = accountJSON["callStatusLastReason"].toString();
         autoconnectToBuddyUID = accountJSON["autoconnectToBuddyUID"].toString();
         autoconnectEnable = accountJSON["autoconnectEnable"].toBool();
+        hasDTMFGPIO = accountJSON["hasDTMFGPIO"].toBool();
         return this;
     }
 };

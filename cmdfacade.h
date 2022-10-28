@@ -15,8 +15,8 @@ public:
     void initializeVariables();
 
     // Public API - Accounts
-    void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable) const;
-    void modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable) const;
+    void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable, bool hasDTMFGPIO) const;
+    void modifyAccount(QString uid, QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable, bool hasDTMFGPIO) const;
     void removeAccount(QString uid) const;
     QList <s_account>* getAccounts();
     void makeCall(QString number, int AccID, s_codec codec) const;

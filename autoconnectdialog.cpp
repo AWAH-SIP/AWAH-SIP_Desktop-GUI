@@ -32,7 +32,7 @@ autoconnectdialog::~autoconnectdialog()
 void autoconnectdialog::on_pushButtonOk_clicked()
 {
     m_cmdFacade->modifyAccount(m_Account->uid, m_Account->name, m_Account->serverURI, m_Account->user,"" ,m_Account->FilePlayPath, m_Account->FileRecordPath, m_Account->FileRecordRXonly,
-                               m_Account->fixedJitterBuffer, m_Account->fixedJitterBufferValue, buddyUID, true);
+                               m_Account->fixedJitterBuffer, m_Account->fixedJitterBufferValue, buddyUID, true, m_Account->hasDTMFGPIO );
      autoconnectdialog::close();
 }
 

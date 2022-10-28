@@ -58,7 +58,7 @@ void accountsettings::on_pushButton_add_clicked()
     accdialog.exec();
     newacc = accdialog.getAccount();
     if(newacc.name != ""){
-        m_cmdFacade->createAccount(newacc.name,newacc.serverURI,newacc.user,newacc.password, newacc.FilePlayPath, newacc.FileRecordPath, newacc.FileRecordRXonly, newacc.fixedJitterBuffer, newacc.fixedJitterBufferValue, newacc.autoconnectToBuddyUID, newacc.autoconnectEnable);
+        m_cmdFacade->createAccount(newacc.name,newacc.serverURI,newacc.user,newacc.password, newacc.FilePlayPath, newacc.FileRecordPath, newacc.FileRecordRXonly, newacc.fixedJitterBuffer, newacc.fixedJitterBufferValue,newacc.autoconnectToBuddyUID, newacc.autoconnectEnable, newacc.hasDTMFGPIO);
         m_AccList = m_cmdFacade->getAccounts();
         accModel->refresh();
     }
@@ -85,7 +85,7 @@ void accountsettings::on_pushButton_edit_clicked()
     accdialog.exec();
     editacc = accdialog.getAccount();
     if(editacc.name != ""){                             // TODO: add better Check if something in acoout was edited
-        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.FileRecordRXonly ,editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue, editacc.autoconnectToBuddyUID, editacc.autoconnectEnable);
+        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.FileRecordRXonly ,editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue, editacc.autoconnectToBuddyUID, editacc.autoconnectEnable, editacc.hasDTMFGPIO);
     }
 }
 
@@ -99,7 +99,7 @@ void accountsettings::on_tableView_doubleClicked(const QModelIndex &index)
     accdialog.exec();
     editacc = accdialog.getAccount();
     if(editacc.name != ""){                             // TODO: add better Check if something in acoout was edited
-        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.FileRecordRXonly, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue, editacc.autoconnectToBuddyUID, editacc.autoconnectEnable);
+        m_cmdFacade->modifyAccount(editacc.uid, editacc.name,editacc.serverURI,editacc.user,editacc.password, editacc.FilePlayPath, editacc.FileRecordPath, editacc.FileRecordRXonly, editacc.fixedJitterBuffer, editacc.fixedJitterBufferValue, editacc.autoconnectToBuddyUID, editacc.autoconnectEnable, editacc.hasDTMFGPIO);
     }
 }
 
