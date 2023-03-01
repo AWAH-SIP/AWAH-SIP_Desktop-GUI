@@ -130,8 +130,15 @@ void AWAHSipDesktopGUI::OnNewMessage(QString type, QByteArray message)
 
 void AWAHSipDesktopGUI::on_actionAWAH_triggered()
 {
-    m_websocketClient->testEcho();
-    QMessageBox::information(this,"About","AWAH SIP Client test client \n\nwritten by Adi Hilber and Andy Weiss");
+    QJsonObject versions = m_cmdFacade->getVersions();
+    QMessageBox::information(this,"About","GUI Version: " + QString::number(DESKTOPGUI_VERSION) + "\n\nAWAH SIP Client Version: " + QString::number(versions["AWAH-Sip_Lib"].toDouble()) +
+            "\n\nPJSIP Version: " + versions["PJSIP"].toString()
+            +"\n\nwritten by Adi Hilber and Andy Weiss");
+    if(DESKTOPGUI_VERSION !=versions["AWAH-Sip_Lib"].toDouble()){
+        QMessageBox::warning(this,"Version mismatch","Warning: GUI Version does not match codecversion.\n\n"
+                                                     "This can cause unexpected behaviour.\n\n"
+                                                     "Use with caution!!");
+    }
 }
 
 

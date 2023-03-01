@@ -707,3 +707,16 @@ void CmdFacade::setCodecPriorities(QJsonObject Codecpriority)
     Command cmd(obj, this->parent(), m_wsClient, true);
     cmd.execute();
 }
+
+const QJsonObject CmdFacade::getVersions()
+{
+    QJsonObject obj, data;
+    obj["command"] = "getVersions";
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(!cmd.hasError()) {
+        m_getCodecPriorities = cmd.getReturnData()["Versions"].toObject();
+    }
+    return m_getCodecPriorities;
+}
