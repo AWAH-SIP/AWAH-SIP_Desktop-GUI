@@ -1,4 +1,4 @@
-name: Build Desktop GUI
+name: Build Desktop GUI 
 on: [push]
 jobs:
   Linux:
