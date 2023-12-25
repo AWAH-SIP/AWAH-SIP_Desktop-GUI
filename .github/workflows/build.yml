@@ -31,12 +31,20 @@ jobs:
         
       - name: MakeInstall
         run:  cd build && make INSTALL_ROOT=appdir -j$(nproc) install
+
+      - name: Install LinuxDeploy
+        uses: miurahr/install-linuxdeploy-action@v1
+        with:
+          plugins: qt appimage
+      
+      - name: deploly AWAh Sip Gui
+        run: linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --executable=Apps --appdir appdir/usr/share/applications/*.desktop
         
-      - name: LinuxDeployQT
-        run:  |
-          cd build && wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-          chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-          ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -verbose=2
+#      - name: LinuxDeployQT
+#        run:  |
+#          cd build && wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+#          chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+#          ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -verbose=2
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
