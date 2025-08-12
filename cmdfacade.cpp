@@ -85,6 +85,40 @@ void CmdFacade::initializeVariables(){
     }
 }
 
+const QJsonObject CmdFacade::getConfig()
+{
+    QJsonObject obj, data, ret, settings;
+    obj["command"] = "getAllVariables";
+    obj["data"] = data;
+    Command cmd(obj, this->parent(), m_wsClient);
+    cmd.execute();
+    if(!cmd.hasError()) {
+        QJsonArray accountsArr = cmd.getReturnData()["accountsArray"].toArray();
+        QJsonArray audioRoutesArr = cmd.getReturnData()["audioRoutesArray"].toArray();
+        QJsonArray ioDevArr = cmd.getReturnData()["ioDevicesArray"].toArray();
+        QJsonObject audioPortListObj = cmd.getReturnData()["confPortList"].toObject();
+        QJsonArray gpioRoutesArr = cmd.getReturnData()["gpioRoutesArray"].toArray();
+        QJsonObject gpioPortListObj = cmd.getReturnData()["gpioPortList"].toObject();
+        QJsonArray buddyArr = cmd.getReturnData()["buddyArray"].toArray();
+        ret.insert("audioRoutes", audioRoutesArr);
+        ret.insert("ioDevices", ioDevArr);
+        ret.insert("audioPortList", audioPortListObj);
+        ret.insert("gpioRoutes", gpioRoutesArr);
+        ret.insert("gpioPortList", gpioPortListObj);
+        ret.insert("buddies", buddyArr);
+        ret.insert("accounts", accountsArr);
+    }
+    obj["command"] = "getSettings";
+    Command cmd2(obj, this->parent(), m_wsClient);
+    cmd2.execute();
+    if(!cmd2.hasError()) {
+        QJsonObject settingsObj = cmd2.getReturnData()["settingsObj"].toObject();
+        ret.insert("settings", settingsObj);
+    }
+
+    return ret;
+}
+
 // Public API - Accounts
 void CmdFacade::createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable, bool hasDTMFGPIO) const
 {

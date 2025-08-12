@@ -36,7 +36,7 @@
 #include "accountsettings.h"
 #include "buddysettings.h"
 
-#define DESKTOPGUI_VERSION 3.2
+#define DESKTOPGUI_VERSION 3.3
 
 
 namespace Ui {

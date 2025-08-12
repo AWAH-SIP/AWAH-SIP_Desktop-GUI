@@ -13,6 +13,7 @@ public:
     explicit CmdFacade(QObject *parent = nullptr, WebsocketClient *wsClient = nullptr);
 
     void initializeVariables();
+    const QJsonObject getConfig();
 
     // Public API - Accounts
     void createAccount(QString accountName, QString server, QString user, QString password, QString filePlayPath, QString fileRecPath, bool fileRecordRXonly, bool fixedJitterBuffer, uint fixedJitterBufferValue, QString autoconnectToBuddyUID, bool autoconnectEnable, bool hasDTMFGPIO) const;

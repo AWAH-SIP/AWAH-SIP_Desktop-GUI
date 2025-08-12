@@ -52,6 +52,8 @@ private slots:
 
     void on_pushButton_cancel_clicked();
 
+    void on_ExportConfig_clicked();
+
 private:
     Ui::GeneralSettings *ui;
     CmdFacade *m_cmdFacade;

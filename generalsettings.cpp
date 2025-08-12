@@ -21,6 +21,8 @@
 #include <QStyledItemDelegate>
 #include "editorwidget.h"
 #include "QMessageBox"
+#include <QFileDialog>
+#include <QJsonDocument>
 
 
 GeneralSettings::GeneralSettings(QWidget *parent, CmdFacade *lib) :
@@ -165,5 +167,40 @@ void GeneralSettings::closeEvent(QCloseEvent* event)
     QSettings settings("awah", "AWAHSipDesktopGUI");
     settings.setValue("GeneralSettings/Geometry", saveGeometry());
     QDialog::closeEvent(event);
+}
+
+
+void GeneralSettings::on_ExportConfig_clicked()
+{
+    QJsonObject config = m_cmdFacade->getConfig();
+    
+    // create a save Dialogue
+    QString fileName = QFileDialog::getSaveFileName(this,
+        tr("Konfiguration exportieren"),
+        QDir::homePath(),
+        tr("JSON Dateien (*.json)"));
+        
+    if (fileName.isEmpty())
+        return;
+        
+    // add .json end if not already defined
+    if (!fileName.endsWith(".json"))
+        fileName += ".json";
+        
+    // open the file
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(this, tr("error"),
+            tr("Could not create file: %1").arg(file.errorString()));
+        return;
+    }
+    
+    // create a json object
+    QJsonDocument doc(config);
+    file.write(doc.toJson(QJsonDocument::Indented));
+    file.close();
+    
+    QMessageBox::information(this, tr("Export successful"),
+        tr("The configuration has been exported sucessuflly to %1").arg(fileName));
 }
 
